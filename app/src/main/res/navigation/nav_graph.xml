@@ -7,26 +7,11 @@
     app:startDestination="@id/mainFragment">
 
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.kamer.easydone.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_selectBoardFragment"
-            app:destination="@id/selectBoardFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/selectBoardFragment"
-        android:name="com.kamer.easydone.SelectBoardFragment"
-        android:label="fragment_select_board"
-        tools:layout="@layout/fragment_select_board" />
-    <fragment
         android:id="@+id/mainFragment"
         android:name="com.kamer.easydone.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" />
-    <action
-        android:id="@+id/action_global_loginFragment"
-        app:destination="@id/loginFragment"
-        app:popUpToInclusive="false" />
+
+    <include app:graph="@navigation/login_graph" />
+
 </navigation>

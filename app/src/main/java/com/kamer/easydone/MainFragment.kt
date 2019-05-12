@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 
@@ -21,7 +22,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (!LoginHolder.isSet) {
-            findNavController().navigate(R.id.action_global_loginFragment)
+            findNavController().navigate("easydone://login".toUri())
         }
     }
 
