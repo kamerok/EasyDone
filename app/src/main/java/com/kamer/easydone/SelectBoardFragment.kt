@@ -23,7 +23,6 @@ class SelectBoardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         selectBoardView.setOnClickListener {
-            LoginHolder.isBoardSelected = true
             findNavController().popBackStack(R.id.loginFragment, true)
         }
     }

@@ -20,8 +20,10 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
+    private val loginHolder by lazy { LoginHolder(requireContext()) }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (!LoginHolder.isSet) {
+        if (!loginHolder.hasToken()) {
             findNavController().navigate("easydone://login".toUri())
         }
     }
