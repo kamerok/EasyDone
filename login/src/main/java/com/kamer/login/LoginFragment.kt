@@ -1,4 +1,4 @@
-package com.kamer.easydone
+package com.kamer.login
 
 
 import android.os.Bundle
@@ -8,10 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.kamer.easydone.api.TrelloApi
+import com.kamer.login.api.TrelloApi
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -45,7 +46,7 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (loginHolder.hasToken()) {
-            findNavController().navigate(R.id.selectBoardFragment)
+            findNavController().navigate("easydone://select_board".toUri())
             return
         }
 
@@ -87,6 +88,6 @@ class LoginFragment : Fragment() {
 
     private fun successLogin(token: String) {
         loginHolder.saveToken(token)
-        findNavController().navigate(R.id.action_loginFragment_to_selectBoardFragment)
+        findNavController().navigate("easydone://select_board".toUri())
     }
 }

@@ -1,4 +1,4 @@
-package com.kamer.easydone.api
+package com.kamer.login.api
 
 import retrofit2.http.GET
 import retrofit2.http.Query

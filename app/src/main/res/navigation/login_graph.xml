@@ -9,10 +9,14 @@
         android:id="@+id/selectBoardFragment"
         android:name="com.kamer.easydone.SelectBoardFragment"
         android:label="fragment_select_board"
-        tools:layout="@layout/fragment_select_board"/>
+        tools:layout="@layout/fragment_select_board">
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="easydone://select_board" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.kamer.easydone.LoginFragment"
+        android:name="com.kamer.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
         <deepLink app:uri="easydone://login"/>

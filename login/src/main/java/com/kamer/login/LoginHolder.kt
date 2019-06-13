@@ -1,4 +1,4 @@
-package com.kamer.easydone
+package com.kamer.login
 
 import android.content.Context
 import androidx.core.content.edit
