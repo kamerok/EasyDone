@@ -1,2 +1,3 @@
-include ':app', ':login'
 rootProject.name='EasyDone'
+include ':app'
+include ':feature:login'
