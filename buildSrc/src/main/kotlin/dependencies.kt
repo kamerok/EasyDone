@@ -21,6 +21,7 @@ object Versions {
 
     val kotlin = "1.3.31"
     val gradleandroid = "3.5.0-beta04"
+    val gradleversions = "0.21.0"
 
 }
 
@@ -42,6 +43,7 @@ object Deps {
     val junit = "junit:junit:${Versions.junit}"
 
     val gradle_android = "com.android.tools.build:gradle:${Versions.gradleandroid}"
+    val gradleversions = "com.github.ben-manes:gradle-versions-plugin:${Versions.gradleversions}"
     val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
     val safeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidx_navigation}"
 

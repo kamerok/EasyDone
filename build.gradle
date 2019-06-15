@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath Deps.gradle_android
+        classpath Deps.gradleversions
         classpath Deps.kotlin
         classpath Deps.safeArgs
         // NOTE: Do not place your application dependencies here; they belong
@@ -26,6 +27,8 @@ allprojects {
 subprojects {
     afterEvaluate { project ->
         if (project.hasProperty('android')) {
+            apply plugin: "com.github.ben-manes.versions"
+
             android {
                 compileSdkVersion Config.compileSdk
 
