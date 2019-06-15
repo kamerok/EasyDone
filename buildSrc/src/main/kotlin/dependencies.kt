@@ -12,6 +12,7 @@ object Versions {
     val androidx_recyclerview = "1.0.0"
     val androidx_constraintLayout = "1.1.3"
     val androidx_navigation = "2.1.0-alpha05"
+    val androidx_fragment = "1.1.0-beta01"
     val material = "1.1.0-alpha04"
 
     val coroutines = "1.1.1"
@@ -29,6 +30,7 @@ object Deps {
     val androidx_appcompat = "androidx.appcompat:appcompat:${Versions.androidx_appcompat}"
     val androidx_core = "androidx.core:core-ktx:${Versions.androidx_core}"
     val androidx_constraintlayout = "androidx.constraintlayout:constraintlayout:${Versions.androidx_constraintLayout}"
+    val androidx_fragment = "androidx.fragment:fragment-ktx:${Versions.androidx_fragment}"
     val androidx_material = "com.google.android.material:material:${Versions.material}"
     val androidx_navigation_fragment = "androidx.navigation:navigation-fragment-ktx:${Versions.androidx_navigation}"
     val androidx_navigation_ui = "androidx.navigation:navigation-ui-ktx:${Versions.androidx_navigation}"
