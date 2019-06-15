@@ -1,13 +1,12 @@
-package com.kamer.easydone
+package com.kamer.selectboard
 
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_select_board.*
 
 
@@ -23,17 +22,9 @@ class SelectBoardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         selectBoardView.setOnClickListener {
-            findNavController().popBackStack(R.id.loginFragment, true)
+            Toast.makeText(requireContext(), "selected", Toast.LENGTH_SHORT).show()
+//            findNavController().popBackStack(R.id.loginFragment, true)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                requireActivity().finish()
-            }
-        })
     }
 
 }

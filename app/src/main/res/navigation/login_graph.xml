@@ -7,7 +7,7 @@
     app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/selectBoardFragment"
-        android:name="com.kamer.easydone.SelectBoardFragment"
+        android:name="com.kamer.selectboard.SelectBoardFragment"
         android:label="fragment_select_board"
         tools:layout="@layout/fragment_select_board">
         <deepLink
