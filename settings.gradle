@@ -1,3 +1,4 @@
 rootProject.name='EasyDone'
 include ':app'
 include ':feature:login'
+include ':feature:selectboard'
