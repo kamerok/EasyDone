@@ -4,4 +4,5 @@ dependencies {
     implementation Deps.kotilnStdlib
     implementation Deps.retrofit
     implementation Deps.retrofit_converter_gson
+    implementation Deps.retrofit_logging
 }

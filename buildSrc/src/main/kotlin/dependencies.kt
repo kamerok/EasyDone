@@ -17,6 +17,7 @@ object Versions {
 
     val coroutines = "1.1.1"
     val retrofit = "2.6.0"
+    val retrofit_logging = "3.14.2"
 
     val junit = "4.12"
 
@@ -41,6 +42,7 @@ object Deps {
     val coroutines_andorid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     val retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
+    val retrofit_logging = "com.squareup.okhttp3:logging-interceptor:${Versions.retrofit_logging}"
 
     val junit = "junit:junit:${Versions.junit}"
 
