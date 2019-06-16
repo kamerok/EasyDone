@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_setup.*
+import androidx.fragment.app.commit
+import com.kamer.login.LoginFragment
 
 
 class SetupFragment : Fragment() {
@@ -17,7 +19,11 @@ class SetupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        testView.setOnClickListener { finishListener() }
+        childFragmentManager.commit {
+            replace(R.id.container, LoginFragment.create(LoginFragment.Dependencies(loginListener = {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            })))
+        }
     }
 
     data class Dependencies(
