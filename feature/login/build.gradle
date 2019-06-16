@@ -11,6 +11,4 @@ dependencies {
     implementation Deps.coroutines_andorid
     implementation Deps.retrofit
     implementation Deps.retrofit_converter_gson
-    implementation Deps.androidx_navigation_fragment
-    implementation Deps.androidx_navigation_ui
 }
