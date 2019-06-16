@@ -1,10 +1,10 @@
-package com.kamer.login.api
+package com.kamer.trelloapi
 
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 
-internal interface TrelloApi {
+interface TrelloApi {
 
     @GET("1/members/me/")
     suspend fun me(@Query("key") apiKey: String, @Query("token") token: String): Any

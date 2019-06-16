@@ -4,11 +4,11 @@ apply plugin: 'kotlin-android-extensions'
 
 
 dependencies {
+    implementation project(":library:trelloapi")
+
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
     implementation Deps.androidx_core
     implementation Deps.coroutines_core
     implementation Deps.coroutines_andorid
-    implementation Deps.retrofit
-    implementation Deps.retrofit_converter_gson
 }

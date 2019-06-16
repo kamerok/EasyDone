@@ -9,14 +9,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.kamer.login.api.TrelloApi
+import com.kamer.trelloapi.TrelloApi
+import com.kamer.trelloapi.TrelloApiProvider
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class LoginFragment : Fragment() {
@@ -25,13 +24,7 @@ class LoginFragment : Fragment() {
 
     private val API_KEY = "98c9ac26156a960889eb42586aa1bcd7"
 
-    private val api: TrelloApi by lazy {
-        Retrofit.Builder()
-            .baseUrl("https://trello.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(TrelloApi::class.java)
-    }
+    private val api: TrelloApi by lazy { TrelloApiProvider.api }
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -1,6 +1,9 @@
 rootProject.name='EasyDone'
 
 include ':app'
+
 include ':feature:login'
 include ':feature:selectboard'
 include ':feature:setupflow'
+
+include ':library:trelloapi'
