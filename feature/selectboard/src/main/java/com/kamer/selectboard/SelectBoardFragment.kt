@@ -12,6 +12,9 @@ import kotlinx.android.synthetic.main.fragment_select_board.*
 
 class SelectBoardFragment : Fragment() {
 
+    lateinit var token: String
+    lateinit var listener: (String) -> Unit
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,7 +26,19 @@ class SelectBoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         selectBoardView.setOnClickListener {
             Toast.makeText(requireContext(), "selected", Toast.LENGTH_SHORT).show()
-//            findNavController().popBackStack(R.id.loginFragment, true)
+            listener("fake board")
+        }
+    }
+
+    data class Dependencies(
+        val token: String,
+        val listener: (String) -> Unit
+    )
+
+    companion object {
+        fun create(dependencies: Dependencies): Fragment = SelectBoardFragment().apply {
+            token = dependencies.token
+            listener = dependencies.listener
         }
     }
 

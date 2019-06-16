@@ -4,26 +4,78 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.kamer.login.LoginFragment
+import com.kamer.selectboard.SelectBoardFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class SetupFragment : Fragment() {
 
     private lateinit var finishListener: () -> Unit
 
+    private var isLogin = true
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_setup, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        startLogin()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (!isLogin) {
+                    startLogin()
+                } else {
+                    isEnabled = false
+                    requireActivity().onBackPressed()
+                    isEnabled = true
+                }
+            }
+        })
+    }
+
+    private fun startLogin() {
+        isLogin = true
         childFragmentManager.commit {
-            replace(R.id.container, LoginFragment.create(LoginFragment.Dependencies(loginListener = {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            })))
+            replace(R.id.container, LoginFragment.create(
+                LoginFragment.Dependencies(
+                    loginListener = {
+                        startSelectBoard(it)
+                    }
+                )
+            ))
         }
+    }
+
+    private fun startSelectBoard(token: String) {
+        isLogin = false
+        childFragmentManager.commit {
+            replace(R.id.container, SelectBoardFragment.create(
+                SelectBoardFragment.Dependencies(
+                    token = token,
+                    listener = { boardId ->
+                        GlobalScope.launch {
+                            saveData(token, boardId)
+                            finishListener()
+                        }
+                    }
+                )
+            ))
+        }
+    }
+
+    private suspend fun saveData(token: String, boardId: String) = withContext(Dispatchers.IO) {
+        //TODO: save data
     }
 
     data class Dependencies(
