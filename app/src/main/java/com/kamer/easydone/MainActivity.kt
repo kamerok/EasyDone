@@ -4,14 +4,21 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.kamer.setupflow.SetupFragment
+import com.kamer.setupflow.SetupStatusChecker
 
 class MainActivity : AppCompatActivity() {
+
+    private val setupStatusChecker = SetupStatusChecker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startSetupFlow()
+        if (setupStatusChecker.isSetupCompleted()) {
+            startMainFlow()
+        } else {
+            startSetupFlow()
+        }
     }
 
     private fun startSetupFlow() {
