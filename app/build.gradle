@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
     defaultConfig {
@@ -19,11 +17,8 @@ android {
 }
 
 dependencies {
-    implementation project(":feature:setupflow")
-    implementation project(":feature:home")
+    implementation project(":builder")
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
-    implementation Deps.androidx_core
-    implementation Deps.androidx_fragment
 }
