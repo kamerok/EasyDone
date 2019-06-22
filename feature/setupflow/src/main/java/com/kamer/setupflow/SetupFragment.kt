@@ -6,9 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import com.kamer.login.LoginFragment
-import com.kamer.selectboard.SelectBoardFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -18,6 +15,7 @@ import kotlinx.coroutines.withContext
 class SetupFragment : Fragment() {
 
     private lateinit var finishListener: () -> Unit
+    private lateinit var navigator: SetupFlowNavigator
 
     private var isLogin = true
 
@@ -46,32 +44,18 @@ class SetupFragment : Fragment() {
 
     private fun startLogin() {
         isLogin = true
-        childFragmentManager.commit {
-            replace(R.id.container, LoginFragment.create(
-                LoginFragment.Dependencies(
-                    loginListener = { token, userId ->
-                        startSelectBoard(token, userId)
-                    }
-                )
-            ))
+        navigator.navigateToLogin { token, userId ->
+            startSelectBoard(token, userId)
         }
     }
 
     private fun startSelectBoard(token: String, userId: String) {
         isLogin = false
-        childFragmentManager.commit {
-            replace(R.id.container, SelectBoardFragment.create(
-                SelectBoardFragment.Dependencies(
-                    token = token,
-                    userId = userId,
-                    listener = { boardId ->
-                        GlobalScope.launch {
-                            saveData(token, userId, boardId)
-                            finishListener()
-                        }
-                    }
-                )
-            ))
+        navigator.navigateToSelectBoard(token, userId) { boardId ->
+            GlobalScope.launch {
+                saveData(token, userId, boardId)
+                finishListener()
+            }
         }
     }
 
@@ -80,12 +64,14 @@ class SetupFragment : Fragment() {
     }
 
     data class Dependencies(
-        val finishSetupListener: () -> Unit
+        val finishSetupListener: () -> Unit,
+        val navigator: SetupFlowNavigator
     )
 
     companion object {
         fun create(dependencies: Dependencies): Fragment = SetupFragment().apply {
             finishListener = dependencies.finishSetupListener
+            navigator = dependencies.navigator
         }
     }
 
