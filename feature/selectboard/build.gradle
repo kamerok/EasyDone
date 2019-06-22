@@ -2,8 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+androidExtensions {
+    experimental = true
+}
 
 dependencies {
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
+    implementation Deps.androidx_recyclerview
 }

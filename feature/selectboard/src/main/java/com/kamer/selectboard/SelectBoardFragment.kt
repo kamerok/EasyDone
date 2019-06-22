@@ -5,15 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_select_board.*
 
 
 class SelectBoardFragment : Fragment() {
 
-    lateinit var token: String
-    lateinit var listener: (String) -> Unit
+    private lateinit var token: String
+    private lateinit var listener: (String) -> Unit
+
+    private val adapter by lazy { BoardsAdapter { listener(it) } }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,10 +25,13 @@ class SelectBoardFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        selectBoardView.setOnClickListener {
-            Toast.makeText(requireContext(), "selected", Toast.LENGTH_SHORT).show()
-            listener("fake board")
-        }
+        recyclerView.adapter = adapter
+        loadBoards()
+    }
+
+    private fun loadBoards() {
+        adapter.setData((0..100).map { BoardUiModel("board $it") })
+        progressView.hide()
     }
 
     data class Dependencies(
