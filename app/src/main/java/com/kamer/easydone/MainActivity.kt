@@ -3,6 +3,7 @@ package com.kamer.easydone
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import com.kamer.home.HomeFragment
 import com.kamer.setupflow.SetupFragment
 import com.kamer.setupflow.SetupStatusChecker
 
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startMainFlow() {
         supportFragmentManager.commit {
-            replace(R.id.containerView, MainFragment())
+            replace(R.id.containerView, HomeFragment())
         }
     }
 }
