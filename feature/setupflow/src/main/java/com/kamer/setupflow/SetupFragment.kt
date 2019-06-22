@@ -49,23 +49,24 @@ class SetupFragment : Fragment() {
         childFragmentManager.commit {
             replace(R.id.container, LoginFragment.create(
                 LoginFragment.Dependencies(
-                    loginListener = {
-                        startSelectBoard(it)
+                    loginListener = { token, userId ->
+                        startSelectBoard(token, userId)
                     }
                 )
             ))
         }
     }
 
-    private fun startSelectBoard(token: String) {
+    private fun startSelectBoard(token: String, userId: String) {
         isLogin = false
         childFragmentManager.commit {
             replace(R.id.container, SelectBoardFragment.create(
                 SelectBoardFragment.Dependencies(
                     token = token,
+                    userId = userId,
                     listener = { boardId ->
                         GlobalScope.launch {
-                            saveData(token, boardId)
+                            saveData(token, userId, boardId)
                             finishListener()
                         }
                     }
@@ -74,7 +75,7 @@ class SetupFragment : Fragment() {
         }
     }
 
-    private suspend fun saveData(token: String, boardId: String) = withContext(Dispatchers.IO) {
+    private suspend fun saveData(token: String, userId: String, boardId: String) = withContext(Dispatchers.IO) {
         //TODO: save data
     }
 

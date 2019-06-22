@@ -20,9 +20,7 @@ import kotlinx.coroutines.withContext
 
 class LoginFragment : Fragment() {
 
-    private lateinit var listener: (String) -> Unit
-
-    private val API_KEY = "98c9ac26156a960889eb42586aa1bcd7"
+    private lateinit var listener: (String, String) -> Unit
 
     private val api: TrelloApi by lazy { TrelloApiProvider.api }
 
@@ -43,7 +41,7 @@ class LoginFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     loginButton.isVisible = false
                     webView.isVisible = true
-                    webView.loadUrl("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read&response_type=token&key=$API_KEY\n")
+                    webView.loadUrl("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read&response_type=token&key=${TrelloApi.API_KEY}\n")
                 }
             }
         }
@@ -51,9 +49,9 @@ class LoginFragment : Fragment() {
             GlobalScope.launch(Dispatchers.IO) {
                 try {
                     val token = enterTokenView.text.toString()
-                    api.me(API_KEY, token)
+                    val user = api.me(TrelloApi.API_KEY, token)
                     withContext(Dispatchers.Main) {
-                        successLogin(token)
+                        successLogin(token, user.id)
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
@@ -64,12 +62,12 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun successLogin(token: String) {
-        listener(token)
+    private fun successLogin(token: String, userId: String) {
+        listener(token, userId)
     }
 
     data class Dependencies(
-        val loginListener: (String) -> Unit
+        val loginListener: (String, String) -> Unit
     )
 
     companion object {
