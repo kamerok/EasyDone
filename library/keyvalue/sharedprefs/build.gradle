@@ -1,0 +1,10 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+
+dependencies {
+    implementation project(':library:keyvalue')
+
+    implementation Deps.kotilnStdlib
+    implementation Deps.androidx_core
+}

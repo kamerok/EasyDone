@@ -12,4 +12,5 @@ include ':feature:selectboard'
 include ':feature:setupflow'
 
 include ':library:keyvalue'
+include ':library:keyvalue:sharedprefs'
 include ':library:trelloapi'

@@ -5,10 +5,13 @@ apply plugin: 'kotlin-android'
 dependencies {
     implementation project(':core:auth')
 
-    implementation project(":feature:home")
-    implementation project(":feature:login")
-    implementation project(":feature:selectboard")
-    implementation project(":feature:setupflow")
+    implementation project(':feature:home')
+    implementation project(':feature:login')
+    implementation project(':feature:selectboard')
+    implementation project(':feature:setupflow')
+
+    implementation project(':library:keyvalue')
+    implementation project(':library:keyvalue:sharedprefs')
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat

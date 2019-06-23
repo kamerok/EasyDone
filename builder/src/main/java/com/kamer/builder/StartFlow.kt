@@ -10,6 +10,7 @@ import com.kamer.setupflow.R
 import com.kamer.setupflow.SetupFlowNavigator
 import com.kamer.setupflow.SetupFragment
 import easydone.core.auth.AuthInfoHolder
+import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 
 
 object StartFlow {
@@ -17,7 +18,7 @@ object StartFlow {
     private lateinit var authInfoHolder: AuthInfoHolder
 
     fun start(activity: AppCompatActivity, containerId: Int) {
-//        authInfoHolder = AuthInfoHolder()
+        authInfoHolder = AuthInfoHolder(SharedPrefsKeyValueStorage(activity.application, "prefs"))
 
         if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
             startMainFlow(activity, containerId)
