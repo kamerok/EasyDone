@@ -14,8 +14,12 @@ import easydone.core.auth.AuthInfoHolder
 
 object StartFlow {
 
+    private lateinit var authInfoHolder: AuthInfoHolder
+
     fun start(activity: AppCompatActivity, containerId: Int) {
-        if (false) {
+//        authInfoHolder = AuthInfoHolder()
+
+        if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
             startMainFlow(activity, containerId)
         } else {
             startSetupFlow(activity, containerId)
@@ -36,7 +40,7 @@ object StartFlow {
                         fragment?.run { startSelectBoard(this, token, userId, listener) }
                     }
                 },
-                authInfoHolder = AuthInfoHolder()
+                authInfoHolder = authInfoHolder
             ))
             replace(containerId, fragment)
         }

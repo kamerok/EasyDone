@@ -11,4 +11,5 @@ include ':feature:login'
 include ':feature:selectboard'
 include ':feature:setupflow'
 
+include ':library:keyvalue'
 include ':library:trelloapi'

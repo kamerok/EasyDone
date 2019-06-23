@@ -1,8 +1,5 @@
 apply plugin: 'kotlin'
 
-
 dependencies {
-    implementation project(':library:keyvalue')
-
     implementation Deps.kotilnStdlib
 }

@@ -1,18 +1,21 @@
 package easydone.core.auth
 
+import easydone.library.keyvalue.KeyValueStorage
 
-class AuthInfoHolder {
 
-    fun getToken(): String? = null
+class AuthInfoHolder(private val storage: KeyValueStorage) {
 
-    fun putToken(token: String) {
+    fun getToken(): String? = storage.getString(TOKEN)
 
-    }
+    fun putToken(token: String) = storage.putString(TOKEN, token)
 
-    fun getBoardId(): String? = null
+    fun getBoardId(): String? = storage.getString(BOARD_ID)
 
-    fun putBoardId(token: String) {
+    fun putBoardId(id: String) = storage.putString(BOARD_ID, id)
 
+    companion object {
+        private const val TOKEN = "token"
+        private const val BOARD_ID = "board_id"
     }
 
 }
