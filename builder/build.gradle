@@ -6,6 +6,7 @@ dependencies {
     implementation project(':core:auth')
 
     implementation project(':feature:home')
+    implementation project(':feature:inbox')
     implementation project(':feature:login')
     implementation project(':feature:selectboard')
     implementation project(':feature:setupflow')

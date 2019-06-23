@@ -4,6 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.kamer.home.HomeFragment
+import com.kamer.home.HomeNavigator
+import com.kamer.home.InboxTab
+import com.kamer.home.Tab
+import com.kamer.inbox.InboxFragment
 import com.kamer.login.LoginFragment
 import com.kamer.selectboard.SelectBoardFragment
 import com.kamer.setupflow.R
@@ -30,27 +34,42 @@ object StartFlow {
     private fun startSetupFlow(activity: AppCompatActivity, containerId: Int) {
         activity.supportFragmentManager.commit {
             var fragment: Fragment? = null
-            fragment = SetupFragment.create(SetupFragment.Dependencies(
-                finishSetupListener = { startMainFlow(activity, containerId) },
-                navigator = object : SetupFlowNavigator {
-                    override fun navigateToLogin(loginListener: (String, String) -> Unit) {
-                        fragment?.run { startLogin(this, loginListener) }
-                    }
+            fragment = SetupFragment.create(
+                SetupFragment.Dependencies(
+                    finishSetupListener = { startMainFlow(activity, containerId) },
+                    navigator = object : SetupFlowNavigator {
+                        override fun navigateToLogin(loginListener: (String, String) -> Unit) {
+                            fragment?.run { startLogin(this, loginListener) }
+                        }
 
-                    override fun navigateToSelectBoard(token: String, userId: String, listener: (String) -> Unit) {
-                        fragment?.run { startSelectBoard(this, token, userId, listener) }
-                    }
-                },
-                authInfoHolder = authInfoHolder
-            ))
+                        override fun navigateToSelectBoard(token: String, userId: String, listener: (String) -> Unit) {
+                            fragment?.run { startSelectBoard(this, token, userId, listener) }
+                        }
+                    },
+                    authInfoHolder = authInfoHolder
+                )
+            )
             replace(containerId, fragment)
         }
     }
 
     private fun startMainFlow(activity: AppCompatActivity, containerId: Int) {
-        activity.supportFragmentManager.commit {
-            replace(containerId, HomeFragment())
-        }
+        var fragment: Fragment? = null
+        fragment = HomeFragment.create(
+            HomeFragment.Dependencies(
+                tabs = listOf(InboxTab),
+                navigator = object : HomeNavigator {
+                    override fun navigateToTab(tab: Tab) {
+                        fragment?.run {
+                            this.childFragmentManager.commit {
+                                replace(R.id.container, InboxFragment.create())
+                            }
+                        }
+                    }
+                }
+            )
+        )
+        activity.supportFragmentManager.commit { replace(containerId, fragment) }
     }
 
     private fun startLogin(fragment: Fragment, loginListener: (String, String) -> Unit) {
@@ -68,7 +87,8 @@ object StartFlow {
                         userId = userId,
                         listener = listener
                     )
-                ))
+                )
+            )
         }
     }
 

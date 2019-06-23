@@ -7,4 +7,5 @@ dependencies {
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
     implementation Deps.androidx_core
+    implementation Deps.androidx_material
 }
