@@ -21,7 +21,7 @@ object Versions {
 
     val junit = "4.12"
 
-    val kotlin = "1.3.31"
+    val kotlin = "1.3.40"
     val gradleandroid = "3.5.0-beta04"
     val gradleversions = "0.21.0"
 
@@ -37,7 +37,7 @@ object Deps {
     val androidx_navigation_ui = "androidx.navigation:navigation-ui-ktx:${Versions.androidx_navigation}"
     val androidx_recyclerview = "androidx.recyclerview:recyclerview:${Versions.androidx_recyclerview}"
 
-    val kotilnStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
+    val kotilnStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
     val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     val coroutines_andorid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"

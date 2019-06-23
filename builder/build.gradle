@@ -3,6 +3,8 @@ apply plugin: 'kotlin-android'
 
 
 dependencies {
+    implementation project(':core:auth')
+
     implementation project(":feature:home")
     implementation project(":feature:login")
     implementation project(":feature:selectboard")

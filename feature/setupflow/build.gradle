@@ -3,6 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 dependencies {
+    implementation project(':core:auth')
+
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
     implementation Deps.androidx_core

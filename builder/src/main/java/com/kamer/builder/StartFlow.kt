@@ -9,6 +9,7 @@ import com.kamer.selectboard.SelectBoardFragment
 import com.kamer.setupflow.R
 import com.kamer.setupflow.SetupFlowNavigator
 import com.kamer.setupflow.SetupFragment
+import easydone.core.auth.AuthInfoHolder
 
 
 object StartFlow {
@@ -34,7 +35,8 @@ object StartFlow {
                     override fun navigateToSelectBoard(token: String, userId: String, listener: (String) -> Unit) {
                         fragment?.run { startSelectBoard(this, token, userId, listener) }
                     }
-                }
+                },
+                authInfoHolder = AuthInfoHolder()
             ))
             replace(containerId, fragment)
         }
