@@ -13,13 +13,34 @@ import com.kamer.selectboard.SelectBoardFragment
 import com.kamer.setupflow.R
 import com.kamer.setupflow.SetupFlowNavigator
 import com.kamer.setupflow.SetupFragment
+import com.kamer.trelloapi.TrelloApi
 import easydone.core.auth.AuthInfoHolder
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 object StartFlow {
 
     private lateinit var authInfoHolder: AuthInfoHolder
+    private val api: TrelloApi by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://trello.com/1/")
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(
+                        HttpLoggingInterceptor().apply {
+                            level = HttpLoggingInterceptor.Level.BODY
+                        }
+                    )
+                    .build()
+            )
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(TrelloApi::class.java)
+    }
 
     fun start(activity: AppCompatActivity, containerId: Int) {
         authInfoHolder = AuthInfoHolder(SharedPrefsKeyValueStorage(activity.application, "prefs"))
@@ -74,7 +95,7 @@ object StartFlow {
 
     private fun startLogin(fragment: Fragment, loginListener: (String, String) -> Unit) {
         fragment.childFragmentManager.commit {
-            replace(R.id.container, LoginFragment.create(LoginFragment.Dependencies(loginListener)))
+            replace(R.id.container, LoginFragment.create(LoginFragment.Dependencies(loginListener, api)))
         }
     }
 
@@ -85,7 +106,8 @@ object StartFlow {
                     SelectBoardFragment.Dependencies(
                         token = token,
                         userId = userId,
-                        listener = listener
+                        listener = listener,
+                        api = api
                     )
                 )
             )

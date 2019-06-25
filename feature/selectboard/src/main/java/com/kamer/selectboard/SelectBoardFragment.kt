@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kamer.trelloapi.TrelloApi
-import com.kamer.trelloapi.TrelloApiProvider
 import kotlinx.android.synthetic.main.fragment_select_board.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -20,10 +19,9 @@ class SelectBoardFragment : Fragment() {
     private lateinit var token: String
     private lateinit var userId: String
     private lateinit var listener: (String) -> Unit
+    private lateinit var api: TrelloApi
 
     private val adapter by lazy { BoardsAdapter { listener(it) } }
-
-    private val api: TrelloApi by lazy { TrelloApiProvider.api }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +52,8 @@ class SelectBoardFragment : Fragment() {
     data class Dependencies(
         val token: String,
         val userId: String,
-        val listener: (String) -> Unit
+        val listener: (String) -> Unit,
+        val api: TrelloApi
     )
 
     companion object {
@@ -62,6 +61,7 @@ class SelectBoardFragment : Fragment() {
             token = dependencies.token
             userId = dependencies.userId
             listener = dependencies.listener
+            api = dependencies.api
         }
     }
 

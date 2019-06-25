@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.kamer.trelloapi.TrelloApi
-import com.kamer.trelloapi.TrelloApiProvider
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,8 +20,7 @@ import kotlinx.coroutines.withContext
 class LoginFragment : Fragment() {
 
     private lateinit var listener: (String, String) -> Unit
-
-    private val api: TrelloApi by lazy { TrelloApiProvider.api }
+    private lateinit var api: TrelloApi
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,12 +65,14 @@ class LoginFragment : Fragment() {
     }
 
     data class Dependencies(
-        val loginListener: (String, String) -> Unit
+        val loginListener: (String, String) -> Unit,
+        val api: TrelloApi
     )
 
     companion object {
         fun create(dependencies: Dependencies): Fragment = LoginFragment().apply {
             listener = dependencies.loginListener
+            api = dependencies.api
         }
     }
 }

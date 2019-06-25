@@ -13,8 +13,12 @@ dependencies {
 
     implementation project(':library:keyvalue')
     implementation project(':library:keyvalue:sharedprefs')
+    implementation project(':library:trelloapi')
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
     implementation Deps.androidx_fragment
+    implementation Deps.retrofit
+    implementation Deps.retrofit_converter_gson
+    implementation Deps.retrofit_logging
 }
