@@ -2,6 +2,7 @@ package com.kamer.trelloapi
 
 import com.kamer.trelloapi.model.Board
 import com.kamer.trelloapi.model.Card
+import com.kamer.trelloapi.model.CardList
 import com.kamer.trelloapi.model.User
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -19,6 +20,9 @@ interface TrelloApi {
 
     @GET("members/{id}/boards")
     suspend fun boards(@Path("id") id: String, @Query("key") apiKey: String, @Query("token") token: String): List<Board>
+
+    @GET("boards/{id}/lists")
+    suspend fun lists(@Path("id") boardId: String, @Query("key") apiKey: String, @Query("token") token: String): List<CardList>
 
     @GET("boards/{id}/cards")
     suspend fun cards(@Path("id") boardId: String, @Query("key") apiKey: String, @Query("token") token: String): List<Card>

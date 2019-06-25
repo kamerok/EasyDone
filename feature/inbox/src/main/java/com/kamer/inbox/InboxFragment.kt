@@ -28,7 +28,8 @@ class InboxFragment : Fragment() {
         recyclerView.adapter = adapter
 
         GlobalScope.launch(Dispatchers.IO) {
-            val cards = api.cards(boardId, TrelloApi.API_KEY, token)
+            val lists = api.lists(boardId, TrelloApi.API_KEY, token)
+            val cards = api.cards(boardId, TrelloApi.API_KEY, token).filter { it.idList == lists.first().id }
             val tasks = cards.map { InboxTaskUiModel(it.id, it.name) }
             withContext(Dispatchers.Main) {
                 adapter.setData(tasks)
