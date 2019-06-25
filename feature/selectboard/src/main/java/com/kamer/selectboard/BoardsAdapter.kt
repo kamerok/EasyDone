@@ -35,7 +35,7 @@ class BoardsAdapter(
         private var item: BoardUiModel? = null
 
         init {
-            containerView.setOnClickListener { item?.run { listener(this.name) } }
+            containerView.setOnClickListener { item?.run { listener(this.id) } }
         }
 
         fun bind(item: BoardUiModel) {

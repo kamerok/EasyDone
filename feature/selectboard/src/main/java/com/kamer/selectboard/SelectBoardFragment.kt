@@ -40,7 +40,7 @@ class SelectBoardFragment : Fragment() {
         GlobalScope.launch(Dispatchers.IO) {
 
             val boards = api.boards(userId, TrelloApi.API_KEY, token)
-            val uiBoards = boards.map { BoardUiModel(it.name) }
+            val uiBoards = boards.map { BoardUiModel(it.id, it.name) }
 
             withContext(Dispatchers.Main) {
                 adapter.setData(uiBoards)

@@ -83,7 +83,15 @@ object StartFlow {
                     override fun navigateToTab(tab: Tab) {
                         fragment?.run {
                             this.childFragmentManager.commit {
-                                replace(R.id.container, InboxFragment.create())
+                                replace(
+                                    R.id.container, InboxFragment.create(
+                                        InboxFragment.Dependencies(
+                                            token = authInfoHolder.getToken()!!,
+                                            boardId = authInfoHolder.getBoardId()!!,
+                                            api = api
+                                        )
+                                    )
+                                )
                             }
                         }
                     }
