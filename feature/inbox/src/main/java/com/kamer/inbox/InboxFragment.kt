@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kamer.trelloapi.TrelloApi
+import kotlinx.android.synthetic.main.fragment_inbox.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class InboxFragment : Fragment() {
@@ -16,12 +19,20 @@ class InboxFragment : Fragment() {
     private lateinit var boardId: String
     private lateinit var api: TrelloApi
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-            = inflater.inflate(R.layout.fragment_inbox, container, false)
+    private val adapter by lazy { InboxAdapter { } }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        inflater.inflate(R.layout.fragment_inbox, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        GlobalScope.launch {
-            api.cards(boardId, TrelloApi.API_KEY, token)
+        recyclerView.adapter = adapter
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val cards = api.cards(boardId, TrelloApi.API_KEY, token)
+            val tasks = cards.map { InboxTaskUiModel(it.id, it.name) }
+            withContext(Dispatchers.Main) {
+                adapter.setData(tasks)
+            }
         }
     }
 
