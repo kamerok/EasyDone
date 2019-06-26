@@ -12,6 +12,7 @@ import com.kamer.setupflow.SetupFlowNavigator
 import com.kamer.setupflow.SetupFragment
 import com.kamer.trelloapi.TrelloApi
 import easydone.core.auth.AuthInfoHolder
+import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.todo.TodoFragment
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import okhttp3.OkHttpClient
@@ -61,7 +62,11 @@ object StartFlow {
                             fragment?.run { startLogin(this, loginListener) }
                         }
 
-                        override fun navigateToSelectBoard(token: String, userId: String, listener: (String) -> Unit) {
+                        override fun navigateToSelectBoard(
+                            token: String,
+                            userId: String,
+                            listener: (String) -> Unit
+                        ) {
                             fragment?.run { startSelectBoard(this, token, userId, listener) }
                         }
                     },
@@ -103,6 +108,23 @@ object StartFlow {
                             }
                         }
                     }
+
+                    override fun navigateToCreate() {
+                        fragment?.run {
+                            this.childFragmentManager.commit {
+                                replace(
+                                    R.id.container,
+                                    CreateTaskFragment.create(
+                                        CreateTaskFragment.Dependencies(
+                                            token = authInfoHolder.getToken()!!,
+                                            boardId = authInfoHolder.getBoardId()!!,
+                                            api = api
+                                        )
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
             )
         )
@@ -111,11 +133,19 @@ object StartFlow {
 
     private fun startLogin(fragment: Fragment, loginListener: (String, String) -> Unit) {
         fragment.childFragmentManager.commit {
-            replace(R.id.container, LoginFragment.create(LoginFragment.Dependencies(loginListener, api)))
+            replace(
+                R.id.container,
+                LoginFragment.create(LoginFragment.Dependencies(loginListener, api))
+            )
         }
     }
 
-    private fun startSelectBoard(fragment: Fragment, token: String, userId: String, listener: (String) -> Unit) {
+    private fun startSelectBoard(
+        fragment: Fragment,
+        token: String,
+        userId: String,
+        listener: (String) -> Unit
+    ) {
         fragment.childFragmentManager.commit {
             replace(
                 R.id.container, SelectBoardFragment.create(

@@ -22,6 +22,7 @@ class HomeFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        addTaskView.setOnClickListener { navigator.navigateToCreate() }
         bottomNavigationView.setBackgroundColor(Color.WHITE)
         bottomNavigationView.menu.apply {
             tabs.forEachIndexed { index, tab ->

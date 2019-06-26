@@ -22,7 +22,7 @@ object Versions {
     val junit = "4.12"
 
     val kotlin = "1.3.40"
-    val gradleandroid = "3.5.0-beta04"
+    val gradleandroid = "3.5.0-beta05"
     val gradleversions = "0.21.0"
 
 }
