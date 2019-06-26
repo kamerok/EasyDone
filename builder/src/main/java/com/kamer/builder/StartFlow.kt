@@ -3,10 +3,7 @@ package com.kamer.builder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.kamer.home.HomeFragment
-import com.kamer.home.HomeNavigator
-import com.kamer.home.InboxTab
-import com.kamer.home.Tab
+import com.kamer.home.*
 import com.kamer.inbox.InboxFragment
 import com.kamer.login.LoginFragment
 import com.kamer.selectboard.SelectBoardFragment
@@ -15,6 +12,7 @@ import com.kamer.setupflow.SetupFlowNavigator
 import com.kamer.setupflow.SetupFragment
 import com.kamer.trelloapi.TrelloApi
 import easydone.core.auth.AuthInfoHolder
+import easydone.feature.todo.TodoFragment
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -78,19 +76,29 @@ object StartFlow {
         var fragment: Fragment? = null
         fragment = HomeFragment.create(
             HomeFragment.Dependencies(
-                tabs = listOf(InboxTab),
+                tabs = listOf(InboxTab, TodoTab),
                 navigator = object : HomeNavigator {
                     override fun navigateToTab(tab: Tab) {
                         fragment?.run {
                             this.childFragmentManager.commit {
                                 replace(
-                                    R.id.container, InboxFragment.create(
-                                        InboxFragment.Dependencies(
-                                            token = authInfoHolder.getToken()!!,
-                                            boardId = authInfoHolder.getBoardId()!!,
-                                            api = api
+                                    R.id.container,
+                                    when (tab) {
+                                        InboxTab -> InboxFragment.create(
+                                            InboxFragment.Dependencies(
+                                                token = authInfoHolder.getToken()!!,
+                                                boardId = authInfoHolder.getBoardId()!!,
+                                                api = api
+                                            )
                                         )
-                                    )
+                                        TodoTab -> TodoFragment.create(
+                                            TodoFragment.Dependencies(
+                                                token = authInfoHolder.getToken()!!,
+                                                boardId = authInfoHolder.getBoardId()!!,
+                                                api = api
+                                            )
+                                        )
+                                    }
                                 )
                             }
                         }

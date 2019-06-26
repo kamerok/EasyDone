@@ -10,6 +10,7 @@ include ':feature:inbox'
 include ':feature:login'
 include ':feature:selectboard'
 include ':feature:setupflow'
+include ':feature:todo'
 
 include ':library:keyvalue'
 include ':library:keyvalue:sharedprefs'

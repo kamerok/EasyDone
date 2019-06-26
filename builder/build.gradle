@@ -10,6 +10,7 @@ dependencies {
     implementation project(':feature:login')
     implementation project(':feature:selectboard')
     implementation project(':feature:setupflow')
+    implementation project(':feature:todo')
 
     implementation project(':library:keyvalue')
     implementation project(':library:keyvalue:sharedprefs')
