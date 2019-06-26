@@ -5,6 +5,7 @@ import com.kamer.trelloapi.model.Card
 import com.kamer.trelloapi.model.CardList
 import com.kamer.trelloapi.model.User
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -26,5 +27,14 @@ interface TrelloApi {
 
     @GET("boards/{id}/cards")
     suspend fun cards(@Path("id") boardId: String, @Query("key") apiKey: String, @Query("token") token: String): List<Card>
+
+    @POST("cards")
+    suspend fun postCard(
+        @Query("idList") listId: String,
+        @Query("name") name: String,
+        @Query("pos") pos: String = "bottom",
+        @Query("key") apiKey: String,
+        @Query("token") token: String
+    )
 
 }

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 dependencies {
     implementation project(':library:trelloapi')
@@ -11,6 +12,4 @@ dependencies {
     implementation Deps.androidx_recyclerview
     implementation Deps.coroutines_core
     implementation Deps.coroutines_andorid
-
-    testImplementation Deps.junit
 }

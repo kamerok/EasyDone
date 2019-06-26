@@ -39,7 +39,7 @@ class LoginFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     loginButton.isVisible = false
                     webView.isVisible = true
-                    webView.loadUrl("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read&response_type=token&key=${TrelloApi.API_KEY}\n")
+                    webView.loadUrl("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${TrelloApi.API_KEY}\n")
                 }
             }
         }
