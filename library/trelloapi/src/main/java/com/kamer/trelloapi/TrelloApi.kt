@@ -29,7 +29,14 @@ interface TrelloApi {
     suspend fun card(@Path("id") id: String, @Query("key") apiKey: String, @Query("token") token: String): Card
 
     @PUT("cards/{id}")
-    suspend fun editCard(@Path("id") id: String, @Query("name") name: String, @Query("key") apiKey: String, @Query("token") token: String): Card
+    suspend fun editCard(
+        @Path("id") id: String,
+        @Query("key") apiKey: String,
+        @Query("token") token: String,
+        @Query("name") name: String? = null,
+        @Query("closed") closed: Boolean? = null,
+        @Query("idList") listId: String? = null
+    ): Card
 
     @POST("cards")
     suspend fun postCard(
