@@ -1,4 +1,4 @@
-package com.kamer.setupflow
+package easydone.feature.setupflow
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.kamer.setupflow.R
 import easydone.core.auth.AuthInfoHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

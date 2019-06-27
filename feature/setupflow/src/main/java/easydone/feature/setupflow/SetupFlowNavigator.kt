@@ -1,4 +1,4 @@
-package com.kamer.setupflow
+package easydone.feature.setupflow
 
 
 interface SetupFlowNavigator {

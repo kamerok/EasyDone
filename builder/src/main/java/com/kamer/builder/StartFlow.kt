@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import easydone.feature.inbox.InboxFragment
 import easydone.feature.inbox.InboxNavigator
-import com.kamer.login.LoginFragment
-import com.kamer.selectboard.SelectBoardFragment
+import easydone.feature.login.LoginFragment
+import easydone.feature.selectboard.SelectBoardFragment
 import com.kamer.setupflow.R
-import com.kamer.setupflow.SetupFlowNavigator
-import com.kamer.setupflow.SetupFragment
+import easydone.feature.setupflow.SetupFlowNavigator
+import easydone.feature.setupflow.SetupFragment
 import com.kamer.trelloapi.TrelloApi
 import easydone.core.auth.AuthInfoHolder
 import easydone.feature.createtask.CreateTaskFragment

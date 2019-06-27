@@ -1,21 +1,28 @@
-package com.kamer.selectboard
+package easydone.feature.selectboard
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.kamer.selectboard.R
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_board.*
 
 
-class BoardsAdapter(
+internal class BoardsAdapter(
     private val listener: (String) -> Unit
 ) : RecyclerView.Adapter<BoardsAdapter.ViewHolder>() {
 
     private var data = mutableListOf<BoardUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_board, parent, false), listener)
+        ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_board,
+                parent,
+                false
+            ), listener
+        )
 
     override fun getItemCount(): Int = data.size
 
