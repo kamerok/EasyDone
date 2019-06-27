@@ -1,10 +1,11 @@
-package com.kamer.inbox
+package easydone.feature.inbox
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.kamer.inbox.R
 import com.kamer.trelloapi.TrelloApi
 import kotlinx.android.synthetic.main.fragment_inbox.*
 import kotlinx.coroutines.Dispatchers

@@ -3,8 +3,8 @@ package com.kamer.builder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.kamer.inbox.InboxFragment
-import com.kamer.inbox.InboxNavigator
+import easydone.feature.inbox.InboxFragment
+import easydone.feature.inbox.InboxNavigator
 import com.kamer.login.LoginFragment
 import com.kamer.selectboard.SelectBoardFragment
 import com.kamer.setupflow.R
@@ -97,7 +97,8 @@ object StartFlow {
                                                 token = authInfoHolder.getToken()!!,
                                                 boardId = authInfoHolder.getBoardId()!!,
                                                 api = api,
-                                                navigator = object : InboxNavigator {
+                                                navigator = object :
+                                                    InboxNavigator {
                                                     override fun navigateToTask(id: String) {
                                                         childFragmentManager.commit {
                                                             replace(

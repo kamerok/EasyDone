@@ -1,4 +1,4 @@
-package com.kamer.inbox
+package easydone.feature.inbox
 
 
 interface InboxNavigator {
