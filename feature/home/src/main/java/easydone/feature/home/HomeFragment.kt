@@ -1,4 +1,4 @@
-package com.kamer.home
+package easydone.feature.home
 
 import android.graphics.Color
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.kamer.home.R
 import kotlinx.android.synthetic.main.fragment_home.*
 
 

@@ -3,7 +3,6 @@ package com.kamer.builder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.kamer.home.*
 import com.kamer.inbox.InboxFragment
 import com.kamer.inbox.InboxNavigator
 import com.kamer.login.LoginFragment
@@ -17,6 +16,7 @@ import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.todo.TodoFragment
 import easydone.feature.todo.TodoNavigator
+import easydone.feature.home.*
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
