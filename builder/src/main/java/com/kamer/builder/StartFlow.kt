@@ -119,9 +119,7 @@ object StartFlow {
                                         )
                                         TodoTab -> TodoFragment.create(
                                             TodoFragment.Dependencies(
-                                                token = authInfoHolder.getToken()!!,
-                                                boardId = authInfoHolder.getBoardId()!!,
-                                                api = api,
+                                                repository,
                                                 navigator = object : TodoNavigator {
                                                     override fun navigateToTask(id: String) {
                                                         childFragmentManager.commit {

@@ -12,11 +12,12 @@ class DomainRepository(
     private val trelloApi: TrelloApi
 ) {
 
-    fun getTasks(): Flow<List<Task>> = flow {
+    fun getTasks(isInbox: Boolean): Flow<List<Task>> = flow {
         val boardId = authInfoHolder.getBoardId()!!
         val token = authInfoHolder.getToken()!!
         val lists = trelloApi.lists(boardId, TrelloApi.API_KEY, token)
-        val cards = trelloApi.cards(boardId, TrelloApi.API_KEY, token).filter { it.idList == lists.first().id }
+        val listId = lists[if (isInbox) 0 else 1].id
+        val cards = trelloApi.cards(boardId, TrelloApi.API_KEY, token).filter { it.idList == listId }
         emit(cards.map { Task(it.id, it.name) })
     }
 

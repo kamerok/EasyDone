@@ -33,7 +33,7 @@ class InboxFragment : Fragment() {
         recyclerView.adapter = adapter
 
         GlobalScope.launch(Dispatchers.IO) {
-            repository.getTasks().collect { tasks ->
+            repository.getTasks(true).collect { tasks ->
                 val uiTasks = tasks.map { InboxTaskUiModel(it.id, it.title) }
                 withContext(Dispatchers.Main) {
                     adapter.setData(uiTasks)

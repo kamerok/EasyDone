@@ -5,19 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import easydone.library.trelloapi.TrelloApi
+import easydone.core.domain.DomainRepository
 import kotlinx.android.synthetic.main.fragment_todo.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
 class TodoFragment : Fragment() {
 
-    private lateinit var token: String
-    private lateinit var boardId: String
-    private lateinit var api: TrelloApi
+    private lateinit var repository: DomainRepository
     private lateinit var navigator: TodoNavigator
 
     private val adapter by lazy { TodoAdapter { navigator.navigateToTask(it) } }
@@ -29,27 +28,23 @@ class TodoFragment : Fragment() {
         recyclerView.adapter = adapter
 
         GlobalScope.launch(Dispatchers.IO) {
-            val lists = api.lists(boardId, TrelloApi.API_KEY, token)
-            val cards = api.cards(boardId, TrelloApi.API_KEY, token).filter { it.idList == lists[1].id }
-            val tasks = cards.map { TodoTaskUiModel(it.id, it.name) }
-            withContext(Dispatchers.Main) {
-                adapter.setData(tasks)
+            repository.getTasks(false).collect { tasks ->
+                val uiTasks = tasks.map { TodoTaskUiModel(it.id, it.title) }
+                withContext(Dispatchers.Main) {
+                    adapter.setData(uiTasks)
+                }
             }
         }
     }
 
     data class Dependencies(
-        var token: String,
-        var boardId: String,
-        val api: TrelloApi,
+        val repository: DomainRepository,
         val navigator: TodoNavigator
     )
 
     companion object {
         fun create(dependencies: Dependencies): Fragment = TodoFragment().apply {
-            token = dependencies.token
-            boardId = dependencies.boardId
-            api = dependencies.api
+            repository = dependencies.repository
             navigator = dependencies.navigator
         }
     }
