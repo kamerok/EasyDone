@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.kamer.login.R
-import com.kamer.trelloapi.TrelloApi
+import easydone.library.trelloapi.TrelloApi
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

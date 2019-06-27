@@ -1,4 +1,4 @@
-package com.kamer.trelloapi.model
+package easydone.library.trelloapi.model
 
 
 data class CardList(

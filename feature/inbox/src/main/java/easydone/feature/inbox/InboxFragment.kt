@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kamer.inbox.R
-import com.kamer.trelloapi.TrelloApi
+import easydone.library.trelloapi.TrelloApi
 import kotlinx.android.synthetic.main.fragment_inbox.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

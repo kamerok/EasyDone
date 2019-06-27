@@ -1,9 +1,9 @@
-package com.kamer.trelloapi
+package easydone.library.trelloapi
 
-import com.kamer.trelloapi.model.Board
-import com.kamer.trelloapi.model.Card
-import com.kamer.trelloapi.model.CardList
-import com.kamer.trelloapi.model.User
+import easydone.library.trelloapi.model.Board
+import easydone.library.trelloapi.model.Card
+import easydone.library.trelloapi.model.CardList
+import easydone.library.trelloapi.model.User
 import retrofit2.http.*
 
 

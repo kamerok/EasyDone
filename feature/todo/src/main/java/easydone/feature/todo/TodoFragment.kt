@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.kamer.trelloapi.TrelloApi
+import easydone.library.trelloapi.TrelloApi
 import kotlinx.android.synthetic.main.fragment_todo.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.kamer.trelloapi.TrelloApi
+import easydone.library.trelloapi.TrelloApi
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
