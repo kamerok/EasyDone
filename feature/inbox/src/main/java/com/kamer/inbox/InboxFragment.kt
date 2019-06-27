@@ -18,8 +18,9 @@ class InboxFragment : Fragment() {
     private lateinit var token: String
     private lateinit var boardId: String
     private lateinit var api: TrelloApi
+    private lateinit var navigator: InboxNavigator
 
-    private val adapter by lazy { InboxAdapter { } }
+    private val adapter by lazy { InboxAdapter { navigator.navigateToTask(it) } }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_inbox, container, false)
@@ -40,7 +41,8 @@ class InboxFragment : Fragment() {
     data class Dependencies(
         var token: String,
         var boardId: String,
-        val api: TrelloApi
+        val api: TrelloApi,
+        val navigator: InboxNavigator
     )
 
     companion object {
@@ -48,6 +50,7 @@ class InboxFragment : Fragment() {
             token = dependencies.token
             boardId = dependencies.boardId
             api = dependencies.api
+            navigator = dependencies.navigator
         }
     }
 

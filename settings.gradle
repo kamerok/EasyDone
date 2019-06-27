@@ -6,6 +6,7 @@ include ':builder'
 include ':core:auth'
 
 include ':feature:createtask'
+include ':feature:edittask'
 include ':feature:home'
 include ':feature:inbox'
 include ':feature:login'

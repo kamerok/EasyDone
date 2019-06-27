@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.kamer.home.*
 import com.kamer.inbox.InboxFragment
+import com.kamer.inbox.InboxNavigator
 import com.kamer.login.LoginFragment
 import com.kamer.selectboard.SelectBoardFragment
 import com.kamer.setupflow.R
@@ -13,6 +14,7 @@ import com.kamer.setupflow.SetupFragment
 import com.kamer.trelloapi.TrelloApi
 import easydone.core.auth.AuthInfoHolder
 import easydone.feature.createtask.CreateTaskFragment
+import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.todo.TodoFragment
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import okhttp3.OkHttpClient
@@ -93,7 +95,23 @@ object StartFlow {
                                             InboxFragment.Dependencies(
                                                 token = authInfoHolder.getToken()!!,
                                                 boardId = authInfoHolder.getBoardId()!!,
-                                                api = api
+                                                api = api,
+                                                navigator = object : InboxNavigator {
+                                                    override fun navigateToTask(id: String) {
+                                                        childFragmentManager.commit {
+                                                            replace(
+                                                                R.id.container,
+                                                                EditTaskFragment.create(
+                                                                    EditTaskFragment.Dependencies(
+                                                                        id = id,
+                                                                        token = authInfoHolder.getToken()!!,
+                                                                        api = api
+                                                                    )
+                                                                )
+                                                            )
+                                                        }
+                                                    }
+                                                }
                                             )
                                         )
                                         TodoTab -> TodoFragment.create(
