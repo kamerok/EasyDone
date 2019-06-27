@@ -4,6 +4,7 @@ include ':app'
 include ':builder'
 
 include ':core:auth'
+include ':core:domain'
 
 include ':feature:createtask'
 include ':feature:edittask'
