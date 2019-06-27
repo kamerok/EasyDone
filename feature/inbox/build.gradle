@@ -7,7 +7,7 @@ androidExtensions {
 }
 
 dependencies {
-    implementation project(':library:trelloapi')
+    implementation project(':core:domain')
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
@@ -15,5 +15,4 @@ dependencies {
     implementation Deps.androidx_core
     implementation Deps.androidx_recyclerview
     implementation Deps.coroutines_core
-    implementation Deps.coroutines_andorid
 }

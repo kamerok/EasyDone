@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.kamer.setupflow.R
 import easydone.core.auth.AuthInfoHolder
+import easydone.core.domain.DomainRepository
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.home.*
@@ -43,6 +44,7 @@ object StartFlow {
             .build()
             .create(TrelloApi::class.java)
     }
+    private val repository by lazy { DomainRepository(authInfoHolder, api) }
 
     fun start(activity: AppCompatActivity, containerId: Int) {
         authInfoHolder = AuthInfoHolder(SharedPrefsKeyValueStorage(activity.application, "prefs"))
@@ -94,9 +96,7 @@ object StartFlow {
                                     when (tab) {
                                         InboxTab -> InboxFragment.create(
                                             InboxFragment.Dependencies(
-                                                token = authInfoHolder.getToken()!!,
-                                                boardId = authInfoHolder.getBoardId()!!,
-                                                api = api,
+                                                repository,
                                                 navigator = object :
                                                     InboxNavigator {
                                                     override fun navigateToTask(id: String) {
