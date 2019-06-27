@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.kamer.trelloapi.TrelloApi
 import kotlinx.android.synthetic.main.fragment_edit_task.*
@@ -33,6 +34,16 @@ class EditTaskFragment : Fragment() {
                 titleView.setText(card.name)
             }
         }
+        saveView.setOnClickListener {
+            GlobalScope.launch(Dispatchers.IO) {
+                api.editCard(id, titleView.text.toString(), TrelloApi.API_KEY, token)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        archiveView.setOnClickListener {  }
+        moveView.setOnClickListener {  }
     }
 
     data class Dependencies(
