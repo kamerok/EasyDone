@@ -7,6 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kamer.trelloapi.TrelloApi
 import kotlinx.android.synthetic.main.fragment_edit_task.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class EditTaskFragment : Fragment() {
@@ -23,7 +27,12 @@ class EditTaskFragment : Fragment() {
         inflater.inflate(R.layout.fragment_edit_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        titleView.setText(id)
+        GlobalScope.launch(Dispatchers.IO) {
+            val card = api.card(id, TrelloApi.API_KEY, token)
+            withContext(Dispatchers.Main) {
+                titleView.setText(card.name)
+            }
+        }
     }
 
     data class Dependencies(

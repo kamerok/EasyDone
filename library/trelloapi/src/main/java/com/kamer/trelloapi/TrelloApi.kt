@@ -28,6 +28,9 @@ interface TrelloApi {
     @GET("boards/{id}/cards")
     suspend fun cards(@Path("id") boardId: String, @Query("key") apiKey: String, @Query("token") token: String): List<Card>
 
+    @GET("cards/{id}")
+    suspend fun card(@Path("id") id: String, @Query("key") apiKey: String, @Query("token") token: String): Card
+
     @POST("cards")
     suspend fun postCard(
         @Query("idList") listId: String,
