@@ -2,4 +2,6 @@ apply plugin: 'kotlin'
 
 dependencies {
     implementation Deps.kotilnStdlib
+
+    implementation Deps.coroutines_core
 }

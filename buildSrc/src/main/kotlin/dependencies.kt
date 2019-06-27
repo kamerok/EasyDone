@@ -8,16 +8,16 @@ object Config {
 
 object Versions {
     val androidx_appcompat = "1.1.0-beta01"
-    val androidx_core = "1.2.0-alpha01"
+    val androidx_core = "1.2.0-alpha02"
     val androidx_recyclerview = "1.0.0"
     val androidx_constraintLayout = "1.1.3"
     val androidx_navigation = "2.1.0-alpha05"
     val androidx_fragment = "1.1.0-beta01"
-    val material = "1.1.0-alpha04"
+    val material = "1.1.0-alpha07"
 
-    val coroutines = "1.1.1"
+    val coroutines = "1.3.0-M2"
     val retrofit = "2.6.0"
-    val retrofit_logging = "3.14.2"
+    val retrofit_logging = "4.0.0"
 
     val junit = "4.12"
 
