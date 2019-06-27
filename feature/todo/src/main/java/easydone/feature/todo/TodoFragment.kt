@@ -18,8 +18,9 @@ class TodoFragment : Fragment() {
     private lateinit var token: String
     private lateinit var boardId: String
     private lateinit var api: TrelloApi
+    private lateinit var navigator: TodoNavigator
 
-    private val adapter by lazy { TodoAdapter { } }
+    private val adapter by lazy { TodoAdapter { navigator.navigateToTask(it) } }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_todo, container, false)
@@ -40,7 +41,8 @@ class TodoFragment : Fragment() {
     data class Dependencies(
         var token: String,
         var boardId: String,
-        val api: TrelloApi
+        val api: TrelloApi,
+        val navigator: TodoNavigator
     )
 
     companion object {
@@ -48,6 +50,7 @@ class TodoFragment : Fragment() {
             token = dependencies.token
             boardId = dependencies.boardId
             api = dependencies.api
+            navigator = dependencies.navigator
         }
     }
 

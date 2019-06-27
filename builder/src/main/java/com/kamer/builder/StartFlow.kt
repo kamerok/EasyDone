@@ -16,6 +16,7 @@ import easydone.core.auth.AuthInfoHolder
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.todo.TodoFragment
+import easydone.feature.todo.TodoNavigator
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -118,7 +119,23 @@ object StartFlow {
                                             TodoFragment.Dependencies(
                                                 token = authInfoHolder.getToken()!!,
                                                 boardId = authInfoHolder.getBoardId()!!,
-                                                api = api
+                                                api = api,
+                                                navigator = object : TodoNavigator {
+                                                    override fun navigateToTask(id: String) {
+                                                        childFragmentManager.commit {
+                                                            replace(
+                                                                R.id.container,
+                                                                EditTaskFragment.create(
+                                                                    EditTaskFragment.Dependencies(
+                                                                        id = id,
+                                                                        token = authInfoHolder.getToken()!!,
+                                                                        api = api
+                                                                    )
+                                                                )
+                                                            )
+                                                        }
+                                                    }
+                                                }
                                             )
                                         )
                                     }
