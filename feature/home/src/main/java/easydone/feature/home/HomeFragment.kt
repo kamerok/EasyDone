@@ -7,6 +7,8 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.kamer.home.R
 import kotlinx.android.synthetic.main.fragment_home.*
 
@@ -14,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 class HomeFragment : Fragment() {
 
     private lateinit var tabs: List<Tab>
+    private lateinit var fragmentFactory: (Int) -> Fragment
     private lateinit var navigator: HomeNavigator
 
     override fun onCreateView(
@@ -24,6 +27,16 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
+        viewPager.adapter = object : FragmentStateAdapter(this) {
+            override fun getItem(position: Int): Fragment = fragmentFactory(position)
+
+            override fun getItemCount(): Int = tabs.size
+        }
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                bottomNavigationView.selectedItemId = position
+            }
+        })
         bottomNavigationView.setBackgroundColor(Color.WHITE)
         bottomNavigationView.menu.apply {
             tabs.forEachIndexed { index, tab ->
@@ -31,20 +44,21 @@ class HomeFragment : Fragment() {
             }
         }
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            navigator.navigateToTab(tabs[item.itemId])
+            viewPager.currentItem = item.itemId
             true
         }
-        navigator.navigateToTab(tabs.first())
     }
 
     data class Dependencies(
         val tabs: List<Tab>,
+        val fragmentFactory: (Int) -> Fragment,
         val navigator: HomeNavigator
     )
 
     companion object {
         fun create(dependencies: Dependencies): Fragment = HomeFragment().apply {
             tabs = dependencies.tabs
+            fragmentFactory = dependencies.fragmentFactory
             navigator = dependencies.navigator
         }
     }

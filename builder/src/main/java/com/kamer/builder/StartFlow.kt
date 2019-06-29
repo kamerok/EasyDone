@@ -7,8 +7,10 @@ import com.kamer.setupflow.R
 import easydone.core.auth.AuthInfoHolder
 import easydone.core.domain.DomainRepository
 import easydone.feature.createtask.CreateTaskFragment
-import easydone.feature.edittask.EditTaskFragment
-import easydone.feature.home.*
+import easydone.feature.home.HomeFragment
+import easydone.feature.home.HomeNavigator
+import easydone.feature.home.InboxTab
+import easydone.feature.home.TodoTab
 import easydone.feature.inbox.InboxFragment
 import easydone.feature.inbox.InboxNavigator
 import easydone.feature.login.LoginFragment
@@ -87,79 +89,34 @@ object StartFlow {
         fragment = HomeFragment.create(
             HomeFragment.Dependencies(
                 tabs = listOf(InboxTab, TodoTab),
-                navigator = object : HomeNavigator {
-                    override fun navigateToTab(tab: Tab) {
-                        fragment?.run {
-                            this.childFragmentManager.commit {
-                                replace(
-                                    R.id.container,
-                                    when (tab) {
-                                        InboxTab -> InboxFragment.create(
-                                            InboxFragment.Dependencies(
-                                                repository,
-                                                navigator = object :
-                                                    InboxNavigator {
-                                                    override fun navigateToTask(id: String) {
-                                                        childFragmentManager.commit {
-                                                            replace(
-                                                                R.id.container,
-                                                                EditTaskFragment.create(
-                                                                    EditTaskFragment.Dependencies(
-                                                                        id = id,
-                                                                        boardId = authInfoHolder.getBoardId()!!,
-                                                                        token = authInfoHolder.getToken()!!,
-                                                                        api = api
-                                                                    )
-                                                                )
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            )
-                                        )
-                                        TodoTab -> TodoFragment.create(
-                                            TodoFragment.Dependencies(
-                                                repository,
-                                                navigator = object : TodoNavigator {
-                                                    override fun navigateToTask(id: String) {
-                                                        childFragmentManager.commit {
-                                                            replace(
-                                                                R.id.container,
-                                                                EditTaskFragment.create(
-                                                                    EditTaskFragment.Dependencies(
-                                                                        id = id,
-                                                                        boardId = authInfoHolder.getBoardId()!!,
-                                                                        token = authInfoHolder.getToken()!!,
-                                                                        api = api
-                                                                    )
-                                                                )
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            )
-                                        )
+                fragmentFactory = { position ->
+                    when (position) {
+                        0 -> InboxFragment.create(
+                            InboxFragment.Dependencies(
+                                repository,
+                                navigator = object :
+                                    InboxNavigator {
+                                    override fun navigateToTask(id: String) {
+                                        startViewTask(id)
                                     }
-                                )
-                            }
-                        }
+                                }
+                            )
+                        )
+                        else -> TodoFragment.create(
+                            TodoFragment.Dependencies(
+                                repository,
+                                navigator = object : TodoNavigator {
+                                    override fun navigateToTask(id: String) {
+                                        startViewTask(id)
+                                    }
+                                }
+                            )
+                        )
                     }
-
+                },
+                navigator = object : HomeNavigator {
                     override fun navigateToCreate() {
-                        fragment?.run {
-                            this.childFragmentManager.commit {
-                                replace(
-                                    R.id.container,
-                                    CreateTaskFragment.create(
-                                        CreateTaskFragment.Dependencies(
-                                            token = authInfoHolder.getToken()!!,
-                                            boardId = authInfoHolder.getBoardId()!!,
-                                            api = api
-                                        )
-                                    )
-                                )
-                            }
-                        }
+                        startCreateTask()
                     }
                 }
             )
@@ -167,7 +124,10 @@ object StartFlow {
         activity.supportFragmentManager.commit { replace(containerId, fragment) }
     }
 
-    private fun startLogin(fragment: Fragment, loginListener: (String, String) -> Unit) {
+    private fun startLogin(
+        fragment: Fragment,
+        loginListener: (String, String) -> Unit
+    ) {
         fragment.childFragmentManager.commit {
             replace(
                 R.id.container,
@@ -194,6 +154,39 @@ object StartFlow {
                 )
             )
         }
+    }
+
+    private fun startViewTask(id: String) {
+        /*fragment!!.childFragmentManager.commit {
+            replace(
+                R.id.container,
+                EditTaskFragment.create(
+                    EditTaskFragment.Dependencies(
+                        id = id,
+                        boardId = authInfoHolder.getBoardId()!!,
+                        token = authInfoHolder.getToken()!!,
+                        api = api
+                    )
+                )
+            )
+        }*/
+    }
+
+    private fun startCreateTask() {
+        /*fragment?.run {
+            this.childFragmentManager.commit {
+                replace(
+                    R.id.container,
+                    CreateTaskFragment.create(
+                        CreateTaskFragment.Dependencies(
+                            token = authInfoHolder.getToken()!!,
+                            boardId = authInfoHolder.getBoardId()!!,
+                            api = api
+                        )
+                    )
+                )
+            }
+        }*/
     }
 
 }
