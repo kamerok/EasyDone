@@ -145,6 +145,7 @@ object StartFlow {
                         )
                     }
                 },
+                domainRepository = repository,
                 navigator = object : HomeNavigator {
                     override fun navigateToCreate() {
                         startCreateTask()

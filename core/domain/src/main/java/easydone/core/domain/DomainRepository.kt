@@ -21,21 +21,25 @@ class DomainRepository(
     private val channel: BroadcastChannel<Pair<List<Card>, List<CardList>>> =
         ConflatedBroadcastChannel()
 
-    init {
+    fun getTasks(isInbox: Boolean): Flow<List<Task>> = flow {
+        channel.consumeEach { (cards, lists) ->
+            val listId = lists[if (isInbox) 0 else 1].id
+            val filteredCards = cards.filter { it.idList == listId }
+            emit(filteredCards.map { Task(it.id, it.name) })
+        }
+    }
+
+    fun refresh() {
+        loadData()
+    }
+
+    private fun loadData() {
         GlobalScope.launch(Dispatchers.IO) {
             val boardId = authInfoHolder.getBoardId()!!
             val token = authInfoHolder.getToken()!!
             val lists = async { trelloApi.lists(boardId, TrelloApi.API_KEY, token) }
             val cards = async { trelloApi.cards(boardId, TrelloApi.API_KEY, token) }
             channel.send(cards.await() to lists.await())
-        }
-    }
-
-    fun getTasks(isInbox: Boolean): Flow<List<Task>> = flow {
-        channel.consumeEach { (cards, lists) ->
-            val listId = lists[if (isInbox) 0 else 1].id
-            val filteredCards = cards.filter { it.idList == listId }
-            emit(filteredCards.map { Task(it.id, it.name) })
         }
     }
 
