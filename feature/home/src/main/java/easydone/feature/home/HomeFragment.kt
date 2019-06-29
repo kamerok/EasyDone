@@ -21,6 +21,11 @@ class HomeFragment : Fragment() {
     private lateinit var domainRepository: DomainRepository
     private lateinit var navigator: HomeNavigator
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        domainRepository.refresh()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,7 +33,6 @@ class HomeFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        domainRepository.refresh()
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         refreshView.setOnClickListener { domainRepository.refresh() }
         viewPager.adapter = object : FragmentStateAdapter(this) {
