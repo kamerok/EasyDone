@@ -1,7 +1,9 @@
 package com.kamer.builder
 
 import android.app.Application
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
 import easydone.core.auth.AuthInfoHolder
 import easydone.core.domain.DomainRepository
@@ -56,6 +58,20 @@ object StartFlow {
     fun start(activity: AppCompatActivity, containerId: Int) {
         application = activity.application
         navigator = Navigator(activity.supportFragmentManager, containerId)
+        activity.onBackPressedDispatcher.addCallback(
+            activity,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (activity.supportFragmentManager.backStackEntryCount > 0) {
+                        activity.supportFragmentManager.popBackStack()
+                    } else {
+                        isEnabled = false
+                        activity.onBackPressed()
+                        isEnabled = true
+                    }
+                }
+            }
+        )
 
         if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
             startMainFlow()
@@ -65,13 +81,14 @@ object StartFlow {
     }
 
     private fun startSetupFlow() {
-        var localNavigator: Navigator? = null
-        val fragment = SetupFragment.create(
+        var fragment: Fragment? = null
+        val localNavigator: Navigator by lazy { Navigator(fragment!!.childFragmentManager, R.id.container) }
+        fragment = SetupFragment.create(
             SetupFragment.Dependencies(
                 finishSetupListener = { startMainFlow() },
                 navigator = object : SetupFlowNavigator {
                     override fun navigateToLogin(loginListener: (String, String) -> Unit) {
-                        localNavigator?.openScreen(
+                        localNavigator.openScreen(
                             LoginFragment.create(LoginFragment.Dependencies(loginListener, api))
                         )
                     }
@@ -81,7 +98,7 @@ object StartFlow {
                         userId: String,
                         listener: (String) -> Unit
                     ) {
-                        localNavigator?.openScreen(
+                        localNavigator.openScreen(
                             SelectBoardFragment.create(
                                 SelectBoardFragment.Dependencies(
                                     token = token,
@@ -97,7 +114,6 @@ object StartFlow {
             )
         )
         navigator.openScreen(fragment)
-        localNavigator = Navigator(fragment.childFragmentManager, R.id.container)
     }
 
     private fun startMainFlow() {
@@ -147,7 +163,8 @@ object StartFlow {
                     token = authInfoHolder.getToken()!!,
                     api = api
                 )
-            )
+            ),
+            true
         )
     }
 
@@ -159,7 +176,8 @@ object StartFlow {
                     boardId = authInfoHolder.getBoardId()!!,
                     api = api
                 )
-            )
+            ),
+            true
         )
     }
 
