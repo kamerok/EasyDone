@@ -22,7 +22,11 @@ class SetupFragment : Fragment() {
 
     private var isLogin = true
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_setup, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,17 +36,19 @@ class SetupFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (!isLogin) {
-                    startLogin()
-                } else {
-                    isEnabled = false
-                    requireActivity().onBackPressed()
-                    isEnabled = true
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (!isLogin) {
+                        startLogin()
+                    } else {
+                        isEnabled = false
+                        requireActivity().onBackPressed()
+                        isEnabled = true
+                    }
                 }
-            }
-        })
+            })
     }
 
     private fun startLogin() {
@@ -57,7 +63,9 @@ class SetupFragment : Fragment() {
         navigator.navigateToSelectBoard(token, userId) { boardId ->
             GlobalScope.launch {
                 saveData(token, boardId)
-                finishListener()
+                withContext(Dispatchers.Main) {
+                    finishListener()
+                }
             }
         }
     }

@@ -1,12 +1,12 @@
 package com.kamer.builder
 
+import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import com.kamer.setupflow.R
 import easydone.core.auth.AuthInfoHolder
 import easydone.core.domain.DomainRepository
 import easydone.feature.createtask.CreateTaskFragment
+import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.home.InboxTab
@@ -29,7 +29,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object StartFlow {
 
-    private lateinit var authInfoHolder: AuthInfoHolder
+    private lateinit var navigator: Navigator
+
+    private lateinit var application: Application
+    private val authInfoHolder by lazy {
+        AuthInfoHolder(SharedPrefsKeyValueStorage(application, "prefs"))
+    }
     private val api: TrelloApi by lazy {
         Retrofit.Builder()
             .baseUrl("https://trello.com/1/")
@@ -49,44 +54,54 @@ object StartFlow {
     private val repository by lazy { DomainRepository(authInfoHolder, api) }
 
     fun start(activity: AppCompatActivity, containerId: Int) {
-        authInfoHolder = AuthInfoHolder(SharedPrefsKeyValueStorage(activity.application, "prefs"))
+        application = activity.application
+        navigator = Navigator(activity.supportFragmentManager, containerId)
 
         if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
-            startMainFlow(activity, containerId)
+            startMainFlow()
         } else {
-            startSetupFlow(activity, containerId)
+            startSetupFlow()
         }
     }
 
-    private fun startSetupFlow(activity: AppCompatActivity, containerId: Int) {
-        activity.supportFragmentManager.commit {
-            var fragment: Fragment? = null
-            fragment = SetupFragment.create(
-                SetupFragment.Dependencies(
-                    finishSetupListener = { startMainFlow(activity, containerId) },
-                    navigator = object : SetupFlowNavigator {
-                        override fun navigateToLogin(loginListener: (String, String) -> Unit) {
-                            fragment?.run { startLogin(this, loginListener) }
-                        }
+    private fun startSetupFlow() {
+        var localNavigator: Navigator? = null
+        val fragment = SetupFragment.create(
+            SetupFragment.Dependencies(
+                finishSetupListener = { startMainFlow() },
+                navigator = object : SetupFlowNavigator {
+                    override fun navigateToLogin(loginListener: (String, String) -> Unit) {
+                        localNavigator?.openScreen(
+                            LoginFragment.create(LoginFragment.Dependencies(loginListener, api))
+                        )
+                    }
 
-                        override fun navigateToSelectBoard(
-                            token: String,
-                            userId: String,
-                            listener: (String) -> Unit
-                        ) {
-                            fragment?.run { startSelectBoard(this, token, userId, listener) }
-                        }
-                    },
-                    authInfoHolder = authInfoHolder
-                )
+                    override fun navigateToSelectBoard(
+                        token: String,
+                        userId: String,
+                        listener: (String) -> Unit
+                    ) {
+                        localNavigator?.openScreen(
+                            SelectBoardFragment.create(
+                                SelectBoardFragment.Dependencies(
+                                    token = token,
+                                    userId = userId,
+                                    listener = listener,
+                                    api = api
+                                )
+                            )
+                        )
+                    }
+                },
+                authInfoHolder = authInfoHolder
             )
-            replace(containerId, fragment)
-        }
+        )
+        navigator.openScreen(fragment)
+        localNavigator = Navigator(fragment.childFragmentManager, R.id.container)
     }
 
-    private fun startMainFlow(activity: AppCompatActivity, containerId: Int) {
-        var fragment: Fragment? = null
-        fragment = HomeFragment.create(
+    private fun startMainFlow() {
+        navigator.openScreen(HomeFragment.create(
             HomeFragment.Dependencies(
                 tabs = listOf(InboxTab, TodoTab),
                 fragmentFactory = { position ->
@@ -120,73 +135,32 @@ object StartFlow {
                     }
                 }
             )
-        )
-        activity.supportFragmentManager.commit { replace(containerId, fragment) }
-    }
-
-    private fun startLogin(
-        fragment: Fragment,
-        loginListener: (String, String) -> Unit
-    ) {
-        fragment.childFragmentManager.commit {
-            replace(
-                R.id.container,
-                LoginFragment.create(LoginFragment.Dependencies(loginListener, api))
-            )
-        }
-    }
-
-    private fun startSelectBoard(
-        fragment: Fragment,
-        token: String,
-        userId: String,
-        listener: (String) -> Unit
-    ) {
-        fragment.childFragmentManager.commit {
-            replace(
-                R.id.container, SelectBoardFragment.create(
-                    SelectBoardFragment.Dependencies(
-                        token = token,
-                        userId = userId,
-                        listener = listener,
-                        api = api
-                    )
-                )
-            )
-        }
+        ))
     }
 
     private fun startViewTask(id: String) {
-        /*fragment!!.childFragmentManager.commit {
-            replace(
-                R.id.container,
-                EditTaskFragment.create(
-                    EditTaskFragment.Dependencies(
-                        id = id,
-                        boardId = authInfoHolder.getBoardId()!!,
-                        token = authInfoHolder.getToken()!!,
-                        api = api
-                    )
+        navigator.openScreen(
+            EditTaskFragment.create(
+                EditTaskFragment.Dependencies(
+                    id = id,
+                    boardId = authInfoHolder.getBoardId()!!,
+                    token = authInfoHolder.getToken()!!,
+                    api = api
                 )
             )
-        }*/
+        )
     }
 
     private fun startCreateTask() {
-        /*fragment?.run {
-            this.childFragmentManager.commit {
-                replace(
-                    R.id.container,
-                    CreateTaskFragment.create(
-                        CreateTaskFragment.Dependencies(
-                            token = authInfoHolder.getToken()!!,
-                            boardId = authInfoHolder.getBoardId()!!,
-                            api = api
-                        )
-                    )
+        navigator.openScreen(
+            CreateTaskFragment.create(
+                CreateTaskFragment.Dependencies(
+                    token = authInfoHolder.getToken()!!,
+                    boardId = authInfoHolder.getBoardId()!!,
+                    api = api
                 )
-            }
-        }*/
+            )
+        )
     }
 
 }
