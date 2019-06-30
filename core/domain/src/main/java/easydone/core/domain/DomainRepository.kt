@@ -4,8 +4,9 @@ import easydone.core.auth.AuthInfoHolder
 import easydone.core.domain.model.Task
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Card
-import easydone.library.trelloapi.model.CardList
-import kotlinx.coroutines.*
+import easydone.library.trelloapi.model.NestedBoard
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.consumeEach
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 
 
 class DomainRepository(
@@ -20,7 +22,7 @@ class DomainRepository(
     private val api: TrelloApi
 ) {
 
-    private val channel: BroadcastChannel<Pair<List<Card>, List<CardList>>> =
+    private val channel: BroadcastChannel<NestedBoard> =
         ConflatedBroadcastChannel()
 
     fun getTasks(isInbox: Boolean): Flow<List<Task>> = flow {
@@ -84,9 +86,8 @@ class DomainRepository(
         GlobalScope.launch(Dispatchers.IO) {
             val boardId = authInfoHolder.getBoardId()!!
             val token = authInfoHolder.getToken()!!
-            val lists = async { api.lists(boardId, TrelloApi.API_KEY, token) }
-            val cards = async { api.cards(boardId, TrelloApi.API_KEY, token) }
-            channel.send(cards.await() to lists.await())
+            val nestedBoard = api.boardData(boardId, TrelloApi.API_KEY, token)
+            channel.send(nestedBoard)
         }
     }
 

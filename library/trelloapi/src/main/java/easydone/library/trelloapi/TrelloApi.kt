@@ -13,14 +13,12 @@ interface TrelloApi {
     @GET("members/me?fields=none&boards=open&board_fields=id,name")
     suspend fun boards(@Query("key") apiKey: String, @Query("token") token: String): NestedBoards
 
-    @GET("boards/{id}/lists")
-    suspend fun lists(@Path("id") boardId: String, @Query("key") apiKey: String, @Query("token") token: String): List<CardList>
-
-    @GET("boards/{id}/cards")
-    suspend fun cards(@Path("id") boardId: String, @Query("key") apiKey: String, @Query("token") token: String): List<Card>
-
-    @GET("cards/{id}")
-    suspend fun card(@Path("id") id: String, @Query("key") apiKey: String, @Query("token") token: String): Card
+    @GET("boards/{id}?fields=none&lists=open&cards=visible&list_fields=id&card_fields=id,idList,name,desc,pos")
+    suspend fun boardData(
+        @Path("id") boardId: String,
+        @Query("key") apiKey: String,
+        @Query("token") token: String
+    ): NestedBoard
 
     @PUT("cards/{id}")
     suspend fun editCard(
