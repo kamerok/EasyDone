@@ -160,9 +160,7 @@ object StartFlow {
             EditTaskFragment.create(
                 EditTaskFragment.Dependencies(
                     id = id,
-                    boardId = authInfoHolder.getBoardId()!!,
-                    token = authInfoHolder.getToken()!!,
-                    api = api
+                    repository = repository
                 )
             ),
             true
