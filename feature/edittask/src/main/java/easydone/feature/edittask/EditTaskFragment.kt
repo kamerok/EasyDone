@@ -31,11 +31,18 @@ class EditTaskFragment : Fragment() {
             val task = repository.getTask(id)
             withContext(Dispatchers.Main) {
                 titleView.setText(task.title)
+                descriptionView.setText(task.description)
             }
         }
         saveView.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
-                repository.saveTask(Task(id, titleView.text.toString()))
+                repository.saveTask(
+                    Task(
+                        id,
+                        titleView.text.toString(),
+                        descriptionView.text.toString()
+                    )
+                )
                 navigator.closeScreen()
             }
         }

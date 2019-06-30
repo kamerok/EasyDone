@@ -34,6 +34,7 @@ interface TrelloApi {
         @Query("key") apiKey: String,
         @Query("token") token: String,
         @Query("name") name: String? = null,
+        @Query("desc") desc: String? = null,
         @Query("closed") closed: Boolean? = null,
         @Query("idList") listId: String? = null
     ): Card
@@ -42,6 +43,7 @@ interface TrelloApi {
     suspend fun postCard(
         @Query("idList") listId: String,
         @Query("name") name: String,
+        @Query("desc") desc: String,
         @Query("pos") pos: String = "bottom",
         @Query("key") apiKey: String,
         @Query("token") token: String

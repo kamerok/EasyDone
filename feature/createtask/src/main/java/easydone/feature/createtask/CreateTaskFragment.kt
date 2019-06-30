@@ -27,7 +27,11 @@ class CreateTaskFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         createView.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
-                repository.createTask(titleView.text.toString(), skipInboxView.isChecked)
+                repository.createTask(
+                    titleView.text.toString(),
+                    descriptionView.text.toString(),
+                    skipInboxView.isChecked
+                )
                 navigator.closeScreen()
             }
         }

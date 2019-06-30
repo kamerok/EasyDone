@@ -37,7 +37,13 @@ class DomainRepository(
     }
 
     suspend fun saveTask(task: Task) {
-        api.editCard(task.id, TrelloApi.API_KEY, authInfoHolder.getToken()!!, name = task.title)
+        api.editCard(
+            task.id,
+            TrelloApi.API_KEY,
+            authInfoHolder.getToken()!!,
+            name = task.title,
+            desc = task.description
+        )
         loadData()
     }
 
@@ -58,11 +64,12 @@ class DomainRepository(
         loadData()
     }
 
-    suspend fun createTask(title: String, skipInbox: Boolean) {
+    suspend fun createTask(title: String, description: String, skipInbox: Boolean) {
         val (_, lists) = channel.asFlow().first()
         api.postCard(
             listId = if (!skipInbox) lists.first().id else lists[1].id,
             name = title,
+            desc = description,
             apiKey = TrelloApi.API_KEY,
             token = authInfoHolder.getToken()!!
         )
@@ -83,6 +90,6 @@ class DomainRepository(
         }
     }
 
-    private fun Card.toTask() = Task(id, name)
+    private fun Card.toTask() = Task(id, name, desc)
 
 }
