@@ -58,6 +58,17 @@ class DomainRepository(
         loadData()
     }
 
+    suspend fun createTask(title: String, skipInbox: Boolean) {
+        val (_, lists) = channel.asFlow().first()
+        api.postCard(
+            listId = if (!skipInbox) lists.first().id else lists[1].id,
+            name = title,
+            apiKey = TrelloApi.API_KEY,
+            token = authInfoHolder.getToken()!!
+        )
+        loadData()
+    }
+
     fun refresh() {
         loadData()
     }

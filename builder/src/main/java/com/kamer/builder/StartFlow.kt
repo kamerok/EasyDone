@@ -82,7 +82,12 @@ object StartFlow {
 
     private fun startSetupFlow() {
         var fragment: Fragment? = null
-        val localNavigator: Navigator by lazy { Navigator(fragment!!.childFragmentManager, R.id.container) }
+        val localNavigator: Navigator by lazy {
+            Navigator(
+                fragment!!.childFragmentManager,
+                R.id.container
+            )
+        }
         fragment = SetupFragment.create(
             SetupFragment.Dependencies(
                 finishSetupListener = { startMainFlow() },
@@ -157,25 +162,14 @@ object StartFlow {
 
     private fun startViewTask(id: String) {
         navigator.openScreen(
-            EditTaskFragment.create(
-                EditTaskFragment.Dependencies(
-                    id = id,
-                    repository = repository
-                )
-            ),
+            EditTaskFragment.create(EditTaskFragment.Dependencies(id, repository)),
             true
         )
     }
 
     private fun startCreateTask() {
         navigator.openScreen(
-            CreateTaskFragment.create(
-                CreateTaskFragment.Dependencies(
-                    token = authInfoHolder.getToken()!!,
-                    boardId = authInfoHolder.getBoardId()!!,
-                    api = api
-                )
-            ),
+            CreateTaskFragment.create(CreateTaskFragment.Dependencies(repository)),
             true
         )
     }

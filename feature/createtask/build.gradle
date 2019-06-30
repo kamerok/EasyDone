@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 dependencies {
-    implementation project(':library:trelloapi')
+    implementation project(':core:domain')
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
