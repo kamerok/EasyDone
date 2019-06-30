@@ -13,4 +13,10 @@ class Navigator(private val fragmentManager: FragmentManager, private val contai
             if (addToBackStack) addToBackStack(null)
         }
 
+    fun isEmpty(): Boolean = fragmentManager.backStackEntryCount == 0
+
+    fun popScreen() {
+        fragmentManager.popBackStack()
+    }
+
 }

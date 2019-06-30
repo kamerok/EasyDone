@@ -4,19 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class CreateTaskFragment : Fragment() {
 
     private lateinit var repository: DomainRepository
+    private lateinit var navigator: CreateTaskNavigator
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,21 +27,21 @@ class CreateTaskFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         createView.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
-               repository.createTask(titleView.text.toString(), skipInboxView.isChecked)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "done", Toast.LENGTH_SHORT).show()
-                }
+                repository.createTask(titleView.text.toString(), skipInboxView.isChecked)
+                navigator.closeScreen()
             }
         }
     }
 
     data class Dependencies(
-        var repository: DomainRepository
+        val repository: DomainRepository,
+        val navigator: CreateTaskNavigator
     )
 
     companion object {
         fun create(dependencies: Dependencies): Fragment = CreateTaskFragment().apply {
             repository = dependencies.repository
+            navigator = dependencies.navigator
         }
     }
 

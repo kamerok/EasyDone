@@ -8,6 +8,7 @@ import com.kamer.setupflow.R
 import easydone.core.auth.AuthInfoHolder
 import easydone.core.domain.DomainRepository
 import easydone.feature.createtask.CreateTaskFragment
+import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
@@ -62,8 +63,8 @@ object StartFlow {
             activity,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (activity.supportFragmentManager.backStackEntryCount > 0) {
-                        activity.supportFragmentManager.popBackStack()
+                    if (!navigator.isEmpty()) {
+                        navigator.popScreen()
                     } else {
                         isEnabled = false
                         activity.onBackPressed()
@@ -169,7 +170,14 @@ object StartFlow {
 
     private fun startCreateTask() {
         navigator.openScreen(
-            CreateTaskFragment.create(CreateTaskFragment.Dependencies(repository)),
+            CreateTaskFragment.create(CreateTaskFragment.Dependencies(
+                repository,
+                object : CreateTaskNavigator {
+                    override fun closeScreen() {
+                        navigator.popScreen()
+                    }
+                }
+            )),
             true
         )
     }
