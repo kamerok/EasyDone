@@ -8,5 +8,7 @@ androidExtensions {
 
 dependencies {
     implementation Deps.kotilnStdlib
+    implementation Deps.androidx_constraintlayout
+    implementation Deps.androidx_core
     implementation Deps.androidx_recyclerview
 }

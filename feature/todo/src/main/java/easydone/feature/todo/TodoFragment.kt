@@ -31,7 +31,7 @@ class TodoFragment : Fragment() {
 
         GlobalScope.launch(Dispatchers.IO) {
             repository.getTasks(false).collect { tasks ->
-                val uiTasks = tasks.map { TaskUiModel(it.id, it.title) }
+                val uiTasks = tasks.map { TaskUiModel(it.id, it.title, it.description.isNotEmpty()) }
                 withContext(Dispatchers.Main) {
                     adapter.setData(uiTasks)
                 }

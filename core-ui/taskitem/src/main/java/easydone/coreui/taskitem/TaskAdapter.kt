@@ -3,6 +3,7 @@ package easydone.coreui.taskitem
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_task.*
@@ -45,6 +46,7 @@ class TaskAdapter(
             this.item = item
 
             titleView.text = item.title
+            descriptionView.isVisible = item.hasDescription
         }
 
     }

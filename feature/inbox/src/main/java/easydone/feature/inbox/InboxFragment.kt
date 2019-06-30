@@ -39,7 +39,8 @@ class InboxFragment : Fragment() {
                 val uiTasks = tasks.map {
                     TaskUiModel(
                         it.id,
-                        it.title
+                        it.title,
+                        it.description.isNotEmpty()
                     )
                 }
                 withContext(Dispatchers.Main) {
