@@ -1,4 +1,4 @@
-package easydone.feature.todo
+package easydone.coreui.taskitem
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,20 +8,23 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_task.*
 
 
-internal class TodoAdapter(
+class TaskAdapter(
     private val listener: (String) -> Unit
-) : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
-    private var data = mutableListOf<TodoTaskUiModel>()
+    private var data = mutableListOf<TaskUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false), listener)
+        ViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false),
+            listener
+        )
 
     override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(data[position])
 
-    fun setData(data: List<TodoTaskUiModel>) {
+    fun setData(data: List<TaskUiModel>) {
         this.data.clear()
         this.data.addAll(data)
         notifyDataSetChanged()
@@ -32,13 +35,13 @@ internal class TodoAdapter(
         private val listener: (String) -> Unit
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        private var item: TodoTaskUiModel? = null
+        private var item: TaskUiModel? = null
 
         init {
             containerView.setOnClickListener { item?.run { listener(this.id) } }
         }
 
-        fun bind(item: TodoTaskUiModel) {
+        fun bind(item: TaskUiModel) {
             this.item = item
 
             titleView.text = item.title

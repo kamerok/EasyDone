@@ -2,12 +2,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-androidExtensions {
-    experimental = true
-}
-
 dependencies {
     implementation project(':core:domain')
+    implementation project(':core-ui:taskitem')
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat

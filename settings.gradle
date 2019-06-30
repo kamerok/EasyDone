@@ -6,6 +6,8 @@ include ':builder'
 include ':core:auth'
 include ':core:domain'
 
+include ':core-ui:taskitem'
+
 include ':feature:createtask'
 include ':feature:edittask'
 include ':feature:home'

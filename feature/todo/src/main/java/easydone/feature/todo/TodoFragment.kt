@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
+import easydone.coreui.taskitem.TaskAdapter
+import easydone.coreui.taskitem.TaskUiModel
 import kotlinx.android.synthetic.main.fragment_todo.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -19,7 +21,7 @@ class TodoFragment : Fragment() {
     private lateinit var repository: DomainRepository
     private lateinit var navigator: TodoNavigator
 
-    private val adapter by lazy { TodoAdapter { navigator.navigateToTask(it) } }
+    private val adapter by lazy { TaskAdapter { navigator.navigateToTask(it) } }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_todo, container, false)
@@ -29,7 +31,7 @@ class TodoFragment : Fragment() {
 
         GlobalScope.launch(Dispatchers.IO) {
             repository.getTasks(false).collect { tasks ->
-                val uiTasks = tasks.map { TodoTaskUiModel(it.id, it.title) }
+                val uiTasks = tasks.map { TaskUiModel(it.id, it.title) }
                 withContext(Dispatchers.Main) {
                     adapter.setData(uiTasks)
                 }

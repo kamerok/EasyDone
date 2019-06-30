@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kamer.inbox.R
 import easydone.core.domain.DomainRepository
+import easydone.coreui.taskitem.TaskAdapter
+import easydone.coreui.taskitem.TaskUiModel
 import kotlinx.android.synthetic.main.fragment_inbox.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -20,7 +22,7 @@ class InboxFragment : Fragment() {
     private lateinit var repository: DomainRepository
     private lateinit var navigator: InboxNavigator
 
-    private val adapter by lazy { InboxAdapter { navigator.navigateToTask(it) } }
+    private val adapter by lazy { TaskAdapter { navigator.navigateToTask(it) } }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +36,12 @@ class InboxFragment : Fragment() {
 
         GlobalScope.launch(Dispatchers.IO) {
             repository.getTasks(true).collect { tasks ->
-                val uiTasks = tasks.map { InboxTaskUiModel(it.id, it.title) }
+                val uiTasks = tasks.map {
+                    TaskUiModel(
+                        it.id,
+                        it.title
+                    )
+                }
                 withContext(Dispatchers.Main) {
                     adapter.setData(uiTasks)
                 }
