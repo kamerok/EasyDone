@@ -42,12 +42,12 @@ class EditTaskFragment : Fragment() {
             }
         }
         archiveView.setOnClickListener {
-            /*GlobalScope.launch(Dispatchers.IO) {
-                api.editCard(id, TrelloApi.API_KEY, token, closed = true)
+            GlobalScope.launch(Dispatchers.IO) {
+                repository.archiveTask(id)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Closed", Toast.LENGTH_SHORT).show()
                 }
-            }*/
+            }
         }
         moveView.setOnClickListener {
             /*GlobalScope.launch(Dispatchers.IO) {

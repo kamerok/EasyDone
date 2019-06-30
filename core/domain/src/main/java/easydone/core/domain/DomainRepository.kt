@@ -41,6 +41,11 @@ class DomainRepository(
         loadData()
     }
 
+    suspend fun archiveTask(id: String) {
+        api.editCard(id, TrelloApi.API_KEY, authInfoHolder.getToken()!!, closed = true)
+        loadData()
+    }
+
     fun refresh() {
         loadData()
     }
