@@ -50,19 +50,12 @@ class EditTaskFragment : Fragment() {
             }
         }
         moveView.setOnClickListener {
-            /*GlobalScope.launch(Dispatchers.IO) {
-                val card = api.card(id, TrelloApi.API_KEY, token)
-                val lists = api.lists(boardId, TrelloApi.API_KEY, token)
-                val newListId = if (lists.first().id == card.idList) {
-                    lists[1].id
-                } else {
-                    lists.first().id
-                }
-                api.editCard(id, TrelloApi.API_KEY, token, listId = newListId)
+            GlobalScope.launch(Dispatchers.IO) {
+                repository.moveTask(id)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Moved", Toast.LENGTH_SHORT).show()
                 }
-            }*/
+            }
         }
     }
 

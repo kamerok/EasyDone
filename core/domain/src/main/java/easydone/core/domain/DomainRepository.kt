@@ -46,6 +46,18 @@ class DomainRepository(
         loadData()
     }
 
+    suspend fun moveTask(id: String) {
+        val (cards, lists) = channel.asFlow().first()
+        val card = cards.find { it.id == id }!!
+        val newListId = if (lists.first().id == card.idList) {
+            lists[1].id
+        } else {
+            lists.first().id
+        }
+        api.editCard(id, TrelloApi.API_KEY, authInfoHolder.getToken()!!, listId = newListId)
+        loadData()
+    }
+
     fun refresh() {
         loadData()
     }
