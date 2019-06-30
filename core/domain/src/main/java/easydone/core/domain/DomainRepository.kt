@@ -8,7 +8,6 @@ import easydone.library.trelloapi.model.CardList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.flow
 
 class DomainRepository(
     private val authInfoHolder: AuthInfoHolder,
-    private val trelloApi: TrelloApi
+    private val api: TrelloApi
 ) {
 
     private val channel: BroadcastChannel<Pair<List<Card>, List<CardList>>> =
@@ -37,6 +36,11 @@ class DomainRepository(
         return cards.find { it.id == id }!!.toTask()
     }
 
+    suspend fun saveTask(task: Task) {
+        api.editCard(task.id, TrelloApi.API_KEY, authInfoHolder.getToken()!!, name = task.title)
+        loadData()
+    }
+
     fun refresh() {
         loadData()
     }
@@ -45,8 +49,8 @@ class DomainRepository(
         GlobalScope.launch(Dispatchers.IO) {
             val boardId = authInfoHolder.getBoardId()!!
             val token = authInfoHolder.getToken()!!
-            val lists = async { trelloApi.lists(boardId, TrelloApi.API_KEY, token) }
-            val cards = async { trelloApi.cards(boardId, TrelloApi.API_KEY, token) }
+            val lists = async { api.lists(boardId, TrelloApi.API_KEY, token) }
+            val cards = async { api.cards(boardId, TrelloApi.API_KEY, token) }
             channel.send(cards.await() to lists.await())
         }
     }

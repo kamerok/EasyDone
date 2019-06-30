@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.model.Task
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -32,12 +34,12 @@ class EditTaskFragment : Fragment() {
             }
         }
         saveView.setOnClickListener {
-            /*GlobalScope.launch(Dispatchers.IO) {
-                api.editCard(id, TrelloApi.API_KEY, token, name = titleView.text.toString())
+            GlobalScope.launch(Dispatchers.IO) {
+                repository.saveTask(Task(id, titleView.text.toString()))
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
                 }
-            }*/
+            }
         }
         archiveView.setOnClickListener {
             /*GlobalScope.launch(Dispatchers.IO) {
