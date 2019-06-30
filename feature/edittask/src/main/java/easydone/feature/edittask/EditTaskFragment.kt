@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
@@ -19,6 +18,7 @@ class EditTaskFragment : Fragment() {
 
     private lateinit var id: String
     private lateinit var repository: DomainRepository
+    private lateinit var navigator: EditTaskNavigator
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,38 +36,34 @@ class EditTaskFragment : Fragment() {
         saveView.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 repository.saveTask(Task(id, titleView.text.toString()))
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
-                }
+                navigator.closeScreen()
             }
         }
         archiveView.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 repository.archiveTask(id)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Closed", Toast.LENGTH_SHORT).show()
-                }
+                navigator.closeScreen()
             }
         }
         moveView.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 repository.moveTask(id)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Moved", Toast.LENGTH_SHORT).show()
-                }
+                navigator.closeScreen()
             }
         }
     }
 
     data class Dependencies(
-        var id: String,
-        val repository: DomainRepository
+        val id: String,
+        val repository: DomainRepository,
+        val navigator: EditTaskNavigator
     )
 
     companion object {
         fun create(dependencies: Dependencies): Fragment = EditTaskFragment().apply {
             id = dependencies.id
             repository = dependencies.repository
+            navigator = dependencies.navigator
         }
     }
 

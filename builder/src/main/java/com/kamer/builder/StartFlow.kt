@@ -10,6 +10,7 @@ import easydone.core.domain.DomainRepository
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
+import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.home.InboxTab
@@ -163,7 +164,15 @@ object StartFlow {
 
     private fun startViewTask(id: String) {
         navigator.openScreen(
-            EditTaskFragment.create(EditTaskFragment.Dependencies(id, repository)),
+            EditTaskFragment.create(EditTaskFragment.Dependencies(
+                id,
+                repository,
+                object : EditTaskNavigator {
+                    override fun closeScreen() {
+                        navigator.popScreen()
+                    }
+                }
+            )),
             true
         )
     }
