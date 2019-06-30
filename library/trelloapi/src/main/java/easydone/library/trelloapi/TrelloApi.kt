@@ -1,9 +1,6 @@
 package easydone.library.trelloapi
 
-import easydone.library.trelloapi.model.Board
-import easydone.library.trelloapi.model.Card
-import easydone.library.trelloapi.model.CardList
-import easydone.library.trelloapi.model.User
+import easydone.library.trelloapi.model.*
 import retrofit2.http.*
 
 
@@ -13,11 +10,8 @@ interface TrelloApi {
         const val API_KEY = "98c9ac26156a960889eb42586aa1bcd7"
     }
 
-    @GET("members/me/")
-    suspend fun me(@Query("key") apiKey: String, @Query("token") token: String): User
-
-    @GET("members/{id}/boards")
-    suspend fun boards(@Path("id") id: String, @Query("key") apiKey: String, @Query("token") token: String): List<Board>
+    @GET("members/me?fields=none&boards=open&board_fields=id,name")
+    suspend fun boards(@Query("key") apiKey: String, @Query("token") token: String): NestedBoards
 
     @GET("boards/{id}/lists")
     suspend fun lists(@Path("id") boardId: String, @Query("key") apiKey: String, @Query("token") token: String): List<CardList>

@@ -1,10 +1,12 @@
 package easydone.feature.setupflow
 
+import easydone.library.trelloapi.model.Board
+
 
 interface SetupFlowNavigator {
 
-    fun navigateToLogin(loginListener: (String, String) -> Unit)
+    fun navigateToLogin(loginListener: (String, List<Board>) -> Unit)
 
-    fun navigateToSelectBoard(token: String, userId: String, listener: (String) -> Unit)
+    fun navigateToSelectBoard(boards: List<Board>, listener: (String) -> Unit)
 
 }

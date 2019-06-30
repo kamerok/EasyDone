@@ -18,6 +18,7 @@ import easydone.feature.home.TodoTab
 import easydone.feature.inbox.InboxFragment
 import easydone.feature.inbox.InboxNavigator
 import easydone.feature.login.LoginFragment
+import easydone.feature.selectboard.BoardUiModel
 import easydone.feature.selectboard.SelectBoardFragment
 import easydone.feature.setupflow.SetupFlowNavigator
 import easydone.feature.setupflow.SetupFragment
@@ -25,6 +26,7 @@ import easydone.feature.todo.TodoFragment
 import easydone.feature.todo.TodoNavigator
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import easydone.library.trelloapi.TrelloApi
+import easydone.library.trelloapi.model.Board
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -94,24 +96,21 @@ object StartFlow {
             SetupFragment.Dependencies(
                 finishSetupListener = { startMainFlow() },
                 navigator = object : SetupFlowNavigator {
-                    override fun navigateToLogin(loginListener: (String, String) -> Unit) {
+                    override fun navigateToLogin(loginListener: (String, List<Board>) -> Unit) {
                         localNavigator.openScreen(
                             LoginFragment.create(LoginFragment.Dependencies(loginListener, api))
                         )
                     }
 
                     override fun navigateToSelectBoard(
-                        token: String,
-                        userId: String,
+                        boards: List<Board>,
                         listener: (String) -> Unit
                     ) {
                         localNavigator.openScreen(
                             SelectBoardFragment.create(
                                 SelectBoardFragment.Dependencies(
-                                    token = token,
-                                    userId = userId,
-                                    listener = listener,
-                                    api = api
+                                    boards = boards.map { BoardUiModel(it.id, it.name) },
+                                    listener = listener
                                 )
                             )
                         )

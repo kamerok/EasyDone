@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.kamer.login.R
 import easydone.library.trelloapi.TrelloApi
+import easydone.library.trelloapi.model.Board
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -20,7 +21,7 @@ import kotlinx.coroutines.withContext
 
 class LoginFragment : Fragment() {
 
-    private lateinit var listener: (String, String) -> Unit
+    private lateinit var listener: (String, List<Board>) -> Unit
     private lateinit var api: TrelloApi
 
     override fun onCreateView(
@@ -48,9 +49,9 @@ class LoginFragment : Fragment() {
             GlobalScope.launch(Dispatchers.IO) {
                 try {
                     val token = enterTokenView.text.toString()
-                    val user = api.me(TrelloApi.API_KEY, token)
+                    val nestedBoards = api.boards(TrelloApi.API_KEY, token)
                     withContext(Dispatchers.Main) {
-                        successLogin(token, user.id)
+                        successLogin(token, nestedBoards.boards)
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
@@ -61,12 +62,12 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun successLogin(token: String, userId: String) {
-        listener(token, userId)
+    private fun successLogin(token: String, boards: List<Board>) {
+        listener(token, boards)
     }
 
     data class Dependencies(
-        val loginListener: (String, String) -> Unit,
+        val loginListener: (String, List<Board>) -> Unit,
         val api: TrelloApi
     )
 
