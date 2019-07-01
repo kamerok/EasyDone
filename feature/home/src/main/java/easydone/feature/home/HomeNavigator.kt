@@ -5,4 +5,6 @@ interface HomeNavigator {
 
     fun navigateToCreate()
 
+    fun navigateToSettings()
+
 }

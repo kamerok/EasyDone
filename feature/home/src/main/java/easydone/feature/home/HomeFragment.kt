@@ -34,6 +34,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
+        settingsView.setOnClickListener { navigator.navigateToSettings() }
         refreshView.setOnClickListener { domainRepository.refresh() }
         viewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItem(position: Int): Fragment = fragmentFactory(position)
@@ -48,7 +49,8 @@ class HomeFragment : Fragment() {
         bottomNavigationView.setBackgroundColor(Color.WHITE)
         bottomNavigationView.menu.apply {
             tabs.forEachIndexed { index, tab ->
-                add(Menu.NONE, index, Menu.NONE, "Home$index").setIcon(android.R.drawable.ic_delete)
+                add(Menu.NONE, index, Menu.NONE, getString(tab.nameRes))
+                    .setIcon(tab.iconRes)
             }
         }
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->

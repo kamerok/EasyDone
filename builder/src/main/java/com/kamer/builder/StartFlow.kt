@@ -124,7 +124,7 @@ object StartFlow {
     private fun startMainFlow() {
         navigator.openScreen(HomeFragment.create(
             HomeFragment.Dependencies(
-                tabs = listOf(InboxTab, TodoTab, SettingsTab),
+                tabs = listOf(InboxTab, TodoTab),
                 fragmentFactory = { position ->
                     when (position) {
                         0 -> InboxFragment.create(
@@ -138,7 +138,7 @@ object StartFlow {
                                 }
                             )
                         )
-                        1 -> TodoFragment.create(
+                        else -> TodoFragment.create(
                             TodoFragment.Dependencies(
                                 repository,
                                 navigator = object : TodoNavigator {
@@ -148,19 +148,16 @@ object StartFlow {
                                 }
                             )
                         )
-                        else -> SettingsFragment.create(
-                            SettingsFragment.Dependencies(
-                                object : SettingsNavigator {
-
-                                }
-                            )
-                        )
                     }
                 },
                 domainRepository = repository,
                 navigator = object : HomeNavigator {
                     override fun navigateToCreate() {
                         startCreateTask()
+                    }
+
+                    override fun navigateToSettings() {
+                        startSettings()
                     }
                 }
             )
@@ -192,6 +189,19 @@ object StartFlow {
                     }
                 }
             )),
+            true
+        )
+    }
+
+    private fun startSettings() {
+        navigator.openScreen(
+            SettingsFragment.create(
+                SettingsFragment.Dependencies(
+                    object : SettingsNavigator {
+
+                    }
+                )
+            ),
             true
         )
     }

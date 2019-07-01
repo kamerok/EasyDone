@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="inbox_tab">Inbox</string>
+    <string name="todo_tab">ToDo</string>
+
+</resources>
