@@ -14,6 +14,7 @@ include ':feature:home'
 include ':feature:inbox'
 include ':feature:login'
 include ':feature:selectboard'
+include ':feature:settings'
 include ':feature:setupflow'
 include ':feature:todo'
 

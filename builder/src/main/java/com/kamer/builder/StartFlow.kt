@@ -11,15 +11,14 @@ import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
-import easydone.feature.home.HomeFragment
-import easydone.feature.home.HomeNavigator
-import easydone.feature.home.InboxTab
-import easydone.feature.home.TodoTab
+import easydone.feature.home.*
 import easydone.feature.inbox.InboxFragment
 import easydone.feature.inbox.InboxNavigator
 import easydone.feature.login.LoginFragment
 import easydone.feature.selectboard.BoardUiModel
 import easydone.feature.selectboard.SelectBoardFragment
+import easydone.feature.settings.SettingsFragment
+import easydone.feature.settings.SettingsNavigator
 import easydone.feature.setupflow.SetupFlowNavigator
 import easydone.feature.setupflow.SetupFragment
 import easydone.feature.todo.TodoFragment
@@ -125,7 +124,7 @@ object StartFlow {
     private fun startMainFlow() {
         navigator.openScreen(HomeFragment.create(
             HomeFragment.Dependencies(
-                tabs = listOf(InboxTab, TodoTab),
+                tabs = listOf(InboxTab, TodoTab, SettingsTab),
                 fragmentFactory = { position ->
                     when (position) {
                         0 -> InboxFragment.create(
@@ -139,13 +138,20 @@ object StartFlow {
                                 }
                             )
                         )
-                        else -> TodoFragment.create(
+                        1 -> TodoFragment.create(
                             TodoFragment.Dependencies(
                                 repository,
                                 navigator = object : TodoNavigator {
                                     override fun navigateToTask(id: String) {
                                         startViewTask(id)
                                     }
+                                }
+                            )
+                        )
+                        else -> SettingsFragment.create(
+                            SettingsFragment.Dependencies(
+                                object : SettingsNavigator {
+
                                 }
                             )
                         )

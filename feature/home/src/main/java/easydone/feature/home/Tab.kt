@@ -6,3 +6,5 @@ sealed class Tab
 object InboxTab : Tab()
 
 object TodoTab : Tab()
+
+object SettingsTab : Tab()

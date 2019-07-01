@@ -12,6 +12,7 @@ dependencies {
     implementation project(':feature:inbox')
     implementation project(':feature:login')
     implementation project(':feature:selectboard')
+    implementation project(':feature:settings')
     implementation project(':feature:setupflow')
     implementation project(':feature:todo')
 
