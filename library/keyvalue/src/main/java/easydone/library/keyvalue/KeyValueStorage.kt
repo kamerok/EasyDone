@@ -11,4 +11,6 @@ interface KeyValueStorage {
 
     fun contains(key: String): Boolean
 
+    fun clear()
+
 }

@@ -13,6 +13,8 @@ class AuthInfoHolder(private val storage: KeyValueStorage) {
 
     fun putBoardId(id: String) = storage.putString(BOARD_ID, id)
 
+    fun clear() = storage.clear()
+
     companion object {
         private const val TOKEN = "token"
         private const val BOARD_ID = "board_id"

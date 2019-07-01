@@ -76,6 +76,11 @@ object StartFlow {
             }
         )
 
+        startInitialFlow()
+    }
+
+    private fun startInitialFlow() {
+        navigator.clearStack()
         if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
             startMainFlow()
         } else {
@@ -197,8 +202,11 @@ object StartFlow {
         navigator.openScreen(
             SettingsFragment.create(
                 SettingsFragment.Dependencies(
+                    authInfoHolder,
                     object : SettingsNavigator {
-
+                        override fun navigateToSetup() {
+                            startInitialFlow()
+                        }
                     }
                 )
             ),

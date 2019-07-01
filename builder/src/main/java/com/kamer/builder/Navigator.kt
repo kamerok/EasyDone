@@ -19,4 +19,8 @@ class Navigator(private val fragmentManager: FragmentManager, private val contai
         fragmentManager.popBackStack()
     }
 
+    fun clearStack() {
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    }
+
 }

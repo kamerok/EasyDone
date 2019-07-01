@@ -18,4 +18,6 @@ class SharedPrefsKeyValueStorage(application: Application, name: String) : KeyVa
 
     override fun contains(key: String): Boolean = prefs.contains(key)
 
+    override fun clear() = prefs.edit { clear() }
+
 }
