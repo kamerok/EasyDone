@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
@@ -20,6 +21,8 @@ class EditTaskFragment : Fragment() {
     private lateinit var repository: DomainRepository
     private lateinit var navigator: EditTaskNavigator
 
+    private var isEdit = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,8 +34,15 @@ class EditTaskFragment : Fragment() {
             val task = repository.getTask(id)
             withContext(Dispatchers.Main) {
                 titleView.setText(task.title)
-                descriptionView.setText(task.description)
+                editDescriptionView.setText(task.description)
+                descriptionView.text = task.description
             }
+        }
+        editView.setOnClickListener {
+            isEdit = !isEdit
+            descriptionView.isVisible = !isEdit
+            editDescriptionView.isVisible = isEdit
+            editView.text = if (isEdit) "Cancel" else "Edit"
         }
         saveView.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
@@ -40,7 +50,7 @@ class EditTaskFragment : Fragment() {
                     Task(
                         id,
                         titleView.text.toString(),
-                        descriptionView.text.toString()
+                        editDescriptionView.text.toString()
                     )
                 )
                 navigator.closeScreen()

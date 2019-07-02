@@ -15,13 +15,38 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/descriptionView"
+        android:id="@+id/editDescriptionView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:inputType="textCapSentences"
+        android:inputType="textMultiLine"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView" />
+
+    <TextView
+        android:id="@+id/descriptionView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleView" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="descriptionView,editDescriptionView"/>
+
+    <Button
+        android:id="@+id/editView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        app:layout_constraintEnd_toStartOf="@id/saveView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier" />
 
     <Button
         android:id="@+id/saveView"
@@ -29,8 +54,8 @@
         android:layout_height="wrap_content"
         android:text="Save"
         app:layout_constraintEnd_toStartOf="@id/moveView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/descriptionView" />
+        app:layout_constraintStart_toEndOf="@id/editView"
+        app:layout_constraintTop_toTopOf="@id/editView" />
 
     <Button
         android:id="@+id/moveView"
@@ -39,7 +64,7 @@
         android:text="Move"
         app:layout_constraintEnd_toStartOf="@id/archiveView"
         app:layout_constraintStart_toEndOf="@id/saveView"
-        app:layout_constraintTop_toBottomOf="@id/descriptionView" />
+        app:layout_constraintTop_toTopOf="@id/editView" />
 
     <Button
         android:id="@+id/archiveView"
@@ -48,6 +73,6 @@
         android:text="Archive"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/moveView"
-        app:layout_constraintTop_toBottomOf="@id/descriptionView" />
+        app:layout_constraintTop_toTopOf="@id/editView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
