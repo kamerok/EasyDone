@@ -9,6 +9,10 @@ class Navigator(private val fragmentManager: FragmentManager, private val contai
 
     fun openScreen(fragment: Fragment, addToBackStack: Boolean = false) =
         fragmentManager.commit {
+            setCustomAnimations(
+                R.animator.fragment_open_enter, R.animator.fragment_open_exit,
+                R.animator.fragment_close_enter, R.animator.fragment_close_exit
+            )
             replace(containerId, fragment)
             if (addToBackStack) addToBackStack(null)
         }
