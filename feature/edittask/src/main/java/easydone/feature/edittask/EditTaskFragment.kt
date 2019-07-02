@@ -4,15 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
+import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.commonmark.node.SoftLineBreak
+import io.noties.markwon.MarkwonVisitor
+import io.noties.markwon.AbstractMarkwonPlugin
 
 
 class EditTaskFragment : Fragment() {
@@ -20,6 +25,16 @@ class EditTaskFragment : Fragment() {
     private lateinit var id: String
     private lateinit var repository: DomainRepository
     private lateinit var navigator: EditTaskNavigator
+
+    private val markwon by lazy {
+        Markwon.builder(requireContext()).usePlugin(
+            object : AbstractMarkwonPlugin() {
+                override fun configureVisitor(builder: MarkwonVisitor.Builder) {
+                    builder.on(SoftLineBreak::class.java) { visitor, softLineBreak -> visitor.forceNewLine() }
+                }
+            }
+        ).build()
+    }
 
     private var isEdit = false
 
@@ -35,7 +50,7 @@ class EditTaskFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 titleView.setText(task.title)
                 editDescriptionView.setText(task.description)
-                descriptionView.text = task.description
+                markwon.setMarkdown(descriptionView, task.description)
             }
         }
         editView.setOnClickListener {
@@ -43,6 +58,9 @@ class EditTaskFragment : Fragment() {
             descriptionView.isVisible = !isEdit
             editDescriptionView.isVisible = isEdit
             editView.text = if (isEdit) "Cancel" else "Edit"
+            if (!isEdit) {
+                markwon.setMarkdown(descriptionView, editDescriptionView.text.toString())
+            }
         }
         saveView.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {

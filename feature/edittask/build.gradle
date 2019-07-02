@@ -12,4 +12,6 @@ dependencies {
     implementation Deps.androidx_recyclerview
     implementation Deps.coroutines_core
     implementation Deps.coroutines_andorid
+    implementation Deps.markwon
+
 }
