@@ -16,7 +16,7 @@ object Versions {
     val material = "1.1.0-alpha07"
 
     val coroutines = "1.3.0-M2"
-    val markwon = "4.0.0"
+    val markwon = "4.0.1"
     val retrofit = "2.6.0"
     val retrofit_logging = "4.0.0"
 
@@ -42,6 +42,7 @@ object Deps {
     val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     val coroutines_andorid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
     val markwon = "io.noties.markwon:core:${Versions.markwon}"
+    val markwon_linkify = "io.noties.markwon:linkify:${Versions.markwon}"
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     val retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
     val retrofit_logging = "com.squareup.okhttp3:logging-interceptor:${Versions.retrofit_logging}"

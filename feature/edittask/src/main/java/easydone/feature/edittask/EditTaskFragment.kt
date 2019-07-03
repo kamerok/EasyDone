@@ -1,23 +1,24 @@
 package easydone.feature.edittask
 
 import android.os.Bundle
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.NonNull
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
+import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
+import io.noties.markwon.MarkwonVisitor
+import io.noties.markwon.linkify.LinkifyPlugin
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.commonmark.node.SoftLineBreak
-import io.noties.markwon.MarkwonVisitor
-import io.noties.markwon.AbstractMarkwonPlugin
 
 
 class EditTaskFragment : Fragment() {
@@ -27,13 +28,19 @@ class EditTaskFragment : Fragment() {
     private lateinit var navigator: EditTaskNavigator
 
     private val markwon by lazy {
-        Markwon.builder(requireContext()).usePlugin(
-            object : AbstractMarkwonPlugin() {
-                override fun configureVisitor(builder: MarkwonVisitor.Builder) {
-                    builder.on(SoftLineBreak::class.java) { visitor, softLineBreak -> visitor.forceNewLine() }
-                }
-            }
-        ).build()
+        Markwon
+            .builder(requireContext())
+            .usePlugins(
+                listOf(
+                    object : AbstractMarkwonPlugin() {
+                        override fun configureVisitor(builder: MarkwonVisitor.Builder) {
+                            builder.on(SoftLineBreak::class.java) { visitor, softLineBreak -> visitor.forceNewLine() }
+                        }
+                    },
+                    LinkifyPlugin.create(Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS or Linkify.WEB_URLS)
+                )
+            )
+            .build()
     }
 
     private var isEdit = false

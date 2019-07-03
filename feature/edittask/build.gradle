@@ -13,5 +13,6 @@ dependencies {
     implementation Deps.coroutines_core
     implementation Deps.coroutines_andorid
     implementation Deps.markwon
+    implementation Deps.markwon_linkify
 
 }
