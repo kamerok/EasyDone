@@ -35,7 +35,6 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         settingsView.setOnClickListener { navigator.navigateToSettings() }
-        refreshView.setOnClickListener { domainRepository.refresh() }
         viewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItem(position: Int): Fragment = fragmentFactory(position)
 

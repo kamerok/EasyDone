@@ -28,6 +28,10 @@ class TodoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView.adapter = adapter
+        refreshLayout.setOnRefreshListener {
+            repository.refresh()
+            refreshLayout.isRefreshing = false
+        }
 
         GlobalScope.launch(Dispatchers.IO) {
             repository.getTasks(false).collect { tasks ->
