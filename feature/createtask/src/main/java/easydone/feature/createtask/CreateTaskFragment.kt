@@ -28,7 +28,7 @@ class CreateTaskFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_create_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        requireActivity().showKeyboard()
+        titleView.showKeyboard()
         titleView.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
