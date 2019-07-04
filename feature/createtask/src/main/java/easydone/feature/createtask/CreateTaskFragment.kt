@@ -42,6 +42,10 @@ class CreateTaskFragment : Fragment() {
     }
 
     private fun saveTask() {
+        if (titleView.text.isEmpty()) {
+            titleView.error = "Empty"
+            return
+        }
         GlobalScope.launch(Dispatchers.IO) {
             repository.createTask(
                 titleView.text.toString(),
