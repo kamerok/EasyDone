@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
+import easydone.coreui.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,10 +22,10 @@ class CreateTaskFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_create_task, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_create_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        requireActivity().showKeyboard()
         createView.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 repository.createTask(
