@@ -18,12 +18,12 @@ class HomeFragment : Fragment() {
 
     private lateinit var tabs: List<Tab>
     private lateinit var fragmentFactory: (Int) -> Fragment
-    private lateinit var domainRepository: DomainRepository
+    private lateinit var repository: DomainRepository
     private lateinit var navigator: HomeNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        domainRepository.refresh()
+        repository.refresh()
     }
 
     override fun onCreateView(
@@ -35,6 +35,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         settingsView.setOnClickListener { navigator.navigateToSettings() }
+        refreshLayout.setOnRefreshListener {
+            repository.refresh()
+            refreshLayout.isRefreshing = false
+        }
         viewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItem(position: Int): Fragment = fragmentFactory(position)
 
@@ -43,6 +47,10 @@ class HomeFragment : Fragment() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 bottomNavigationView.selectedItemId = position
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                refreshLayout.isEnabled = state == ViewPager2.SCROLL_STATE_IDLE
             }
         })
         bottomNavigationView.setBackgroundColor(Color.WHITE)
@@ -61,7 +69,7 @@ class HomeFragment : Fragment() {
     data class Dependencies(
         val tabs: List<Tab>,
         val fragmentFactory: (Int) -> Fragment,
-        val domainRepository: DomainRepository,
+        val repository: DomainRepository,
         val navigator: HomeNavigator
     )
 
@@ -69,7 +77,7 @@ class HomeFragment : Fragment() {
         fun create(dependencies: Dependencies): Fragment = HomeFragment().apply {
             tabs = dependencies.tabs
             fragmentFactory = dependencies.fragmentFactory
-            domainRepository = dependencies.domainRepository
+            repository = dependencies.repository
             navigator = dependencies.navigator
         }
     }

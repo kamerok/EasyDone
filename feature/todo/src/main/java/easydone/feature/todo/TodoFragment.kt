@@ -23,19 +23,20 @@ class TodoFragment : Fragment() {
 
     private val adapter by lazy { TaskAdapter { navigator.navigateToTask(it) } }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_todo, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView.adapter = adapter
-        refreshLayout.setOnRefreshListener {
-            repository.refresh()
-            refreshLayout.isRefreshing = false
-        }
 
         GlobalScope.launch(Dispatchers.IO) {
             repository.getTasks(false).collect { tasks ->
-                val uiTasks = tasks.map { TaskUiModel(it.id, it.title, it.description.isNotEmpty()) }
+                val uiTasks =
+                    tasks.map { TaskUiModel(it.id, it.title, it.description.isNotEmpty()) }
                 withContext(Dispatchers.Main) {
                     adapter.setData(uiTasks)
                 }
