@@ -3,5 +3,6 @@
 
     <string name="inbox_tab">Inbox</string>
     <string name="todo_tab">ToDo</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

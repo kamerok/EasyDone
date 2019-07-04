@@ -2,10 +2,8 @@ package easydone.feature.home
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -30,11 +28,13 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_home, container, false)
+    ): View? {
+        setHasOptionsMenu(true)
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
-        settingsView.setOnClickListener { navigator.navigateToSettings() }
         refreshLayout.setOnRefreshListener {
             repository.refresh()
             refreshLayout.isRefreshing = false
@@ -64,6 +64,18 @@ class HomeFragment : Fragment() {
             viewPager.currentItem = item.itemId
             true
         }
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) =
+        inflater.inflate(R.menu.home_toolbar, menu)
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_settings -> {
+            navigator.navigateToSettings()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     data class Dependencies(
