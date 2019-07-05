@@ -1,6 +1,6 @@
 package easydone.core.domain
 
-import easydone.core.auth.AuthInfoHolder
+import easydone.core.network.AuthInfoHolder
 import easydone.core.database.Database
 import easydone.core.model.Task
 import easydone.library.trelloapi.TrelloApi

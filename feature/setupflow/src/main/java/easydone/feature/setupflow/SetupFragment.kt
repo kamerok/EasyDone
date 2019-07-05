@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
-import easydone.core.auth.AuthInfoHolder
+import easydone.core.network.AuthInfoHolder
 import easydone.library.trelloapi.model.Board
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

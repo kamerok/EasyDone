@@ -1,4 +1,4 @@
-package easydone.core.auth
+package easydone.core.network
 
 import easydone.library.keyvalue.KeyValueStorage
 

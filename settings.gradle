@@ -3,7 +3,7 @@ rootProject.name='EasyDone'
 include ':app', ':core:database:impl'
 include ':builder'
 
-include ':core:auth'
+include ':core:network'
 include ':core:database:api'
 include ':core:domain'
 include ':core:model'

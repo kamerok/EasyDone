@@ -5,7 +5,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
-import easydone.core.auth.AuthInfoHolder
+import easydone.core.network.AuthInfoHolder
 import easydone.core.database.Database
 import easydone.core.database.DatabaseImpl
 import easydone.core.domain.DomainRepository

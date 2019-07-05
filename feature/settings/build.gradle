@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 
 
 dependencies {
-    implementation project(':core:auth')
+    implementation project(':core:network')
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
