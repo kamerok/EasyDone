@@ -18,10 +18,8 @@ class DomainRepository(
     private val api: TrelloApi
 ) {
 
-    //TODO: use type
     @ExperimentalCoroutinesApi
-    fun getTasks(isInbox: Boolean): Flow<List<Task>> =
-        database.getTasks(if (isInbox) Task.Type.INBOX else Task.Type.TODO)
+    fun getTasks(type: Task.Type): Flow<List<Task>> = database.getTasks(type)
 
     suspend fun getTask(id: String): Task = database.getTask(id)
 

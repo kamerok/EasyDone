@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
+import easydone.core.model.Task
 import easydone.coreui.taskitem.TaskAdapter
 import easydone.coreui.taskitem.TaskUiModel
 import kotlinx.android.synthetic.main.fragment_todo.*
@@ -27,14 +28,13 @@ class TodoFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_todo, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_todo, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView.adapter = adapter
 
         GlobalScope.launch(Dispatchers.IO) {
-            repository.getTasks(false).collect { tasks ->
+            repository.getTasks(Task.Type.TODO).collect { tasks ->
                 val uiTasks =
                     tasks.map { TaskUiModel(it.id, it.title, it.description.isNotEmpty()) }
                 withContext(Dispatchers.Main) {

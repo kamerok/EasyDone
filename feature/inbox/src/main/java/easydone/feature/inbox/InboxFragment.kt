@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kamer.inbox.R
 import easydone.core.domain.DomainRepository
+import easydone.core.model.Task
 import easydone.coreui.taskitem.TaskAdapter
 import easydone.coreui.taskitem.TaskUiModel
 import kotlinx.android.synthetic.main.fragment_inbox.*
@@ -28,14 +29,13 @@ class InboxFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_inbox, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_inbox, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView.adapter = adapter
 
         GlobalScope.launch(Dispatchers.IO) {
-            repository.getTasks(true).collect { tasks ->
+            repository.getTasks(Task.Type.INBOX).collect { tasks ->
                 val uiTasks =
                     tasks.map { TaskUiModel(it.id, it.title, it.description.isNotEmpty()) }
                 withContext(Dispatchers.Main) {
