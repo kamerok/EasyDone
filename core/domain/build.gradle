@@ -2,6 +2,7 @@ apply plugin: 'kotlin'
 
 dependencies {
     implementation project(':core:auth')
+    api project(':core:model')
     implementation project(':library:trelloapi')
 
     implementation Deps.kotilnStdlib

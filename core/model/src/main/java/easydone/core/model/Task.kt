@@ -1,4 +1,4 @@
-package easydone.core.domain.model
+package easydone.core.model
 
 
 data class Task(

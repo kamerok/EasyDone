@@ -1,7 +1,7 @@
 package easydone.core.domain
 
 import easydone.core.auth.AuthInfoHolder
-import easydone.core.domain.model.Task
+import easydone.core.model.Task
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Card
 import easydone.library.trelloapi.model.NestedBoard

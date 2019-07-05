@@ -4,7 +4,9 @@ include ':app'
 include ':builder'
 
 include ':core:auth'
+include ':core:database:api'
 include ':core:domain'
+include ':core:model'
 
 include ':core-ui:taskitem'
 include ':core-ui:utils'
