@@ -32,14 +32,14 @@ class DomainRepository(
 
     suspend fun moveTask(id: String) {
         val task = database.getTask(id)
-        database.updateTask(task.copy(type = if (task.type == Task.Type.INBOX) Task.Type.TODO else Task.Type.INBOX))
+        database.updateTask(task.copy(type = if (task.type == Task.Type.INBOX) Task.Type.TO_DO else Task.Type.INBOX))
     }
 
     suspend fun createTask(title: String, description: String, skipInbox: Boolean) {
         database.createTask(
             Task(
                 "",
-                if (skipInbox) Task.Type.TODO else Task.Type.INBOX,
+                if (skipInbox) Task.Type.TO_DO else Task.Type.INBOX,
                 title,
                 description,
                 false
@@ -64,7 +64,7 @@ class DomainRepository(
                     closed = task.isDone,
                     listId = when (task.type) {
                         Task.Type.INBOX -> oldBoard.lists.first().id
-                        Task.Type.TODO -> oldBoard.lists[1].id
+                        Task.Type.TO_DO -> oldBoard.lists[1].id
                     }
                 )
             }
@@ -73,7 +73,7 @@ class DomainRepository(
                 api.postCard(
                     listId = when (task.type) {
                         Task.Type.INBOX -> oldBoard.lists.first().id
-                        Task.Type.TODO -> oldBoard.lists[1].id
+                        Task.Type.TO_DO -> oldBoard.lists[1].id
                     },
                     name = task.title,
                     desc = task.description,
@@ -84,7 +84,7 @@ class DomainRepository(
 
             val nestedBoard = api.boardData(boardId, TrelloApi.API_KEY, token)
             database.putData(nestedBoard.cards.map { card ->
-                card.toTask(if (nestedBoard.lists.first().id == card.idList) Task.Type.INBOX else Task.Type.TODO)
+                card.toTask(if (nestedBoard.lists.first().id == card.idList) Task.Type.INBOX else Task.Type.TO_DO)
             })
         }
     }

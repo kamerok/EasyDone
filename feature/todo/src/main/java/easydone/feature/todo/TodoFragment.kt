@@ -34,7 +34,7 @@ class TodoFragment : Fragment() {
         recyclerView.adapter = adapter
 
         GlobalScope.launch(Dispatchers.IO) {
-            repository.getTasks(Task.Type.TODO).collect { tasks ->
+            repository.getTasks(Task.Type.TO_DO).collect { tasks ->
                 val uiTasks =
                     tasks.map { TaskUiModel(it.id, it.title, it.description.isNotEmpty()) }
                 withContext(Dispatchers.Main) {

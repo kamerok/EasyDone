@@ -10,7 +10,7 @@ data class Task(
 ) {
 
     enum class Type {
-        INBOX, TODO
+        INBOX, TO_DO
     }
 
 }
