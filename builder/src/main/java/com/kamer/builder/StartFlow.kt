@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
 import easydone.core.auth.AuthInfoHolder
+import easydone.core.database.Database
+import easydone.core.database.DatabaseImpl
 import easydone.core.domain.DomainRepository
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
@@ -56,7 +58,8 @@ object StartFlow {
             .build()
             .create(TrelloApi::class.java)
     }
-    private val repository by lazy { DomainRepository(authInfoHolder, api) }
+    private val database: Database by lazy { DatabaseImpl() }
+    private val repository by lazy { DomainRepository(authInfoHolder, database, api) }
 
     fun start(activity: AppCompatActivity, containerId: Int) {
         application = activity.application

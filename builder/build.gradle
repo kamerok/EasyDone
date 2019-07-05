@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 dependencies {
     implementation project(':core:auth')
+    implementation project(':core:database:api')
+    implementation project(':core:database:impl')
     implementation project(':core:domain')
 
     implementation project(':feature:createtask')

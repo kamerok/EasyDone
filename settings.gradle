@@ -1,6 +1,6 @@
 rootProject.name='EasyDone'
 
-include ':app'
+include ':app', ':core:database:impl'
 include ':builder'
 
 include ':core:auth'

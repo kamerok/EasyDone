@@ -25,10 +25,10 @@ interface TrelloApi {
         @Path("id") id: String,
         @Query("key") apiKey: String,
         @Query("token") token: String,
-        @Query("name") name: String? = null,
-        @Query("desc") desc: String? = null,
-        @Query("closed") closed: Boolean? = null,
-        @Query("idList") listId: String? = null
+        @Query("name") name: String,
+        @Query("desc") desc: String,
+        @Query("closed") closed: Boolean,
+        @Query("idList") listId: String
     ): Card
 
     @POST("cards")

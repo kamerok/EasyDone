@@ -74,8 +74,11 @@ class EditTaskFragment : Fragment() {
                 repository.saveTask(
                     Task(
                         id,
+                        //TODO: use real type from editing task
+                        Task.Type.INBOX,
                         titleView.text.toString(),
-                        editDescriptionView.text.toString()
+                        editDescriptionView.text.toString(),
+                        false
                     )
                 )
                 navigator.closeScreen()
