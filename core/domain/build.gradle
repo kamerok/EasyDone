@@ -4,7 +4,6 @@ dependencies {
     implementation project(':core:network')
     implementation project(':core:database:api')
     api project(':core:model')
-    implementation project(':library:trelloapi')
 
     implementation Deps.kotilnStdlib
     implementation Deps.coroutines_core

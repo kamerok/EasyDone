@@ -9,6 +9,7 @@ import easydone.core.network.AuthInfoHolder
 import easydone.core.database.Database
 import easydone.core.database.DatabaseImpl
 import easydone.core.domain.DomainRepository
+import easydone.core.network.Network
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
@@ -59,7 +60,8 @@ object StartFlow {
             .create(TrelloApi::class.java)
     }
     private val database: Database by lazy { DatabaseImpl() }
-    private val repository by lazy { DomainRepository(authInfoHolder, database, api) }
+    private val network: Network by lazy { Network(api, authInfoHolder) }
+    private val repository by lazy { DomainRepository(database, network) }
 
     fun start(activity: AppCompatActivity, containerId: Int) {
         application = activity.application

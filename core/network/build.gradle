@@ -2,7 +2,9 @@ apply plugin: 'kotlin'
 
 
 dependencies {
+    implementation project(':core:model')
     implementation project(':library:keyvalue')
+    implementation project(':library:trelloapi')
 
     implementation Deps.kotilnStdlib
 }

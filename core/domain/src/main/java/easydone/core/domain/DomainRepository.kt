@@ -1,10 +1,8 @@
 package easydone.core.domain
 
-import easydone.core.network.AuthInfoHolder
 import easydone.core.database.Database
 import easydone.core.model.Task
-import easydone.library.trelloapi.TrelloApi
-import easydone.library.trelloapi.model.Card
+import easydone.core.network.Network
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -13,9 +11,8 @@ import kotlinx.coroutines.launch
 
 
 class DomainRepository(
-    private val authInfoHolder: AuthInfoHolder,
     private val database: Database,
-    private val api: TrelloApi
+    private val network: Network
 ) {
 
     @ExperimentalCoroutinesApi
@@ -38,57 +35,23 @@ class DomainRepository(
     suspend fun createTask(title: String, description: String, skipInbox: Boolean) {
         database.createTask(
             Task(
-                "",
-                if (skipInbox) Task.Type.TO_DO else Task.Type.INBOX,
-                title,
-                description,
-                false
+                id = "",
+                type = if (skipInbox) Task.Type.TO_DO else Task.Type.INBOX,
+                title = title,
+                description = description,
+                isDone = false
             )
         )
     }
 
     fun refresh() {
         GlobalScope.launch(Dispatchers.IO) {
-            val boardId = authInfoHolder.getBoardId()!!
-            val token = authInfoHolder.getToken()!!
-            val oldBoard = api.boardData(boardId, TrelloApi.API_KEY, token)
-
-            val taskToUpdate = database.getTasksToUpdate()
-            taskToUpdate.forEach { task ->
-                api.editCard(
-                    task.id,
-                    TrelloApi.API_KEY,
-                    authInfoHolder.getToken()!!,
-                    name = task.title,
-                    desc = task.description,
-                    closed = task.isDone,
-                    listId = when (task.type) {
-                        Task.Type.INBOX -> oldBoard.lists.first().id
-                        Task.Type.TO_DO -> oldBoard.lists[1].id
-                    }
-                )
-            }
-            val taskToCreate = database.getTasksToCreate()
-            taskToCreate.forEach { task ->
-                api.postCard(
-                    listId = when (task.type) {
-                        Task.Type.INBOX -> oldBoard.lists.first().id
-                        Task.Type.TO_DO -> oldBoard.lists[1].id
-                    },
-                    name = task.title,
-                    desc = task.description,
-                    apiKey = TrelloApi.API_KEY,
-                    token = authInfoHolder.getToken()!!
-                )
-            }
-
-            val nestedBoard = api.boardData(boardId, TrelloApi.API_KEY, token)
-            database.putData(nestedBoard.cards.map { card ->
-                card.toTask(if (nestedBoard.lists.first().id == card.idList) Task.Type.INBOX else Task.Type.TO_DO)
-            })
+            network.syncTasks(
+                toUpdate = database.getTasksToUpdate(),
+                toCreate = database.getTasksToCreate()
+            )
+            database.putData(network.getAllTasks())
         }
     }
-
-    private fun Card.toTask(type: Task.Type) = Task(id, type, name, desc, false)
 
 }
