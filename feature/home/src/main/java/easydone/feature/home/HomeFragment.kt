@@ -11,6 +11,11 @@ import com.kamer.home.R
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class HomeFragment : Fragment() {
@@ -36,6 +41,13 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        GlobalScope.launch(Dispatchers.IO) {
+            synchronizer.getState().collect {
+                withContext(Dispatchers.Main) {
+                    debugProgress.text = it.toString()
+                }
+            }
+        }
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         refreshLayout.setOnRefreshListener {
             synchronizer.initiateSync()

@@ -8,10 +8,7 @@ interface Database {
 
     fun getTasks(type: Task.Type): Flow<List<Task>>
 
-    //TODO: refactor to action log
-    suspend fun getTasksToUpdate(): List<Task>
-
-    suspend fun getTasksToCreate(): List<Task>
+    suspend fun getChanges(): List<Pair<Action, Task>>
 
     suspend fun getTask(id: String): Task
 

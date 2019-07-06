@@ -14,16 +14,13 @@ class DatabaseImpl : Database {
 
     private val channel: BroadcastChannel<List<Task>> = ConflatedBroadcastChannel()
 
-    private val tasksToUpdate = mutableListOf<Task>()
-    private val tasksToCreate = mutableListOf<Task>()
+    private val changeLog = mutableListOf<Pair<Action, Task>>()
 
     override fun getTasks(type: Task.Type): Flow<List<Task>> = flow {
         channel.consumeEach { tasks -> emit(tasks.filter { it.type == type && !it.isDone }) }
     }
 
-    override suspend fun getTasksToUpdate(): List<Task> = tasksToUpdate
-
-    override suspend fun getTasksToCreate(): List<Task> = tasksToCreate
+    override suspend fun getChanges(): List<Pair<Action, Task>> = changeLog
 
     override suspend fun getTask(id: String): Task {
         val tasks = channel.asFlow().first()
@@ -31,20 +28,19 @@ class DatabaseImpl : Database {
     }
 
     override suspend fun createTask(task: Task) {
-        tasksToCreate.add(task)
+        changeLog.add(Action.CREATE to task)
         val tasks = channel.asFlow().first()
         channel.send(tasks.plus(task))
     }
 
     override suspend fun updateTask(task: Task) {
-        tasksToUpdate.add(task)
+        changeLog.add(Action.UPDATE to task)
         val tasks = channel.asFlow().first()
         channel.send(tasks.map { if (task.id == it.id) task else it })
     }
 
     override suspend fun putData(tasks: List<Task>) {
-        tasksToUpdate.clear()
-        tasksToCreate.clear()
+        changeLog.clear()
         channel.send(tasks)
     }
 
