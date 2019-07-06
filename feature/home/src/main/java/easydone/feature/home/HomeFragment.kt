@@ -9,6 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.kamer.home.R
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.Synchronizer
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
@@ -17,11 +18,12 @@ class HomeFragment : Fragment() {
     private lateinit var tabs: List<Tab>
     private lateinit var fragmentFactory: (Int) -> Fragment
     private lateinit var repository: DomainRepository
+    private lateinit var synchronizer: Synchronizer
     private lateinit var navigator: HomeNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        repository.refresh()
+        synchronizer.initiateSync()
     }
 
     override fun onCreateView(
@@ -36,7 +38,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         refreshLayout.setOnRefreshListener {
-            repository.refresh()
+            synchronizer.initiateSync()
             refreshLayout.isRefreshing = false
         }
         viewPager.adapter = object : FragmentStateAdapter(this) {
@@ -82,6 +84,7 @@ class HomeFragment : Fragment() {
         val tabs: List<Tab>,
         val fragmentFactory: (Int) -> Fragment,
         val repository: DomainRepository,
+        val synchronizer: Synchronizer,
         val navigator: HomeNavigator
     )
 
@@ -90,6 +93,7 @@ class HomeFragment : Fragment() {
             tabs = dependencies.tabs
             fragmentFactory = dependencies.fragmentFactory
             repository = dependencies.repository
+            synchronizer = dependencies.synchronizer
             navigator = dependencies.navigator
         }
     }

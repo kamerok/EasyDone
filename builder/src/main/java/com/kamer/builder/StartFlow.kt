@@ -9,6 +9,7 @@ import easydone.core.network.AuthInfoHolder
 import easydone.core.database.Database
 import easydone.core.database.DatabaseImpl
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.Synchronizer
 import easydone.core.network.Network
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
@@ -61,7 +62,8 @@ object StartFlow {
     }
     private val database: Database by lazy { DatabaseImpl() }
     private val network: Network by lazy { Network(api, authInfoHolder) }
-    private val repository by lazy { DomainRepository(database, network) }
+    private val synchronizer by  lazy { Synchronizer(network, database) }
+    private val repository by lazy { DomainRepository(database) }
 
     fun start(activity: AppCompatActivity, containerId: Int) {
         application = activity.application
@@ -161,6 +163,7 @@ object StartFlow {
                     }
                 },
                 repository = repository,
+                synchronizer = synchronizer,
                 navigator = object : HomeNavigator {
                     override fun navigateToCreate() {
                         startCreateTask()

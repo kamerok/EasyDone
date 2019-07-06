@@ -2,18 +2,11 @@ package easydone.core.domain
 
 import easydone.core.database.Database
 import easydone.core.model.Task
-import easydone.core.network.Network
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 
 
-class DomainRepository(
-    private val database: Database,
-    private val network: Network
-) {
+class DomainRepository(private val database: Database) {
 
     @ExperimentalCoroutinesApi
     fun getTasks(type: Task.Type): Flow<List<Task>> = database.getTasks(type)
@@ -42,16 +35,6 @@ class DomainRepository(
                 isDone = false
             )
         )
-    }
-
-    fun refresh() {
-        GlobalScope.launch(Dispatchers.IO) {
-            network.syncTasks(
-                toUpdate = database.getTasksToUpdate(),
-                toCreate = database.getTasksToCreate()
-            )
-            database.putData(network.getAllTasks())
-        }
     }
 
 }
