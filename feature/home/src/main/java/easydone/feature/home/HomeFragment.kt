@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
         GlobalScope.launch(Dispatchers.IO) {
             synchronizer.getState().collect {
                 withContext(Dispatchers.Main) {
-                    debugProgress.text = it.toString()
+                    debugProgress.text = it::class.java.simpleName
                 }
             }
         }
