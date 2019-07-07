@@ -5,12 +5,23 @@ CREATE TABLE task (
   id TEXT NOT NULL UNIQUE,
   type TEXT as Task.Type NOT NULL,
   title TEXT NOT NULL,
-  description TEXT,
+  description TEXT NOT NULL,
   is_done INTEGER as Boolean NOT NULL DEFAULT 0
 );
 
 clear:
 DELETE FROM task;
+
+selectById:
+SELECT *
+FROM task
+WHERE id = ?
+LIMIT 1;
+
+selectByType:
+SELECT *
+FROM task
+WHERE type = ? AND is_done = 0;
 
 selectAll:
 SELECT *

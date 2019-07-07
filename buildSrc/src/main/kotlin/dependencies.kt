@@ -19,6 +19,7 @@ object Versions {
     val markwon = "4.0.1"
     val retrofit = "2.6.0"
     val retrofit_logging = "4.0.0"
+    val rxjava = "2.2.10"
 
     val junit = "4.12"
 
@@ -50,12 +51,15 @@ object Deps {
     val kotilnStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
     val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     val coroutines_andorid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
+    val coroutines_rx2 = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${Versions.coroutines}"
     val markwon = "io.noties.markwon:core:${Versions.markwon}"
     val markwon_linkify = "io.noties.markwon:linkify:${Versions.markwon}"
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     val retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
     val retrofit_logging = "com.squareup.okhttp3:logging-interceptor:${Versions.retrofit_logging}"
+    val rxjava = "io.reactivex.rxjava2:rxjava:${Versions.rxjava}"
     val sqldelight_android = "com.squareup.sqldelight:android-driver:${Versions.sqldelight}"
+    val sqldelight_rxjava = "com.squareup.sqldelight:rxjava2-extensions:${Versions.sqldelight}"
 
     val junit = "junit:junit:${Versions.junit}"
 }

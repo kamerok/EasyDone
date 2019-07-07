@@ -7,5 +7,8 @@ dependencies {
 
     implementation Deps.kotilnStdlib
     implementation Deps.coroutines_core
+    implementation Deps.coroutines_rx2
+    implementation Deps.rxjava
     implementation Deps.sqldelight_android
+    implementation Deps.sqldelight_rxjava
 }
