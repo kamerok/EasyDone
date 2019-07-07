@@ -27,7 +27,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
         Change.Adapter(EnumColumnAdapter()),
         Delta.Adapter(EnumColumnAdapter()),
         DbTask.Adapter(EnumColumnAdapter())
-    )
+    ).apply { pragmaQueries.forceForeignKeys() }
     private val taskQueries = database.taskQueries
     private val changesQueries = database.changesQueries
 

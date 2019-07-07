@@ -1,0 +1,2 @@
+forceForeignKeys:
+PRAGMA foreign_keys = 'ON';
