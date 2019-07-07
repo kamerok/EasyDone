@@ -28,6 +28,13 @@ object Versions {
 
 }
 
+object Plugins {
+    val gradle_android = "com.android.tools.build:gradle:${Versions.gradleandroid}"
+    val gradleversions = "com.github.ben-manes:gradle-versions-plugin:${Versions.gradleversions}"
+    val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
+    val safeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidx_navigation}"
+}
+
 object Deps {
     val androidx_appcompat = "androidx.appcompat:appcompat:${Versions.androidx_appcompat}"
     val androidx_core = "androidx.core:core-ktx:${Versions.androidx_core}"
@@ -48,10 +55,4 @@ object Deps {
     val retrofit_logging = "com.squareup.okhttp3:logging-interceptor:${Versions.retrofit_logging}"
 
     val junit = "junit:junit:${Versions.junit}"
-
-    val gradle_android = "com.android.tools.build:gradle:${Versions.gradleandroid}"
-    val gradleversions = "com.github.ben-manes:gradle-versions-plugin:${Versions.gradleversions}"
-    val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-    val safeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidx_navigation}"
-
 }
