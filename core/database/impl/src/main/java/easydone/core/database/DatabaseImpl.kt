@@ -22,20 +22,22 @@ import easydone.core.database.Task as DbTask
 class DatabaseImpl(application: Application) : MyDatabase {
 
     private val driver: SqlDriver = AndroidSqliteDriver(Database.Schema, application, "database.db")
-    private val database: Database = Database(driver, DbTask.Adapter(EnumColumnAdapter()))
+    private val database: Database = Database(
+        driver,
+        Change.Adapter(EnumColumnAdapter()),
+        Delta.Adapter(EnumColumnAdapter()),
+        DbTask.Adapter(EnumColumnAdapter())
+    )
     private val taskQueries = database.taskQueries
-
-//    private val changeLog = mutableListOf<Pair<Action, Task>>()
+    private val changesQueries = database.changesQueries
 
     override fun getTasks(type: Task.Type): Flow<List<Task>> =
         taskQueries.selectByType(type).toFlow().map { dbTasks -> dbTasks.map { it.toTask() } }
 
-//    override suspend fun getChanges(): List<Pair<Action, Task>> = changeLog
-
     override suspend fun getTask(id: String): Task =
         taskQueries.selectById(id).executeAsOne().toTask()
 
-    override suspend fun createTask(taskTemplate: TaskTemplate) {
+    override suspend fun createTask(taskTemplate: TaskTemplate) = database.transaction {
         val id = UUID.randomUUID().toString()
         taskQueries.insert(
             id,
@@ -44,12 +46,35 @@ class DatabaseImpl(application: Application) : MyDatabase {
             taskTemplate.description,
             false
         )
-//        changeLog.add(Action.CREATE to taskTemplate.toTask(id))
+        changesQueries.apply {
+            insertChange(EntityName.TASK, id)
+            val changeId = lastInsertedRow().executeAsOne()
+            insertCreateDelta(changeId, EntityField.TYPE, taskTemplate.type.name)
+            insertCreateDelta(changeId, EntityField.TITLE, taskTemplate.title)
+            if (taskTemplate.description.isNotEmpty()) {
+                insertCreateDelta(changeId, EntityField.DESCRIPTION, taskTemplate.description)
+            }
+        }
     }
 
-    override suspend fun updateTask(task: Task) {
-        taskQueries.update(task.type, task.title, task.description, task.isDone, task.id)
-//        changeLog.add(Action.UPDATE to task)
+    override suspend fun updateTask(task: Task) = database.transaction {
+        val id = task.id
+        val oldTask = taskQueries.selectById(id).executeAsOne().toTask()
+        taskQueries.update(task.type, task.title, task.description, task.isDone, id)
+        if (oldTask == task) return@transaction
+        changesQueries.apply {
+            insertChange(EntityName.TASK, id)
+            val changeId = lastInsertedRow().executeAsOne()
+            fun writeChange(field: EntityField, getField: Task.() -> String) {
+                if (task.getField() != oldTask.getField()) {
+                    insertUpdateDelta(changeId, field, oldTask.getField(), task.getField())
+                }
+            }
+            writeChange(EntityField.TYPE) { type.name }
+            writeChange(EntityField.TITLE) { title }
+            writeChange(EntityField.DESCRIPTION) { description }
+            writeChange(EntityField.IS_DONE) { isDone.toString() }
+        }
     }
 
     override suspend fun putData(tasks: List<Task>) {

@@ -1,0 +1,31 @@
+import easydone.core.database.EntityField;
+import easydone.core.database.EntityName;
+
+CREATE TABLE change (
+  id INTEGER PRIMARY KEY,
+  entity_name TEXT as EntityName NOT NULL,
+  entity_id TEXT NOT NULL
+);
+
+CREATE TABLE delta (
+  change_id INTEGER NOT NULL,
+  field TEXT as EntityField NOT NULL,
+  old_value TEXT DEFAULT NULL,
+  new_value TEXT NOT NULL,
+  FOREIGN KEY (change_id) REFERENCES change(id)
+);
+
+lastInsertedRow:
+SELECT last_insert_rowid();
+
+insertChange:
+INSERT INTO change(entity_name, entity_id)
+VALUES (?, ?);
+
+insertUpdateDelta:
+INSERT INTO delta(change_id, field, old_value, new_value)
+VALUES (?, ?, ?, ?);
+
+insertCreateDelta:
+INSERT INTO delta(change_id, field, new_value)
+VALUES (?, ?, ?);
