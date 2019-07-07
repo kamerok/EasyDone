@@ -40,15 +40,15 @@ class Network(
                 closed = task.isDone,
                 listId = getListId(task.type)
             )
-            toCreate.forEach { task ->
-                api.postCard(
-                    listId = getListId(task.type),
-                    name = task.title,
-                    desc = task.description,
-                    apiKey = TrelloApi.API_KEY,
-                    token = authInfoHolder.getToken()!!
-                )
-            }
+        }
+        toCreate.forEach { task ->
+            api.postCard(
+                listId = getListId(task.type),
+                name = task.title,
+                desc = task.description,
+                apiKey = TrelloApi.API_KEY,
+                token = authInfoHolder.getToken()!!
+            )
         }
     }
 
