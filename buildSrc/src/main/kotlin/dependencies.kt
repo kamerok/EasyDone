@@ -20,6 +20,7 @@ object Versions {
     val retrofit = "2.6.0"
     val retrofit_logging = "4.0.0"
     val rxjava = "2.2.10"
+    val stetho = "1.5.1"
 
     val junit = "4.12"
 
@@ -60,6 +61,7 @@ object Deps {
     val rxjava = "io.reactivex.rxjava2:rxjava:${Versions.rxjava}"
     val sqldelight_android = "com.squareup.sqldelight:android-driver:${Versions.sqldelight}"
     val sqldelight_rxjava = "com.squareup.sqldelight:rxjava2-extensions:${Versions.sqldelight}"
+    val stetho = "com.facebook.stetho:stetho:${Versions.stetho}"
 
     val junit = "junit:junit:${Versions.junit}"
 }
