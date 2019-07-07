@@ -5,6 +5,7 @@ import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import easydone.core.model.Task
+import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.consumeEach
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import java.util.*
 import easydone.core.database.Task as DbTask
 
 
@@ -45,10 +47,11 @@ class DatabaseImpl(application: Application) : MyDatabase {
         return tasks.find { it.id == id }!!
     }
 
-    override suspend fun createTask(task: Task) {
-        changeLog.add(Action.CREATE to task)
+    override suspend fun createTask(taskTemplate: TaskTemplate) {
+        val id = UUID.randomUUID().toString()
+        changeLog.add(Action.CREATE to taskTemplate.toTask(id))
         val tasks = channel.asFlow().first()
-        channel.send(tasks.plus(task))
+        channel.send(tasks.plus(taskTemplate.toTask(id)))
     }
 
     override suspend fun updateTask(task: Task) {

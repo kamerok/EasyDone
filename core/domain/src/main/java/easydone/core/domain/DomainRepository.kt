@@ -2,6 +2,7 @@ package easydone.core.domain
 
 import easydone.core.database.MyDatabase
 import easydone.core.model.Task
+import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
@@ -27,12 +28,10 @@ class DomainRepository(private val database: MyDatabase) {
 
     suspend fun createTask(title: String, description: String, skipInbox: Boolean) {
         database.createTask(
-            Task(
-                id = "",
+            TaskTemplate(
                 type = if (skipInbox) Task.Type.TO_DO else Task.Type.INBOX,
                 title = title,
-                description = description,
-                isDone = false
+                description = description
             )
         )
     }

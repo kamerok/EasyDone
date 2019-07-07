@@ -1,6 +1,7 @@
 package easydone.core.database
 
 import easydone.core.model.Task
+import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.flow.Flow
 
 
@@ -12,7 +13,7 @@ interface MyDatabase {
 
     suspend fun getTask(id: String): Task
 
-    suspend fun createTask(task: Task)
+    suspend fun createTask(taskTemplate: TaskTemplate)
 
     suspend fun updateTask(task: Task)
 
