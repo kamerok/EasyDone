@@ -1,0 +1,21 @@
+import easydone.core.model.Task;
+
+
+CREATE TABLE task (
+  id TEXT NOT NULL UNIQUE,
+  type TEXT as Task.Type NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  is_done INTEGER as Boolean NOT NULL DEFAULT 0
+);
+
+clear:
+DELETE FROM task;
+
+selectAll:
+SELECT *
+FROM task;
+
+insert:
+INSERT INTO task(id, type, title, description, is_done)
+VALUES (?, ?, ?, ?, ?);

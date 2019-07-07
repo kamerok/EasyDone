@@ -4,7 +4,7 @@ import easydone.core.model.Task
 import kotlinx.coroutines.flow.Flow
 
 
-interface Database {
+interface MyDatabase {
 
     fun getTasks(type: Task.Type): Flow<List<Task>>
 

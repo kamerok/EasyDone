@@ -1,12 +1,12 @@
 package easydone.core.domain
 
-import easydone.core.database.Database
+import easydone.core.database.MyDatabase
 import easydone.core.model.Task
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 
-class DomainRepository(private val database: Database) {
+class DomainRepository(private val database: MyDatabase) {
 
     @ExperimentalCoroutinesApi
     fun getTasks(type: Task.Type): Flow<List<Task>> = database.getTasks(type)

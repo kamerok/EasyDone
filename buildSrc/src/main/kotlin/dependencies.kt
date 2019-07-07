@@ -25,6 +25,7 @@ object Versions {
     val kotlin = "1.3.41"
     val gradleandroid = "3.5.0-beta05"
     val gradleversions = "0.21.0"
+    val sqldelight = "1.1.3"
 
 }
 
@@ -33,6 +34,7 @@ object Plugins {
     val gradleversions = "com.github.ben-manes:gradle-versions-plugin:${Versions.gradleversions}"
     val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
     val safeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidx_navigation}"
+    val sqldelight = "com.squareup.sqldelight:gradle-plugin:${Versions.sqldelight}"
 }
 
 object Deps {
@@ -53,6 +55,7 @@ object Deps {
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     val retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
     val retrofit_logging = "com.squareup.okhttp3:logging-interceptor:${Versions.retrofit_logging}"
+    val sqldelight_android = "com.squareup.sqldelight:android-driver:${Versions.sqldelight}"
 
     val junit = "junit:junit:${Versions.junit}"
 }

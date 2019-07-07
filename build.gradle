@@ -11,6 +11,7 @@ buildscript {
         classpath Plugins.gradleversions
         classpath Plugins.kotlin
         classpath Plugins.safeArgs
+        classpath Plugins.sqldelight
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -40,6 +41,10 @@ subprojects {
                 compileOptions {
                     targetCompatibility = JavaVersion.VERSION_1_8
                     sourceCompatibility = JavaVersion.VERSION_1_8
+                }
+
+                kotlinOptions {
+                    jvmTarget = "1.8"
                 }
             }
         }

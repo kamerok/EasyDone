@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
 import easydone.core.network.AuthInfoHolder
-import easydone.core.database.Database
+import easydone.core.database.MyDatabase
 import easydone.core.database.DatabaseImpl
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
@@ -60,7 +60,7 @@ object StartFlow {
             .build()
             .create(TrelloApi::class.java)
     }
-    private val database: Database by lazy { DatabaseImpl() }
+    private val database: MyDatabase by lazy { DatabaseImpl(application) }
     private val network: Network by lazy { Network(api, authInfoHolder) }
     private val synchronizer by  lazy { Synchronizer(network, database) }
     private val repository by lazy { DomainRepository(database) }
