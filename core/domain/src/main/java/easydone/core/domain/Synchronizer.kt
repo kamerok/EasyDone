@@ -1,6 +1,5 @@
 package easydone.core.domain
 
-import easydone.core.database.Action
 import easydone.core.database.MyDatabase
 import easydone.core.network.Network
 import kotlinx.coroutines.Dispatchers
@@ -26,13 +25,13 @@ class Synchronizer(
 
     fun initiateSync() {
         GlobalScope.launch(Dispatchers.IO) {
-            val changes = database.getChanges()
+//            val changes = database.getChanges()
             stateChannel.send(State.SyncInProgress)
             try {
-                network.syncTasks(
+                /*network.syncTasks(
                     toUpdate = changes.filter { it.first == Action.UPDATE }.map { it.second },
                     toCreate = changes.filter { it.first == Action.CREATE }.map { it.second }
-                )
+                )*/
                 database.putData(network.getAllTasks())
                 stateChannel.send(State.Synced)
             } catch (e: Exception) {

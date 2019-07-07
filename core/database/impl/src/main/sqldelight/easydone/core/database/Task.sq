@@ -30,3 +30,8 @@ FROM task;
 insert:
 INSERT INTO task(id, type, title, description, is_done)
 VALUES (?, ?, ?, ?, ?);
+
+update:
+UPDATE task
+SET type = ?, title = ?, description = ?, is_done = ?
+WHERE id = ?;

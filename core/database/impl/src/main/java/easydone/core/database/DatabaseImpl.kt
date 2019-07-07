@@ -25,42 +25,47 @@ class DatabaseImpl(application: Application) : MyDatabase {
     private val database: Database = Database(driver, DbTask.Adapter(EnumColumnAdapter()))
     private val taskQueries = database.taskQueries
 
-    private val changeLog = mutableListOf<Pair<Action, Task>>()
+//    private val changeLog = mutableListOf<Pair<Action, Task>>()
 
     override fun getTasks(type: Task.Type): Flow<List<Task>> =
-        taskQueries.selectByType(type).toFlow().mapToDomain()
+        taskQueries.selectByType(type).toFlow().map { dbTasks -> dbTasks.map { it.toTask() } }
 
-    override suspend fun getChanges(): List<Pair<Action, Task>> = changeLog
+//    override suspend fun getChanges(): List<Pair<Action, Task>> = changeLog
 
     override suspend fun getTask(id: String): Task =
         taskQueries.selectById(id).executeAsOne().toTask()
 
     override suspend fun createTask(taskTemplate: TaskTemplate) {
         val id = UUID.randomUUID().toString()
-        changeLog.add(Action.CREATE to taskTemplate.toTask(id))
+        taskQueries.insert(
+            id,
+            taskTemplate.type,
+            taskTemplate.title,
+            taskTemplate.description,
+            false
+        )
+//        changeLog.add(Action.CREATE to taskTemplate.toTask(id))
     }
 
     override suspend fun updateTask(task: Task) {
-        changeLog.add(Action.UPDATE to task)
+        taskQueries.update(task.type, task.title, task.description, task.isDone, task.id)
+//        changeLog.add(Action.UPDATE to task)
     }
 
     override suspend fun putData(tasks: List<Task>) {
-        changeLog.clear()
-        taskQueries.clear()
-        tasks.forEach {
-            taskQueries.insert(it.id, it.type, it.title, it.description, it.isDone)
+        taskQueries.transaction {
+            taskQueries.clear()
+            tasks.forEach {
+                taskQueries.insert(it.id, it.type, it.title, it.description, it.isDone)
+            }
         }
     }
 
     override suspend fun clear() = database.taskQueries.clear()
 }
 
-fun DbTask.toTask() = Task(
-    id, type, title, description, is_done
-)
+fun DbTask.toTask() = Task(id, type, title, description, is_done)
 
 fun <T : Any> Query<T>.toFlow() = flow {
     asObservable().openSubscription().consumeEach { emit(it.executeAsList()) }
 }
-
-fun Flow<List<DbTask>>.mapToDomain() = map { it.map { it.toTask() } }

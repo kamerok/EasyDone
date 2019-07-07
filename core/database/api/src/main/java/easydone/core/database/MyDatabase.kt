@@ -9,7 +9,7 @@ interface MyDatabase {
 
     fun getTasks(type: Task.Type): Flow<List<Task>>
 
-    suspend fun getChanges(): List<Pair<Action, Task>>
+//    suspend fun getChanges(): List<Pair<Action, Task>>
 
     suspend fun getTask(id: String): Task
 
