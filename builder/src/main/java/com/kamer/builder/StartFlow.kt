@@ -61,8 +61,10 @@ object StartFlow {
             .create(TrelloApi::class.java)
     }
     private val database: MyDatabase by lazy { DatabaseImpl(application) }
-    private val network: Network by lazy { Network(api, authInfoHolder) }
-    private val synchronizer by  lazy { Synchronizer(network, database) }
+    private val network: Network by lazy {
+        Network(api, authInfoHolder, SharedPrefsKeyValueStorage(application, "id_mapping"))
+    }
+    private val synchronizer by lazy { Synchronizer(network, database) }
     private val repository by lazy { DomainRepository(database) }
 
     fun start(activity: AppCompatActivity, containerId: Int) {

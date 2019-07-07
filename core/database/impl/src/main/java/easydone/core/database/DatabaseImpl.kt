@@ -78,7 +78,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
     }
 
     override suspend fun putData(tasks: List<Task>) {
-        taskQueries.transaction {
+        database.transaction {
             taskQueries.clear()
             tasks.forEach {
                 taskQueries.insert(it.id, it.type, it.title, it.description, it.isDone)

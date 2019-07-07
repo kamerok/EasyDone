@@ -1,13 +1,16 @@
 package easydone.core.network
 
 import easydone.core.model.Task
+import easydone.library.keyvalue.KeyValueStorage
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Card
+import java.util.UUID
 
 
 class Network(
     private val api: TrelloApi,
-    private val authInfoHolder: AuthInfoHolder
+    private val authInfoHolder: AuthInfoHolder,
+    private val idMappings: KeyValueStorage
 ) {
 
     suspend fun getAllTasks(): List<Task> {
@@ -21,11 +24,17 @@ class Network(
             authInfoHolder.putTodoListId(board.lists[1].id)
         }
         return board.cards.map { card ->
+            val localId = idMappings.getString(card.id, UUID.randomUUID().toString())
+            if (!idMappings.contains(card.id)) {
+                idMappings.putString(localId, card.id)
+                idMappings.putString(card.id, localId)
+            }
+
             val type = when (card.idList) {
                 authInfoHolder.getInboxListId() -> Task.Type.INBOX
                 else -> Task.Type.TO_DO
             }
-            card.toTask(type)
+            card.toTask(localId, type)
         }
     }
 
@@ -59,6 +68,6 @@ class Network(
         }
     }
 
-    private fun Card.toTask(type: Task.Type) = Task(id, type, name, desc, false)
+    private fun Card.toTask(id: String, type: Task.Type) = Task(id, type, name, desc, false)
 
 }
