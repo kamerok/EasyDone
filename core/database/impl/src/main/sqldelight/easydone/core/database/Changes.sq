@@ -18,6 +18,12 @@ CREATE TABLE delta (
 lastInsertedRow:
 SELECT last_insert_rowid();
 
+selectChanges:
+SELECT entity_name, entity_id, field, old_value, new_value
+FROM change
+JOIN delta ON id = change_id
+ORDER BY id;
+
 insertChange:
 INSERT INTO change(entity_name, entity_id)
 VALUES (?, ?);

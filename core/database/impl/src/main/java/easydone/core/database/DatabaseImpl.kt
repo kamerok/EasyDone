@@ -31,6 +31,17 @@ class DatabaseImpl(application: Application) : MyDatabase {
     private val taskQueries = database.taskQueries
     private val changesQueries = database.changesQueries
 
+    override suspend fun getChanges(): List<ChangeEntry> =
+        changesQueries.selectChanges().executeAsList()
+            .groupBy { it.entity_name to it.entity_id }
+            .map { entry ->
+                ChangeEntry(
+                    entry.key.first,
+                    entry.key.second,
+                    entry.value.associate { it.field to it.new_value }
+                )
+            }
+
     override fun getTasks(type: Task.Type): Flow<List<Task>> =
         taskQueries.selectByType(type).toFlow().map { dbTasks -> dbTasks.map { it.toTask() } }
 

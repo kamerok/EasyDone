@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface MyDatabase {
 
-    fun getTasks(type: Task.Type): Flow<List<Task>>
+    suspend fun getChanges(): List<ChangeEntry>
 
-//    suspend fun getChanges(): List<Pair<Action, Task>>
+    fun getTasks(type: Task.Type): Flow<List<Task>>
 
     suspend fun getTask(id: String): Task
 
