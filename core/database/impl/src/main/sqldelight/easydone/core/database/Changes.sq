@@ -14,14 +14,14 @@ CREATE TABLE delta (
   old_value TEXT DEFAULT NULL,
   new_value TEXT NOT NULL,
   UNIQUE(change_id, field),
-  FOREIGN KEY (change_id) REFERENCES change(id)
+  FOREIGN KEY (change_id) REFERENCES change(id) ON DELETE CASCADE
 );
 
 lastInsertedRow:
 SELECT last_insert_rowid();
 
 selectChanges:
-SELECT entity_name, entity_id, field, old_value, new_value
+SELECT id, entity_name, entity_id, field, old_value, new_value
 FROM change
 JOIN delta ON id = change_id
 ORDER BY id;

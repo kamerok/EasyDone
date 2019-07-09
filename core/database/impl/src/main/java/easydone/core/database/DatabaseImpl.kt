@@ -33,14 +33,17 @@ class DatabaseImpl(application: Application) : MyDatabase {
 
     override suspend fun getChanges(): List<ChangeEntry> =
         changesQueries.selectChanges().executeAsList()
-            .groupBy { it.entity_name to it.entity_id }
+            .groupBy { it.id }
             .map { entry ->
                 ChangeEntry(
-                    entry.key.first,
-                    entry.key.second,
+                    entry.key,
+                    entry.value.first().entity_name,
+                    entry.value.first().entity_id,
                     entry.value.associate { it.field to it.new_value }
                 )
             }
+
+    override suspend fun deleteChange(id: Long) = changesQueries.deleteChange(id)
 
     override fun getTasks(type: Task.Type): Flow<List<Task>> =
         taskQueries.selectByType(type).toFlow().map { dbTasks -> dbTasks.map { it.toTask() } }
