@@ -29,7 +29,8 @@ class Synchronizer(
             try {
                 val changes = database.getChanges()
                 for (change in changes) {
-                    //TODO: send changes
+                    network.syncChange(change.entityId, change.fields)
+                    database.deleteChange(change.changeId)
                 }
                 database.putData(network.getAllTasks())
                 stateChannel.send(State.Synced)

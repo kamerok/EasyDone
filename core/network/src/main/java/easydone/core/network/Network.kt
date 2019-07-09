@@ -1,5 +1,6 @@
 package easydone.core.network
 
+import easydone.core.model.EntityField
 import easydone.core.model.Task
 import easydone.library.keyvalue.KeyValueStorage
 import easydone.library.trelloapi.TrelloApi
@@ -38,26 +39,27 @@ class Network(
         }
     }
 
-    suspend fun syncTasks(toUpdate: List<Task>, toCreate: List<Task>) {
-        toUpdate.forEach { task ->
+    suspend fun syncChange(id: String, fields: Map<EntityField, Any>) {
+        if (idMappings.contains(id)) {
+            val serverId: String = idMappings.getString(id)!!
             api.editCard(
-                task.id,
+                serverId,
                 TrelloApi.API_KEY,
                 authInfoHolder.getToken()!!,
-                name = task.title,
-                desc = task.description,
-                closed = task.isDone,
-                listId = getListId(task.type)
+                name = fields[EntityField.TITLE] as? String,
+                desc = fields[EntityField.DESCRIPTION] as? String,
+                closed = fields[EntityField.IS_DONE] as? Boolean,
+                listId = (fields[EntityField.TYPE] as? Task.Type)?.let { getListId(it) }
             )
-        }
-        toCreate.forEach { task ->
+        } else {
             api.postCard(
-                listId = getListId(task.type),
-                name = task.title,
-                desc = task.description,
+                listId = getListId(fields[EntityField.TYPE] as Task.Type),
+                name = fields[EntityField.TITLE] as String,
+                desc = fields[EntityField.DESCRIPTION] as? String,
                 apiKey = TrelloApi.API_KEY,
                 token = authInfoHolder.getToken()!!
             )
+            //TODO: receive created id
         }
     }
 

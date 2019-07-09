@@ -1,16 +1,13 @@
 package easydone.core.database
 
+import easydone.core.model.EntityField
 import easydone.core.model.Task
 
-enum class EntityField {
-    TYPE, TITLE, DESCRIPTION, IS_DONE;
-
-    fun getMapper(): Mapper = when (this) {
-        TYPE -> TypeMapper
-        TITLE -> StringMapper
-        DESCRIPTION -> StringMapper
-        IS_DONE -> BooleanMapper
-    }
+fun EntityField.getMapper(): Mapper = when (this) {
+    EntityField.TYPE -> TypeMapper
+    EntityField.TITLE -> StringMapper
+    EntityField.DESCRIPTION -> StringMapper
+    EntityField.IS_DONE -> BooleanMapper
 }
 
 interface Mapper {

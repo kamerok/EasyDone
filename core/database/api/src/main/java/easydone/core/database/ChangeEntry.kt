@@ -1,9 +1,11 @@
 package easydone.core.database
 
+import easydone.core.model.EntityField
+
 
 data class ChangeEntry(
     val changeId: Long,
     val entityName: EntityName,
     val entityId: String,
-    val map: Map<EntityField, Any>
+    val fields: Map<EntityField, Any>
 )

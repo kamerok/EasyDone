@@ -25,17 +25,17 @@ interface TrelloApi {
         @Path("id") id: String,
         @Query("key") apiKey: String,
         @Query("token") token: String,
-        @Query("name") name: String,
-        @Query("desc") desc: String,
-        @Query("closed") closed: Boolean,
-        @Query("idList") listId: String
+        @Query("name") name: String?,
+        @Query("desc") desc: String?,
+        @Query("closed") closed: Boolean?,
+        @Query("idList") listId: String?
     ): Card
 
     @POST("cards")
     suspend fun postCard(
         @Query("idList") listId: String,
         @Query("name") name: String,
-        @Query("desc") desc: String,
+        @Query("desc") desc: String?,
         @Query("pos") pos: String = "bottom",
         @Query("key") apiKey: String,
         @Query("token") token: String
