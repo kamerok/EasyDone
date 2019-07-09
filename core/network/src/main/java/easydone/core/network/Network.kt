@@ -52,14 +52,15 @@ class Network(
                 listId = (fields[EntityField.TYPE] as? Task.Type)?.let { getListId(it) }
             )
         } else {
-            api.postCard(
+            val card = api.postCard(
                 listId = getListId(fields[EntityField.TYPE] as Task.Type),
                 name = fields[EntityField.TITLE] as String,
                 desc = fields[EntityField.DESCRIPTION] as? String,
                 apiKey = TrelloApi.API_KEY,
                 token = authInfoHolder.getToken()!!
             )
-            //TODO: receive created id
+            idMappings.putString(id, card.id)
+            idMappings.putString(card.id, id)
         }
     }
 

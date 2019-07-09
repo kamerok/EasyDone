@@ -39,6 +39,6 @@ interface TrelloApi {
         @Query("pos") pos: String = "bottom",
         @Query("key") apiKey: String,
         @Query("token") token: String
-    )
+    ): Card
 
 }
