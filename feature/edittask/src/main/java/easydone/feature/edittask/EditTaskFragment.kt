@@ -27,6 +27,8 @@ class EditTaskFragment : Fragment() {
     private lateinit var repository: DomainRepository
     private lateinit var navigator: EditTaskNavigator
 
+    private lateinit var originalTask: Task
+
     private val markwon by lazy {
         Markwon
             .builder(requireContext())
@@ -54,6 +56,7 @@ class EditTaskFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         GlobalScope.launch(Dispatchers.IO) {
             val task = repository.getTask(id)
+            originalTask = task
             withContext(Dispatchers.Main) {
                 titleView.setText(task.title)
                 editDescriptionView.setText(task.description)
@@ -74,8 +77,7 @@ class EditTaskFragment : Fragment() {
                 repository.saveTask(
                     Task(
                         id,
-                        //TODO: use real type from editing task
-                        Task.Type.INBOX,
+                        originalTask.type,
                         titleView.text.toString(),
                         editDescriptionView.text.toString(),
                         false
