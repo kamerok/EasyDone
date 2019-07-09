@@ -39,7 +39,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
                     entry.key,
                     entry.value.first().entity_name,
                     entry.value.first().entity_id,
-                    entry.value.associate { it.field to it.new_value }
+                    entry.value.associate { it.field to it.field.getMapper().toValue(it.new_value) }
                 )
             }
 
@@ -85,9 +85,10 @@ class DatabaseImpl(application: Application) : MyDatabase {
                 lastInsertedRow().executeAsOne()
             }
 
-            fun writeDelta(field: EntityField, getField: Task.() -> String) {
-                val previousValue = oldTask.getField()
-                val newValue = task.getField()
+            fun <T : Any> writeDelta(field: EntityField, getField: Task.() -> T) {
+                val mapper = field.getMapper()
+                val previousValue = mapper.toString(oldTask.getField())
+                val newValue = mapper.toString(task.getField())
                 if (newValue == previousValue) return
                 val oldDelta = selectDelta(changeId, field).executeAsOneOrNull()
 
@@ -101,10 +102,10 @@ class DatabaseImpl(application: Application) : MyDatabase {
                     }
                 }
             }
-            writeDelta(EntityField.TYPE) { type.name }
+            writeDelta(EntityField.TYPE) { type }
             writeDelta(EntityField.TITLE) { title }
             writeDelta(EntityField.DESCRIPTION) { description }
-            writeDelta(EntityField.IS_DONE) { isDone.toString() }
+            writeDelta(EntityField.IS_DONE) { isDone }
 
             if (selectDeltaCount(changeId).executeAsOne() == 0L) {
                 deleteChange(changeId)

@@ -25,13 +25,12 @@ class Synchronizer(
 
     fun initiateSync() {
         GlobalScope.launch(Dispatchers.IO) {
-//            val changes = database.getChanges()
             stateChannel.send(State.SyncInProgress)
             try {
-                /*network.syncTasks(
-                    toUpdate = changes.filter { it.first == Action.UPDATE }.map { it.second },
-                    toCreate = changes.filter { it.first == Action.CREATE }.map { it.second }
-                )*/
+                val changes = database.getChanges()
+                for (change in changes) {
+                    //TODO: send changes
+                }
                 database.putData(network.getAllTasks())
                 stateChannel.send(State.Synced)
             } catch (e: Exception) {

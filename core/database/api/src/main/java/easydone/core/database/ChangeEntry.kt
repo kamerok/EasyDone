@@ -5,5 +5,5 @@ data class ChangeEntry(
     val changeId: Long,
     val entityName: EntityName,
     val entityId: String,
-    val map: Map<EntityField, String>
+    val map: Map<EntityField, Any>
 )
