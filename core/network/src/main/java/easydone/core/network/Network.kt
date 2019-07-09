@@ -24,19 +24,21 @@ class Network(
         if (authInfoHolder.getTodoListId().isNullOrEmpty()) {
             authInfoHolder.putTodoListId(board.lists[1].id)
         }
-        return board.cards.map { card ->
-            val localId = idMappings.getString(card.id, UUID.randomUUID().toString())
-            if (!idMappings.contains(card.id)) {
-                idMappings.putString(localId, card.id)
-                idMappings.putString(card.id, localId)
-            }
+        return board.cards
+            .filter { it.idList == authInfoHolder.getTodoListId() || it.idList == authInfoHolder.getInboxListId() }
+            .map { card ->
+                val localId = idMappings.getString(card.id, UUID.randomUUID().toString())
+                if (!idMappings.contains(card.id)) {
+                    idMappings.putString(localId, card.id)
+                    idMappings.putString(card.id, localId)
+                }
 
-            val type = when (card.idList) {
-                authInfoHolder.getInboxListId() -> Task.Type.INBOX
-                else -> Task.Type.TO_DO
+                val type = when (card.idList) {
+                    authInfoHolder.getInboxListId() -> Task.Type.INBOX
+                    else -> Task.Type.TO_DO
+                }
+                card.toTask(localId, type)
             }
-            card.toTask(localId, type)
-        }
     }
 
     suspend fun syncChange(id: String, fields: Map<EntityField, Any>) {
