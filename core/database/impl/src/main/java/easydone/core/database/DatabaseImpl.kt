@@ -72,19 +72,40 @@ class DatabaseImpl(application: Application) : MyDatabase {
         val id = task.id
         val oldTask = taskQueries.selectById(id).executeAsOne().toTask()
         taskQueries.update(task.type, task.title, task.description, task.isDone, id)
-        if (oldTask == task) return@transaction
+
         changesQueries.apply {
-            insertChange(EntityName.TASK, id)
-            val changeId = lastInsertedRow().executeAsOne()
-            fun writeChange(field: EntityField, getField: Task.() -> String) {
-                if (task.getField() != oldTask.getField()) {
-                    insertUpdateDelta(changeId, field, oldTask.getField(), task.getField())
+            val existingChange = selectChange(EntityName.TASK, id).executeAsOneOrNull()
+            val changeId = if (existingChange != null) {
+                existingChange.id
+            } else {
+                insertChange(EntityName.TASK, id)
+                lastInsertedRow().executeAsOne()
+            }
+
+            fun writeDelta(field: EntityField, getField: Task.() -> String) {
+                val previousValue = oldTask.getField()
+                val newValue = task.getField()
+                if (newValue == previousValue) return
+                val oldDelta = selectDelta(changeId, field).executeAsOneOrNull()
+
+                if (oldDelta == null) {
+                    insertUpdateDelta(changeId, field, previousValue, newValue)
+                } else {
+                    if (newValue != oldDelta.old_value) {
+                        updateDelta(newValue, changeId, field)
+                    } else {
+                        deleteDelta(changeId, field)
+                    }
                 }
             }
-            writeChange(EntityField.TYPE) { type.name }
-            writeChange(EntityField.TITLE) { title }
-            writeChange(EntityField.DESCRIPTION) { description }
-            writeChange(EntityField.IS_DONE) { isDone.toString() }
+            writeDelta(EntityField.TYPE) { type.name }
+            writeDelta(EntityField.TITLE) { title }
+            writeDelta(EntityField.DESCRIPTION) { description }
+            writeDelta(EntityField.IS_DONE) { isDone.toString() }
+
+            if (selectDeltaCount(changeId).executeAsOne() == 0L) {
+                deleteChange(changeId)
+            }
         }
     }
 
