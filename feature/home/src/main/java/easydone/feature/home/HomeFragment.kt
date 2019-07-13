@@ -60,10 +60,6 @@ class HomeFragment : Fragment() {
                 }
         }
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
-        refreshLayout.setOnRefreshListener {
-            synchronizer.initiateSync()
-            refreshLayout.isRefreshing = false
-        }
         viewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItem(position: Int): Fragment = fragmentFactory(position)
 
@@ -72,10 +68,6 @@ class HomeFragment : Fragment() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 bottomNavigationView.selectedItemId = position
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                refreshLayout.isEnabled = state == ViewPager2.SCROLL_STATE_IDLE
             }
         })
         bottomNavigationView.setBackgroundColor(Color.WHITE)
@@ -98,6 +90,10 @@ class HomeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_settings -> {
             navigator.navigateToSettings()
+            true
+        }
+        R.id.action_sync -> {
+            synchronizer.initiateSync()
             true
         }
         else -> super.onOptionsItemSelected(item)
