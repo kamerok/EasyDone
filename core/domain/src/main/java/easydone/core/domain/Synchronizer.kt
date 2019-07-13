@@ -1,7 +1,11 @@
 package easydone.core.domain
 
+import easydone.core.database.ChangeEntry
+import easydone.core.database.EntityField
 import easydone.core.database.MyDatabase
+import easydone.core.model.Task
 import easydone.core.network.Network
+import easydone.core.network.TaskDelta
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -31,7 +35,7 @@ class Synchronizer(
             try {
                 val changes = database.getChanges()
                 for (change in changes) {
-                    network.syncChange(change.entityId, change.fields)
+                    network.syncTaskDelta(change.toDelta())
                     database.deleteChange(change.changeId)
                 }
                 database.putData(network.getAllTasks())
@@ -44,3 +48,11 @@ class Synchronizer(
     }
 
 }
+
+private fun ChangeEntry.toDelta() = TaskDelta(
+    id = entityId,
+    type = fields[EntityField.TYPE] as Task.Type?,
+    title = fields[EntityField.TITLE] as String?,
+    description = fields[EntityField.DESCRIPTION] as String?,
+    isDone = fields[EntityField.IS_DONE] as Boolean?
+)

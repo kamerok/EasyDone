@@ -1,6 +1,5 @@
 package easydone.core.network
 
-import easydone.core.model.EntityField
 import easydone.core.model.Task
 import easydone.library.keyvalue.KeyValueStorage
 import easydone.library.trelloapi.TrelloApi
@@ -41,28 +40,28 @@ class Network(
             }
     }
 
-    suspend fun syncChange(id: String, fields: Map<EntityField, Any>) {
-        if (idMappings.contains(id)) {
-            val serverId: String = idMappings.getString(id)!!
+    suspend fun syncTaskDelta(delta: TaskDelta) {
+        if (idMappings.contains(delta.id)) {
+            val serverId: String = idMappings.getString(delta.id)!!
             api.editCard(
                 serverId,
                 TrelloApi.API_KEY,
                 authInfoHolder.getToken()!!,
-                name = fields[EntityField.TITLE] as? String,
-                desc = fields[EntityField.DESCRIPTION] as? String,
-                closed = fields[EntityField.IS_DONE] as? Boolean,
-                listId = (fields[EntityField.TYPE] as? Task.Type)?.let { getListId(it) }
+                name = delta.title,
+                desc = delta.description,
+                closed = delta.isDone,
+                listId = delta.type?.let { getListId(it) }
             )
         } else {
             val card = api.postCard(
-                listId = getListId(fields[EntityField.TYPE] as Task.Type),
-                name = fields[EntityField.TITLE] as String,
-                desc = fields[EntityField.DESCRIPTION] as? String,
+                listId = getListId(delta.type!!),
+                name = delta.title!!,
+                desc = delta.description,
                 apiKey = TrelloApi.API_KEY,
                 token = authInfoHolder.getToken()!!
             )
-            idMappings.putString(id, card.id)
-            idMappings.putString(card.id, id)
+            idMappings.putString(delta.id, card.id)
+            idMappings.putString(card.id, delta.id)
         }
     }
 

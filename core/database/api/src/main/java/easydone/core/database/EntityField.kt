@@ -1,6 +1,5 @@
 package easydone.core.database
 
-import easydone.core.model.EntityField
 import easydone.core.model.Task
 
 fun EntityField.getMapper(): Mapper = when (this) {
@@ -28,4 +27,8 @@ object BooleanMapper : Mapper {
 object StringMapper : Mapper {
     override fun toString(value: Any): String = value as String
     override fun toValue(string: String): Any = string
+}
+
+enum class EntityField {
+    TYPE, TITLE, DESCRIPTION, IS_DONE;
 }
