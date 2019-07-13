@@ -42,9 +42,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         GlobalScope.launch(Dispatchers.IO) {
-            synchronizer.getState().collect {
+            synchronizer.isSyncing().collect { isSyncing ->
                 withContext(Dispatchers.Main) {
-                    debugProgress.text = it::class.java.simpleName
+                    debugProgress.text = if (isSyncing) "(Syncing)" else ""
                 }
             }
         }

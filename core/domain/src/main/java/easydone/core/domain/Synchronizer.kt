@@ -17,15 +17,15 @@ class Synchronizer(
     private val database: MyDatabase
 ) {
 
-    private val stateChannel: BroadcastChannel<State> = ConflatedBroadcastChannel(State.Synced)
+    private val stateChannel: BroadcastChannel<Boolean> = ConflatedBroadcastChannel(false)
 
-    fun getState(): Flow<State> = flow {
+    fun isSyncing(): Flow<Boolean> = flow {
         stateChannel.consumeEach { emit(it) }
     }
 
     fun initiateSync() {
         GlobalScope.launch(Dispatchers.IO) {
-            stateChannel.send(State.SyncInProgress)
+            stateChannel.send(true)
             try {
                 val changes = database.getChanges()
                 for (change in changes) {
@@ -33,21 +33,12 @@ class Synchronizer(
                     database.deleteChange(change.changeId)
                 }
                 database.putData(network.getAllTasks())
-                stateChannel.send(State.Synced)
             } catch (e: Exception) {
-                stateChannel.send(State.HasChanges)
+                //TODO: handle sync error
+            } finally {
+                stateChannel.send(false)
             }
         }
-    }
-
-    sealed class State {
-
-        object Synced : State()
-
-        object SyncInProgress : State()
-
-        object HasChanges : State()
-
     }
 
 }
