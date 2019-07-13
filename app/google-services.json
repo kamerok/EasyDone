@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "500235694620",
+    "firebase_url": "https://easydone-18fde.firebaseio.com",
+    "project_id": "easydone-18fde",
+    "storage_bucket": "easydone-18fde.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:500235694620:android:1d8a9692db53d298",
+        "android_client_info": {
+          "package_name": "com.kamer.easydone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "500235694620-0m89u9953ga2veam1hp7iq0vsdtl18ro.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJGXlE3j-ziWFVEQiVZesLKtETYf22C9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "500235694620-0m89u9953ga2veam1hp7iq0vsdtl18ro.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

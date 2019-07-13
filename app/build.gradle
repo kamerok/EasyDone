@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'io.fabric'
 
 android {
     defaultConfig {
@@ -21,5 +22,9 @@ dependencies {
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
+    implementation Deps.crashlytics
     implementation Deps.stetho
+    implementation Deps.firebase
 }
+
+apply plugin: 'com.google.gms.google-services'
