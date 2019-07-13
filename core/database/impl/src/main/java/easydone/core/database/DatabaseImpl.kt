@@ -44,10 +44,13 @@ class DatabaseImpl(application: Application) : MyDatabase {
                 )
             }
 
+    override fun observeChangesCount(): Flow<Long> =
+        changesQueries.selectChangesCount().asFlowExecuteAsOne()
+
     override suspend fun deleteChange(id: Long) = changesQueries.deleteChange(id)
 
     override fun getTasks(type: Task.Type): Flow<List<Task>> =
-        taskQueries.selectByType(type).toFlow().map { dbTasks -> dbTasks.map { it.toTask() } }
+        taskQueries.selectByType(type).asFlow().map { dbTasks -> dbTasks.map { it.toTask() } }
 
     override suspend fun getTask(id: String): Task =
         taskQueries.selectById(id).executeAsOne().toTask()
@@ -128,6 +131,10 @@ class DatabaseImpl(application: Application) : MyDatabase {
 
 fun DbTask.toTask() = Task(id, type, title, description, is_done)
 
-fun <T : Any> Query<T>.toFlow() = flow {
+fun <T : Any> Query<T>.asFlow() = flow {
     asObservable().openSubscription().consumeEach { emit(it.executeAsList()) }
+}
+
+fun <T : Any> Query<T>.asFlowExecuteAsOne() = flow {
+    asObservable().openSubscription().consumeEach { emit(it.executeAsOne()) }
 }

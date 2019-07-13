@@ -23,6 +23,8 @@ class Synchronizer(
         stateChannel.consumeEach { emit(it) }
     }
 
+    fun observeChanges(): Flow<Long> = database.observeChangesCount()
+
     fun initiateSync() {
         GlobalScope.launch(Dispatchers.IO) {
             stateChannel.send(true)

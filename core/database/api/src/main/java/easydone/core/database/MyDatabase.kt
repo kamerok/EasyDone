@@ -9,6 +9,8 @@ interface MyDatabase {
 
     suspend fun getChanges(): List<ChangeEntry>
 
+    fun observeChangesCount(): Flow<Long>
+
     suspend fun deleteChange(id: Long)
 
     fun getTasks(type: Task.Type): Flow<List<Task>>

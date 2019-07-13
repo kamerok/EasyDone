@@ -26,6 +26,10 @@ FROM change
 JOIN delta ON id = change_id
 ORDER BY id;
 
+selectChangesCount:
+SELECT count()
+FROM change;
+
 selectChange:
 SELECT *
 FROM change

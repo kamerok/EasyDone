@@ -2,7 +2,12 @@ package easydone.feature.home
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -14,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combineLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -42,11 +48,16 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         GlobalScope.launch(Dispatchers.IO) {
-            synchronizer.isSyncing().collect { isSyncing ->
-                withContext(Dispatchers.Main) {
-                    debugProgress.text = if (isSyncing) "(Syncing)" else ""
+            synchronizer.isSyncing()
+                .combineLatest(synchronizer.observeChanges()) { isSyncing, changesCount ->
+                    isSyncing to changesCount
                 }
-            }
+                .collect { (isSyncing, changesCount) ->
+                    withContext(Dispatchers.Main) {
+                        debugProgress.text =
+                            "${if (changesCount != 0L) changesCount else ""}${if (isSyncing) "(Syncing)" else ""}"
+                    }
+                }
         }
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         refreshLayout.setOnRefreshListener {
