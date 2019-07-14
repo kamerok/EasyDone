@@ -8,6 +8,7 @@ import easydone.core.network.Network
 import easydone.core.network.TaskDelta
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.consumeEach
@@ -22,6 +23,7 @@ class Synchronizer(
 ) {
 
     private val stateChannel: BroadcastChannel<Boolean> = ConflatedBroadcastChannel(false)
+    private var syncJob: Job? = null
 
     fun isSyncing(): Flow<Boolean> = flow {
         stateChannel.consumeEach { emit(it) }
@@ -31,22 +33,30 @@ class Synchronizer(
 
     fun initiateSync() {
         GlobalScope.launch(Dispatchers.IO) {
-            stateChannel.send(true)
-            try {
-                val changes = database.getChanges()
-                for (change in changes) {
-                    network.syncTaskDelta(change.toDelta())
-                    database.deleteChange(change.changeId)
-                }
-                database.putData(network.getAllTasks())
-            } catch (e: Exception) {
-                //TODO: handle sync error
-            } finally {
-                stateChannel.send(false)
+            val currentJob = syncJob
+            if (currentJob == null || !currentJob.isActive) {
+                syncJob = launch { sync() }
+                    .also { it.invokeOnCompletion { syncJob = null } }
             }
+            syncJob?.join()
         }
     }
 
+    private suspend fun sync() {
+        stateChannel.send(true)
+        try {
+            val changes = database.getChanges()
+            for (change in changes) {
+                network.syncTaskDelta(change.toDelta())
+                database.deleteChange(change.changeId)
+            }
+            database.putData(network.getAllTasks())
+        } catch (e: Exception) {
+            //TODO: handle sync error
+        } finally {
+            stateChannel.send(false)
+        }
+    }
 }
 
 private fun ChangeEntry.toDelta() = TaskDelta(
