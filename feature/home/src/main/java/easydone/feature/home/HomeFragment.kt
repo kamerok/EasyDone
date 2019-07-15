@@ -32,6 +32,8 @@ class HomeFragment : Fragment() {
     private lateinit var synchronizer: Synchronizer
     private lateinit var navigator: HomeNavigator
 
+    private var syncView: SyncView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         synchronizer.initiateSync()
@@ -54,8 +56,10 @@ class HomeFragment : Fragment() {
                 }
                 .collect { (isSyncing, changesCount) ->
                     withContext(Dispatchers.Main) {
-                        debugProgress.text =
-                            "${if (changesCount != 0L) changesCount else ""}${if (isSyncing) "(Syncing)" else ""}"
+                        syncView?.apply {
+                            this.hasChanges = changesCount != 0L
+                            this.isSyncing = isSyncing
+                        }
                     }
                 }
         }
@@ -87,13 +91,16 @@ class HomeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) =
         inflater.inflate(R.menu.home_toolbar, menu)
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val syncView = SyncView(requireContext())
+        syncView.listener = { synchronizer.initiateSync() }
+        menu.findItem(R.id.action_sync).actionView = syncView
+        this.syncView = syncView
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_settings -> {
             navigator.navigateToSettings()
-            true
-        }
-        R.id.action_sync -> {
-            synchronizer.initiateSync()
             true
         }
         else -> super.onOptionsItemSelected(item)
