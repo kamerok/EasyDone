@@ -12,4 +12,5 @@ dependencies {
     implementation Deps.androidx_core
     implementation Deps.androidx_recyclerview
     implementation Deps.coroutines_core
+    implementation Deps.timber
 }

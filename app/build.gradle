@@ -38,8 +38,9 @@ dependencies {
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
     implementation Deps.crashlytics
-    implementation Deps.stetho
     implementation Deps.firebase
+    implementation Deps.stetho
+    implementation Deps.timber
 }
 
 apply plugin: 'com.google.gms.google-services'
