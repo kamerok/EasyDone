@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 
 dependencies {
     implementation project(':core:domain')
+    implementation project(':core:utils')
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
@@ -12,5 +13,4 @@ dependencies {
     implementation Deps.androidx_core
     implementation Deps.androidx_material
     implementation Deps.coroutines_core
-    implementation Deps.timber
 }

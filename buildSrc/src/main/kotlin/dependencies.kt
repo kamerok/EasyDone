@@ -23,7 +23,7 @@ object Versions {
     val retrofit_logging = "4.0.0"
     val rxjava = "2.2.10"
     val stetho = "1.5.1"
-    val timber = "4.7.1"
+    val timber = "5.0.0-SNAPSHOT"
 
     val junit = "4.12"
 
@@ -71,7 +71,8 @@ object Deps {
     val sqldelight_android = "com.squareup.sqldelight:android-driver:${Versions.sqldelight}"
     val sqldelight_rxjava = "com.squareup.sqldelight:rxjava2-extensions:${Versions.sqldelight}"
     val stetho = "com.facebook.stetho:stetho:${Versions.stetho}"
-    val timber = "com.jakewharton.timber:timber:${Versions.timber}"
+    val timber = "com.jakewharton.timber:timber-android:${Versions.timber}"
+    val timber_jdk = "com.jakewharton.timber:timber-jdk:${Versions.timber}"
 
     val junit = "junit:junit:${Versions.junit}"
 }

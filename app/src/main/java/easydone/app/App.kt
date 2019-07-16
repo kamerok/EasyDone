@@ -2,11 +2,12 @@ package easydone.app
 
 import android.app.Application
 import android.util.Log
-import androidx.annotation.NonNull
 import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
 import com.kamer.easydone.BuildConfig
+import timber.log.LogcatTree
 import timber.log.Timber
+import timber.log.Tree
 
 
 class App : Application() {
@@ -15,25 +16,30 @@ class App : Application() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
-            Timber.plant(Timber.DebugTree())
+            Timber.plant(LogcatTree())
         } else {
             Timber.plant(CrashReportingTree())
         }
     }
 
-    private class CrashReportingTree : Timber.Tree() {
-        override fun log(priority: Int, tag: String?, @NonNull message: String, t: Throwable?) {
+    private class CrashReportingTree : Tree() {
+        override fun performLog(
+            priority: Int,
+            tag: String?,
+            throwable: Throwable?,
+            message: String?
+        ) {
             if (priority == Log.VERBOSE || priority == Log.DEBUG) {
                 return
             }
 
             Crashlytics.log(priority, tag, message)
 
-            if (t != null) {
+            if (throwable != null) {
                 if (priority == Log.ERROR) {
-                    Crashlytics.logException(t)
+                    Crashlytics.logException(throwable)
                 } else if (priority == Log.WARN) {
-                    Crashlytics.logException(t)
+                    Crashlytics.logException(throwable)
                 }
             }
         }

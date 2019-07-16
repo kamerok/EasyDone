@@ -15,13 +15,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.kamer.home.R
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
+import easydone.core.utils.logErrors
+import easydone.core.utils.onEachMain
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combineLatest
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.launchIn
 
 
 class HomeFragment : Fragment() {
@@ -49,20 +48,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        GlobalScope.launch(Dispatchers.IO) {
-            synchronizer.isSyncing()
-                .combineLatest(synchronizer.observeChanges()) { isSyncing, changesCount ->
-                    isSyncing to changesCount
-                }
-                .collect { (isSyncing, changesCount) ->
-                    withContext(Dispatchers.Main) {
-                        syncView?.apply {
-                            this.hasChanges = changesCount != 0L
-                            this.isSyncing = isSyncing
-                        }
-                    }
-                }
-        }
+        subscribeOnSyncState()
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         viewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItem(position: Int): Fragment = fragmentFactory(position)
@@ -86,6 +72,21 @@ class HomeFragment : Fragment() {
             true
         }
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+    }
+
+    private fun subscribeOnSyncState() {
+        synchronizer.isSyncing()
+            .combineLatest(synchronizer.observeChanges()) { isSyncing, changesCount ->
+                isSyncing to changesCount
+            }
+            .onEachMain { (isSyncing, changesCount) ->
+                syncView?.apply {
+                    this.hasChanges = changesCount != 0L
+                    this.isSyncing = isSyncing
+                }
+            }
+            .logErrors()
+            .launchIn(GlobalScope)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) =

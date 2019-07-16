@@ -8,14 +8,13 @@ import androidx.fragment.app.Fragment
 import com.kamer.inbox.R
 import easydone.core.domain.DomainRepository
 import easydone.core.model.Task
+import easydone.core.utils.logErrors
+import easydone.core.utils.onEachMain
 import easydone.coreui.taskitem.TaskAdapter
 import easydone.coreui.taskitem.TaskUiModel
 import kotlinx.android.synthetic.main.fragment_inbox.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.launchIn
 
 
 class InboxFragment : Fragment() {
@@ -34,15 +33,15 @@ class InboxFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView.adapter = adapter
 
-        GlobalScope.launch(Dispatchers.IO) {
-            repository.getTasks(Task.Type.INBOX).collect { tasks ->
-                val uiTasks =
-                    tasks.map { TaskUiModel(it.id, it.title, it.description.isNotEmpty()) }
-                withContext(Dispatchers.Main) {
-                    adapter.setData(uiTasks)
+        repository.getTasks(Task.Type.INBOX)
+            .onEachMain { tasks ->
+                val uiTasks = tasks.map {
+                    TaskUiModel(it.id, it.title, it.description.isNotEmpty())
                 }
+                adapter.setData(uiTasks)
             }
-        }
+            .logErrors()
+            .launchIn(GlobalScope)
     }
 
     data class Dependencies(
