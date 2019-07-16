@@ -92,15 +92,20 @@ class HomeFragment : Fragment() {
         inflater.inflate(R.menu.home_toolbar, menu)
 
     override fun onPrepareOptionsMenu(menu: Menu) {
+        val menuItem = menu.findItem(R.id.action_sync)
         val syncView = SyncView(requireContext())
-        syncView.listener = { synchronizer.initiateSync() }
-        menu.findItem(R.id.action_sync).actionView = syncView
+        syncView.listener = { onOptionsItemSelected(menuItem) }
+        menuItem.actionView = syncView
         this.syncView = syncView
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_settings -> {
             navigator.navigateToSettings()
+            true
+        }
+        R.id.action_sync -> {
+            synchronizer.initiateSync()
             true
         }
         else -> super.onOptionsItemSelected(item)

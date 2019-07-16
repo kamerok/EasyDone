@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="?selectableItemBackgroundBorderless">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    tools:background="@android:color/holo_blue_dark">
+
+    <FrameLayout
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="center"
+        android:background="?attr/selectableItemBackgroundBorderless" />
 
     <ImageView
         android:id="@+id/iconView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="center"
         android:src="@drawable/ic_sync" />
 
@@ -17,7 +24,11 @@
         android:layout_width="6dp"
         android:layout_height="6dp"
         android:layout_gravity="end|top"
-        android:layout_margin="2dp"
-        android:background="@drawable/shape_changes" />
+        android:layout_margin="12dp"
+        android:background="@drawable/shape_changes"
+        android:scaleX="0"
+        android:scaleY="0"
+        tools:scaleX="1"
+        tools:scaleY="1" />
 
 </FrameLayout>
