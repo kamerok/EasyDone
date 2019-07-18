@@ -14,6 +14,8 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 
@@ -24,6 +26,12 @@ class Synchronizer(
 
     private val stateChannel: BroadcastChannel<Boolean> = ConflatedBroadcastChannel(false)
     private var syncJob: Job? = null
+
+    init {
+        database.observeChangesCount()
+            .onEach { if (it > 0L) initiateSync() }
+            .launchIn(GlobalScope)
+    }
 
     fun isSyncing(): Flow<Boolean> = flow {
         stateChannel.consumeEach { emit(it) }
@@ -38,7 +46,6 @@ class Synchronizer(
                 syncJob = launch { sync() }
                     .also { it.invokeOnCompletion { syncJob = null } }
             }
-            syncJob?.join()
         }
     }
 
