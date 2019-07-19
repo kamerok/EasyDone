@@ -5,17 +5,20 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
-import easydone.core.network.AuthInfoHolder
-import easydone.core.database.MyDatabase
 import easydone.core.database.DatabaseImpl
+import easydone.core.database.MyDatabase
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
+import easydone.core.network.AuthInfoHolder
 import easydone.core.network.Network
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
-import easydone.feature.home.*
+import easydone.feature.home.HomeFragment
+import easydone.feature.home.HomeNavigator
+import easydone.feature.home.InboxTab
+import easydone.feature.home.TodoTab
 import easydone.feature.inbox.InboxFragment
 import easydone.feature.inbox.InboxNavigator
 import easydone.feature.login.LoginFragment
@@ -194,7 +197,7 @@ object StartFlow {
         )
     }
 
-    private fun startCreateTask() {
+    fun startCreateTask() {
         navigator.openScreen(
             CreateTaskFragment.create(CreateTaskFragment.Dependencies(
                 repository,
