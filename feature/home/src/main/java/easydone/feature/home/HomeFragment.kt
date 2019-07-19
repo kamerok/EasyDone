@@ -17,6 +17,7 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
 import easydone.core.utils.logErrors
 import easydone.core.utils.onEachMain
+import easydone.coreui.design.setupToolbar
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.combineLatest
@@ -71,7 +72,7 @@ class HomeFragment : Fragment() {
             viewPager.currentItem = item.itemId
             true
         }
-        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+        setupToolbar()
     }
 
     private fun subscribeOnSyncState() {
