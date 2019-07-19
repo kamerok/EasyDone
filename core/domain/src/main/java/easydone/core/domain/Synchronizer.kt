@@ -40,12 +40,10 @@ class Synchronizer(
     fun observeChanges(): Flow<Long> = database.observeChangesCount()
 
     fun initiateSync() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val currentJob = syncJob
-            if (currentJob == null || !currentJob.isActive) {
-                syncJob = launch { sync() }
-                    .also { it.invokeOnCompletion { syncJob = null } }
-            }
+        val currentJob = syncJob
+        if (currentJob == null || !currentJob.isActive) {
+            syncJob = GlobalScope.launch(Dispatchers.IO) { sync() }
+                .also { it.invokeOnCompletion { syncJob = null } }
         }
     }
 
