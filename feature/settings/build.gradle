@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 
 dependencies {
     implementation project(':core:network')
+    implementation project(':core-ui:design')
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat

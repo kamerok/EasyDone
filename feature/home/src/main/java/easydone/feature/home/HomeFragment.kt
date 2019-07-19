@@ -8,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -49,6 +48,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupToolbar()
         subscribeOnSyncState()
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         viewPager.adapter = object : FragmentStateAdapter(this) {
@@ -72,7 +72,6 @@ class HomeFragment : Fragment() {
             viewPager.currentItem = item.itemId
             true
         }
-        setupToolbar()
     }
 
     private fun subscribeOnSyncState() {

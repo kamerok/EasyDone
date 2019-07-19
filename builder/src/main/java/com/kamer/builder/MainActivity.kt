@@ -12,4 +12,9 @@ class MainActivity : AppCompatActivity() {
 
         StartFlow.start(this, R.id.containerView)
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
 }
