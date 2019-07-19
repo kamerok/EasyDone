@@ -7,20 +7,19 @@ object Config {
 }
 
 object Versions {
-    val androidx_appcompat = "1.1.0-beta01"
+    val androidx_appcompat = "1.1.0-rc01"
     val androidx_core = "1.2.0-alpha02"
     val androidx_recyclerview = "1.0.0"
     val androidx_constraintLayout = "1.1.3"
     val androidx_navigation = "2.1.0-alpha05"
-    val androidx_fragment = "1.1.0-beta01"
-    val material = "1.1.0-alpha07"
+    val material = "1.1.0-alpha08"
 
     val coroutines = "1.3.0-M2"
     val crashlytics = "2.10.1"
-    val firebase = "17.0.0"
-    val markwon = "4.0.1"
+    val firebase = "17.0.1"
+    val markwon = "4.0.2"
     val retrofit = "2.6.0"
-    val retrofit_logging = "4.0.0"
+    val retrofit_logging = "4.0.1"
     val rxjava = "2.2.10"
     val stetho = "1.5.1"
     val timber = "5.0.0-SNAPSHOT"
@@ -31,8 +30,8 @@ object Versions {
     val fabric = "1.30.0"
     val gradleandroid = "3.5.0-rc01"
     val gradleversions = "0.21.0"
-    val sqldelight = "1.1.3"
-    val google_services = "4.2.0"
+    val sqldelight = "1.1.4"
+    val google_services = "4.3.0"
 
 }
 
@@ -50,7 +49,7 @@ object Deps {
     val androidx_appcompat = "androidx.appcompat:appcompat:${Versions.androidx_appcompat}"
     val androidx_core = "androidx.core:core-ktx:${Versions.androidx_core}"
     val androidx_constraintlayout = "androidx.constraintlayout:constraintlayout:${Versions.androidx_constraintLayout}"
-    val androidx_fragment = "androidx.fragment:fragment-ktx:${Versions.androidx_fragment}"
+    val androidx_fragment = "androidx.fragment:fragment-ktx:${Versions.androidx_appcompat}"
     val androidx_material = "com.google.android.material:material:${Versions.material}"
     val androidx_navigation_fragment = "androidx.navigation:navigation-fragment-ktx:${Versions.androidx_navigation}"
     val androidx_navigation_ui = "androidx.navigation:navigation-ui-ktx:${Versions.androidx_navigation}"

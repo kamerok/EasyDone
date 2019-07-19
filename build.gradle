@@ -34,8 +34,6 @@ allprojects {
 subprojects {
     afterEvaluate { project ->
         if (project.hasProperty('android')) {
-            apply plugin: "com.github.ben-manes.versions"
-
             android {
                 compileSdkVersion Config.compileSdk
 
@@ -175,5 +173,20 @@ task projectDependencyGraph {
         }
 
         println("Project module dependency graph created at ${dot.absolutePath}.png")
+    }
+}
+
+apply plugin: "com.github.ben-manes.versions"
+
+dependencyUpdates.resolutionStrategy {
+    componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'preview', 'b', 'ea'].any { qualifier ->
+                selection.candidate.version ==~ /(?i).*[.-]$qualifier[.\d-+]*/
+            }
+            if (rejected) {
+                selection.reject('Release candidate')
+            }
+        }
     }
 }

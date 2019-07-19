@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
         subscribeOnSyncState()
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         viewPager.adapter = object : FragmentStateAdapter(this) {
-            override fun getItem(position: Int): Fragment = fragmentFactory(position)
+            override fun createFragment(position: Int): Fragment = fragmentFactory(position)
 
             override fun getItemCount(): Int = tabs.size
         }
