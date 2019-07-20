@@ -33,10 +33,6 @@ import easydone.feature.todo.TodoNavigator
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Board
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 object StartFlow {
@@ -47,22 +43,7 @@ object StartFlow {
     private val authInfoHolder by lazy {
         AuthInfoHolder(SharedPrefsKeyValueStorage(application, "prefs"))
     }
-    private val api: TrelloApi by lazy {
-        Retrofit.Builder()
-            .baseUrl("https://trello.com/1/")
-            .client(
-                OkHttpClient.Builder()
-                    .addInterceptor(
-                        HttpLoggingInterceptor().apply {
-                            level = HttpLoggingInterceptor.Level.BODY
-                        }
-                    )
-                    .build()
-            )
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(TrelloApi::class.java)
-    }
+    private val api: TrelloApi by lazy { TrelloApi.build() }
     private val database: MyDatabase by lazy { DatabaseImpl(application) }
     private val network: Network by lazy {
         Network(api, authInfoHolder, SharedPrefsKeyValueStorage(application, "id_mapping"))

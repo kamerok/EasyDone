@@ -25,8 +25,4 @@ dependencies {
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
     implementation Deps.androidx_fragment
-    implementation Deps.retrofit
-    implementation Deps.retrofit_converter_gson
-    implementation Deps.retrofit_logging
-    implementation Deps.timber
 }

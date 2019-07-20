@@ -1,14 +1,14 @@
 package easydone.library.trelloapi
 
 import easydone.library.trelloapi.model.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 
 interface TrelloApi {
-
-    companion object {
-        const val API_KEY = "98c9ac26156a960889eb42586aa1bcd7"
-    }
 
     @GET("members/me?fields=none&boards=open&board_fields=id,name")
     suspend fun boards(@Query("key") apiKey: String, @Query("token") token: String): NestedBoards
@@ -41,4 +41,22 @@ interface TrelloApi {
         @Query("token") token: String
     ): Card
 
+    companion object {
+        const val API_KEY = "98c9ac26156a960889eb42586aa1bcd7"
+
+        fun build(): TrelloApi = Retrofit.Builder()
+            .baseUrl("https://trello.com/1/")
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(
+                        HttpLoggingInterceptor().apply {
+                            level = HttpLoggingInterceptor.Level.BODY
+                        }
+                    )
+                    .build()
+            )
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(TrelloApi::class.java)
+    }
 }
