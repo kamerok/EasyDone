@@ -14,7 +14,7 @@ object Versions {
     val androidx_navigation = "2.1.0-alpha05"
     val material = "1.1.0-alpha08"
 
-    val coroutines = "1.3.0-M2"
+    val coroutines = "1.3.0-RC"
     val crashlytics = "2.10.1"
     val firebase = "17.0.1"
     val markwon = "4.0.2"

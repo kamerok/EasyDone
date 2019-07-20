@@ -9,9 +9,8 @@ import com.squareup.sqldelight.runtime.rx.asObservable
 import easydone.core.model.Task
 import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.rx2.openSubscription
 import java.util.UUID
@@ -130,10 +129,8 @@ class DatabaseImpl(application: Application) : MyDatabase {
 
 fun DbTask.toTask() = Task(id, type, title, description, is_done)
 
-fun <T : Any> Query<T>.asFlow() = flow {
-    asObservable().openSubscription().consumeEach { emit(it.executeAsList()) }
-}
+fun <T : Any> Query<T>.asFlow() = asObservable().openSubscription().consumeAsFlow()
+    .map { it.executeAsList() }
 
-fun <T : Any> Query<T>.asFlowExecuteAsOne() = flow {
-    asObservable().openSubscription().consumeEach { emit(it.executeAsOne()) }
-}
+fun <T : Any> Query<T>.asFlowExecuteAsOne() = asObservable().openSubscription().consumeAsFlow()
+    .map { it.executeAsOne() }

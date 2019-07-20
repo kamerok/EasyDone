@@ -11,9 +11,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -33,9 +32,7 @@ class Synchronizer(
             .launchIn(GlobalScope)
     }
 
-    fun isSyncing(): Flow<Boolean> = flow {
-        stateChannel.consumeEach { emit(it) }
-    }
+    fun isSyncing(): Flow<Boolean> = stateChannel.openSubscription().consumeAsFlow()
 
     fun observeChanges(): Flow<Long> = database.observeChangesCount()
 
