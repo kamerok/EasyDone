@@ -20,6 +20,7 @@ dependencies {
 
     implementation project(':library:keyvalue')
     implementation project(':library:keyvalue:sharedprefs')
+    implementation project(':library:navigation')
     implementation project(':library:trelloapi')
 
     implementation Deps.kotilnStdlib

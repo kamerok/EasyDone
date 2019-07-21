@@ -31,6 +31,7 @@ import easydone.feature.setupflow.SetupFragment
 import easydone.feature.todo.TodoFragment
 import easydone.feature.todo.TodoNavigator
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
+import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Board
 

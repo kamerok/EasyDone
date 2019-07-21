@@ -27,4 +27,5 @@ include ':feature:todo'
 
 include ':library:keyvalue'
 include ':library:keyvalue:sharedprefs'
+include ':library:navigation'
 include ':library:trelloapi'
