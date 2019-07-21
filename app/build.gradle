@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation project(":builder")
+    implementation project(":activity")
 
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat

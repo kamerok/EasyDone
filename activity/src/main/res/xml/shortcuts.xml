@@ -7,7 +7,7 @@
         android:shortcutShortLabel="@string/create_shortcut">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.kamer.builder.MainActivity"
+            android:targetClass="easydone.activity.MainActivity"
             android:targetPackage="com.kamer.easydone" />
         <categories android:name="android.shortcut.task" />
     </shortcut>

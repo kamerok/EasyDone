@@ -1,8 +1,9 @@
-package com.kamer.builder
+package easydone.activity
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.kamer.builder.StartFlow
 
 class MainActivity : AppCompatActivity() {
 

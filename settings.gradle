@@ -1,5 +1,6 @@
 rootProject.name='EasyDone'
 
+include ':activity'
 include ':app'
 include ':builder'
 
