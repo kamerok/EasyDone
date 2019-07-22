@@ -1,9 +1,9 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="easydone.activity" >
+    package="easydone.activity">
 
     <application>
-        <activity android:name="easydone.activity.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -13,6 +13,11 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+
+        <activity
+            android:name=".TransparentActivity"
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:windowSoftInputMode="stateAlwaysVisible" />
     </application>
 
 </manifest>
