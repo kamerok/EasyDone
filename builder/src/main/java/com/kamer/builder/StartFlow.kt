@@ -73,6 +73,23 @@ object StartFlow {
         startInitialFlow()
     }
 
+    fun startCreate(activity: AppCompatActivity, containerId: Int) {
+        application = activity.application
+        navigator = Navigator(activity.supportFragmentManager, containerId)
+
+        navigator.openScreen(
+            CreateTaskFragment.create(CreateTaskFragment.Dependencies(
+                repository,
+                object : CreateTaskNavigator {
+                    override fun closeScreen() {
+                        activity.finish()
+                    }
+                }
+            )),
+            false
+        )
+    }
+
     private fun startInitialFlow() {
         navigator.clearStack()
         if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
