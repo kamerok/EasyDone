@@ -22,6 +22,7 @@ import easydone.feature.home.TodoTab
 import easydone.feature.inbox.InboxFragment
 import easydone.feature.inbox.InboxNavigator
 import easydone.feature.login.LoginFragment
+import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.selectboard.BoardUiModel
 import easydone.feature.selectboard.SelectBoardFragment
 import easydone.feature.settings.SettingsFragment
@@ -78,14 +79,7 @@ object StartFlow {
         navigator = Navigator(activity.supportFragmentManager, containerId)
 
         navigator.openScreen(
-            CreateTaskFragment.create(CreateTaskFragment.Dependencies(
-                repository,
-                object : CreateTaskNavigator {
-                    override fun closeScreen() {
-                        activity.finish()
-                    }
-                }
-            )),
+            QuickCreateTaskFragment.create(),
             false
         )
     }
