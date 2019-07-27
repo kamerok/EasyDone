@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">#33000000</item>
         <item name="android:statusBarColor">#33000000</item>
         <item name="android:navigationBarColor">#33000000</item>
