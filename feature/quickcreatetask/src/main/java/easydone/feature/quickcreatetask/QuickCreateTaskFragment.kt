@@ -1,9 +1,12 @@
 package easydone.feature.quickcreatetask
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import kotlinx.android.synthetic.main.fragment_quick_create_task.*
@@ -23,15 +26,26 @@ class QuickCreateTaskFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_quick_create_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        createView.setOnClickListener {
-            val title = descriptionView.text.toString()
-            if (title.isEmpty()) {
-                navigator.closeScreen()
-            } else {
-                GlobalScope.launch {
-                    repository.createTask(title, "", false)
-                    navigator.closeScreen()
+        descriptionView.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+            override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    saveTask()
+                    return true
                 }
+                return false
+            }
+        })
+        createView.setOnClickListener { saveTask() }
+    }
+
+    private fun saveTask() {
+        val title = descriptionView.text.toString()
+        if (title.isEmpty()) {
+            navigator.closeScreen()
+        } else {
+            GlobalScope.launch {
+                repository.createTask(title, "", false)
+                navigator.closeScreen()
             }
         }
     }
