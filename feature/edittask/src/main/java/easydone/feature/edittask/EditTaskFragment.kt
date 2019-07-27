@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.commonmark.node.SoftLineBreak
 
 
@@ -54,14 +53,12 @@ class EditTaskFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_edit_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        GlobalScope.launch(Dispatchers.IO) {
+        GlobalScope.launch(Dispatchers.Main) {
             val task = repository.getTask(id)
             originalTask = task
-            withContext(Dispatchers.Main) {
-                titleView.setText(task.title)
-                editDescriptionView.setText(task.description)
-                markwon.setMarkdown(descriptionView, task.description)
-            }
+            titleView.setText(task.title)
+            editDescriptionView.setText(task.description)
+            markwon.setMarkdown(descriptionView, task.description)
         }
         editView.setOnClickListener {
             isEdit = !isEdit
@@ -73,7 +70,7 @@ class EditTaskFragment : Fragment() {
             }
         }
         saveView.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
+            GlobalScope.launch {
                 repository.saveTask(
                     Task(
                         id,
@@ -87,13 +84,13 @@ class EditTaskFragment : Fragment() {
             }
         }
         archiveView.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
+            GlobalScope.launch {
                 repository.archiveTask(id)
                 navigator.closeScreen()
             }
         }
         moveView.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
+            GlobalScope.launch {
                 repository.moveTask(id)
                 navigator.closeScreen()
             }

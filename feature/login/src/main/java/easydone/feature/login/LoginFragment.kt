@@ -37,26 +37,22 @@ class LoginFragment : Fragment() {
         webView.settings.javaScriptEnabled = true
 
         loginButton.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
-                withContext(Dispatchers.Main) {
-                    loginButton.isVisible = false
-                    webView.isVisible = true
-                    webView.loadUrl("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${TrelloApi.API_KEY}\n")
-                }
+            GlobalScope.launch(Dispatchers.Main) {
+                loginButton.isVisible = false
+                webView.isVisible = true
+                webView.loadUrl("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${TrelloApi.API_KEY}\n")
             }
         }
         submitView.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
+            GlobalScope.launch(Dispatchers.Main) {
                 try {
                     val token = enterTokenView.text.toString()
-                    val nestedBoards = api.boards(TrelloApi.API_KEY, token)
-                    withContext(Dispatchers.Main) {
-                        successLogin(token, nestedBoards.boards)
+                    val nestedBoards = withContext(Dispatchers.IO) {
+                        api.boards(TrelloApi.API_KEY, token)
                     }
+                    successLogin(token, nestedBoards.boards)
                 } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
             }
         }

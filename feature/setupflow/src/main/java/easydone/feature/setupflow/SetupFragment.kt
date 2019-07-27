@@ -62,11 +62,9 @@ class SetupFragment : Fragment() {
     private fun startSelectBoard(token: String, boards: List<Board>) {
         isLogin = false
         navigator.navigateToSelectBoard(boards) { boardId ->
-            GlobalScope.launch {
+            GlobalScope.launch(Dispatchers.Main) {
                 saveData(token, boardId)
-                withContext(Dispatchers.Main) {
-                    finishListener()
-                }
+                finishListener()
             }
         }
     }
