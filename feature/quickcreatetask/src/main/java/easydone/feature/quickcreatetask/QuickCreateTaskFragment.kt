@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import kotlinx.android.synthetic.main.fragment_quick_create_task.*
@@ -35,7 +37,13 @@ class QuickCreateTaskFragment : Fragment() {
                 return false
             }
         })
+        descriptionView.doOnTextChanged { _, _, _, _ -> updateCreateViewState() }
         createView.setOnClickListener { saveTask() }
+        updateCreateViewState()
+    }
+
+    private fun updateCreateViewState() {
+        createView.isVisible = !descriptionView.text.isNullOrEmpty()
     }
 
     private fun saveTask() {
