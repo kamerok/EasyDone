@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import easydone.coreui.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_create_task.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -46,7 +45,7 @@ class CreateTaskFragment : Fragment() {
             titleView.error = "Empty"
             return
         }
-        GlobalScope.launch(Dispatchers.IO) {
+        GlobalScope.launch {
             repository.createTask(
                 titleView.text.toString(),
                 descriptionView.text.toString(),

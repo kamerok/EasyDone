@@ -8,11 +8,13 @@ import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.rx.asObservable
 import easydone.core.model.Task
 import easydone.core.model.TaskTemplate
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.rx2.openSubscription
+import kotlinx.coroutines.withContext
 import java.util.UUID
 import easydone.core.database.Task as DbTask
 
@@ -30,7 +32,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
     private val taskQueries = database.taskQueries
     private val changesQueries = database.changesQueries
 
-    override suspend fun getChanges(): List<ChangeEntry> =
+    override suspend fun getChanges(): List<ChangeEntry> = withContext(Dispatchers.IO) {
         changesQueries.selectChanges().executeAsList()
             .groupBy { it.id }
             .map { entry ->
@@ -41,81 +43,89 @@ class DatabaseImpl(application: Application) : MyDatabase {
                     entry.value.associate { it.field to it.field.getMapper().toValue(it.new_value) }
                 )
             }
+    }
 
     override fun observeChangesCount(): Flow<Long> =
         changesQueries.selectChangesCount().asFlowExecuteAsOne()
 
-    override suspend fun deleteChange(id: Long) = changesQueries.deleteChange(id)
+    override suspend fun deleteChange(id: Long) = withContext(Dispatchers.IO) {
+        changesQueries.deleteChange(id)
+    }
 
     override fun getTasks(type: Task.Type): Flow<List<Task>> =
         taskQueries.selectByType(type).asFlow().map { dbTasks -> dbTasks.map { it.toTask() } }
 
-    override suspend fun getTask(id: String): Task =
+    override suspend fun getTask(id: String): Task = withContext(Dispatchers.IO) {
         taskQueries.selectById(id).executeAsOne().toTask()
-
-    override suspend fun createTask(taskTemplate: TaskTemplate) = database.transaction {
-        val id = UUID.randomUUID().toString()
-        taskQueries.insert(
-            id,
-            taskTemplate.type,
-            taskTemplate.title,
-            taskTemplate.description,
-            false
-        )
-        changesQueries.apply {
-            insertChange(EntityName.TASK, id)
-            val changeId = lastInsertedRow().executeAsOne()
-            insertCreateDelta(changeId, EntityField.TYPE, taskTemplate.type.name)
-            insertCreateDelta(changeId, EntityField.TITLE, taskTemplate.title)
-            if (taskTemplate.description.isNotEmpty()) {
-                insertCreateDelta(changeId, EntityField.DESCRIPTION, taskTemplate.description)
-            }
-        }
     }
 
-    override suspend fun updateTask(task: Task) = database.transaction {
-        val id = task.id
-        val oldTask = taskQueries.selectById(id).executeAsOne().toTask()
-        taskQueries.update(task.type, task.title, task.description, task.isDone, id)
-
-        changesQueries.apply {
-            val existingChange = selectChange(EntityName.TASK, id).executeAsOneOrNull()
-            val changeId = if (existingChange != null) {
-                existingChange.id
-            } else {
+    override suspend fun createTask(taskTemplate: TaskTemplate) = withContext(Dispatchers.IO) {
+        database.transaction {
+            val id = UUID.randomUUID().toString()
+            taskQueries.insert(
+                id,
+                taskTemplate.type,
+                taskTemplate.title,
+                taskTemplate.description,
+                false
+            )
+            changesQueries.apply {
                 insertChange(EntityName.TASK, id)
-                lastInsertedRow().executeAsOne()
-            }
-
-            fun <T : Any> writeDelta(field: EntityField, getField: Task.() -> T) {
-                val mapper = field.getMapper()
-                val previousValue = mapper.toString(oldTask.getField())
-                val newValue = mapper.toString(task.getField())
-                if (newValue == previousValue) return
-                val oldDelta = selectDelta(changeId, field).executeAsOneOrNull()
-
-                if (oldDelta == null) {
-                    insertUpdateDelta(changeId, field, previousValue, newValue)
-                } else {
-                    if (newValue != oldDelta.old_value) {
-                        updateDelta(newValue, changeId, field)
-                    } else {
-                        deleteDelta(changeId, field)
-                    }
+                val changeId = lastInsertedRow().executeAsOne()
+                insertCreateDelta(changeId, EntityField.TYPE, taskTemplate.type.name)
+                insertCreateDelta(changeId, EntityField.TITLE, taskTemplate.title)
+                if (taskTemplate.description.isNotEmpty()) {
+                    insertCreateDelta(changeId, EntityField.DESCRIPTION, taskTemplate.description)
                 }
             }
-            writeDelta(EntityField.TYPE) { type }
-            writeDelta(EntityField.TITLE) { title }
-            writeDelta(EntityField.DESCRIPTION) { description }
-            writeDelta(EntityField.IS_DONE) { isDone }
+        }
+    }
 
-            if (selectDeltaCount(changeId).executeAsOne() == 0L) {
-                deleteChange(changeId)
+    override suspend fun updateTask(task: Task) = withContext(Dispatchers.IO) {
+        database.transaction {
+            val id = task.id
+            val oldTask = taskQueries.selectById(id).executeAsOne().toTask()
+            taskQueries.update(task.type, task.title, task.description, task.isDone, id)
+
+            changesQueries.apply {
+                val existingChange = selectChange(EntityName.TASK, id).executeAsOneOrNull()
+                val changeId = if (existingChange != null) {
+                    existingChange.id
+                } else {
+                    insertChange(EntityName.TASK, id)
+                    lastInsertedRow().executeAsOne()
+                }
+
+                fun <T : Any> writeDelta(field: EntityField, getField: Task.() -> T) {
+                    val mapper = field.getMapper()
+                    val previousValue = mapper.toString(oldTask.getField())
+                    val newValue = mapper.toString(task.getField())
+                    if (newValue == previousValue) return
+                    val oldDelta = selectDelta(changeId, field).executeAsOneOrNull()
+
+                    if (oldDelta == null) {
+                        insertUpdateDelta(changeId, field, previousValue, newValue)
+                    } else {
+                        if (newValue != oldDelta.old_value) {
+                            updateDelta(newValue, changeId, field)
+                        } else {
+                            deleteDelta(changeId, field)
+                        }
+                    }
+                }
+                writeDelta(EntityField.TYPE) { type }
+                writeDelta(EntityField.TITLE) { title }
+                writeDelta(EntityField.DESCRIPTION) { description }
+                writeDelta(EntityField.IS_DONE) { isDone }
+
+                if (selectDeltaCount(changeId).executeAsOne() == 0L) {
+                    deleteChange(changeId)
+                }
             }
         }
     }
 
-    override suspend fun putData(tasks: List<Task>) {
+    override suspend fun putData(tasks: List<Task>) = withContext(Dispatchers.IO) {
         database.transaction {
             taskQueries.clear()
             tasks.forEach {
@@ -124,7 +134,9 @@ class DatabaseImpl(application: Application) : MyDatabase {
         }
     }
 
-    override suspend fun clear() = database.taskQueries.clear()
+    override suspend fun clear() = withContext(Dispatchers.IO) {
+        database.taskQueries.clear()
+    }
 }
 
 fun DbTask.toTask() = Task(id, type, title, description, is_done)

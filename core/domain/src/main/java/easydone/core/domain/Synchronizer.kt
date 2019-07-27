@@ -6,7 +6,6 @@ import easydone.core.database.MyDatabase
 import easydone.core.model.Task
 import easydone.core.network.Network
 import easydone.core.network.TaskDelta
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -41,8 +40,9 @@ class Synchronizer(
     fun initiateSync() {
         val currentJob = syncJob
         if (currentJob == null || !currentJob.isActive) {
-            syncJob = GlobalScope.launch(Dispatchers.IO) { sync() }
-                .also { it.invokeOnCompletion { syncJob = null } }
+            syncJob = GlobalScope.launch { sync() }.also {
+                it.invokeOnCompletion { syncJob = null }
+            }
         }
     }
 
