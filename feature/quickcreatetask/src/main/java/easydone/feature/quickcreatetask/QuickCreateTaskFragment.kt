@@ -1,6 +1,7 @@
 package easydone.feature.quickcreatetask
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -28,16 +29,20 @@ class QuickCreateTaskFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_quick_create_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        descriptionView.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    saveTask()
-                    return true
+        descriptionView.apply {
+            setOnEditorActionListener(object : TextView.OnEditorActionListener {
+                override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        saveTask()
+                        return true
+                    }
+                    return false
                 }
-                return false
-            }
-        })
-        descriptionView.doOnTextChanged { _, _, _, _ -> updateCreateViewState() }
+            })
+            doOnTextChanged { _, _, _, _ -> updateCreateViewState() }
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            setRawInputType(InputType.TYPE_CLASS_TEXT)
+        }
         createView.setOnClickListener { saveTask() }
         updateCreateViewState()
     }

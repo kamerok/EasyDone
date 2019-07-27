@@ -27,9 +27,7 @@
         android:background="@null"
         android:hint="@string/title_hint"
         android:imeOptions="actionDone"
-        android:inputType="textCapSentences"
-        android:maxLines="1"
-        android:singleLine="true"
+        android:inputType="textCapSentences|textMultiLine"
         app:layout_constraintEnd_toEndOf="@id/backgroundView"
         app:layout_constraintStart_toStartOf="@id/backgroundView"
         app:layout_constraintTop_toTopOf="@id/backgroundView">
