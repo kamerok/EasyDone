@@ -24,9 +24,14 @@ class QuickCreateTaskFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         createView.setOnClickListener {
-            GlobalScope.launch {
-                repository.createTask(descriptionView.text.toString(), "", false)
+            val title = descriptionView.text.toString()
+            if (title.isEmpty()) {
                 navigator.closeScreen()
+            } else {
+                GlobalScope.launch {
+                    repository.createTask(title, "", false)
+                    navigator.closeScreen()
+                }
             }
         }
     }
