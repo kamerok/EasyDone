@@ -85,13 +85,16 @@ object StartFlow {
                     repository = repository,
                     navigator = object : QuickCreateTaskNavigator {
                         override fun closeScreen() {
-                            activity.finish()
+                            activity.finishAffinity()
                         }
                     }
                 )
             ),
             false
         )
+
+        //to start syncing
+        synchronizer
     }
 
     private fun startInitialFlow() {

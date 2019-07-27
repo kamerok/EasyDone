@@ -16,6 +16,10 @@
 
         <activity
             android:name=".TransparentActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:noHistory="true"
+            android:taskAffinity=""
             android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
     </application>
