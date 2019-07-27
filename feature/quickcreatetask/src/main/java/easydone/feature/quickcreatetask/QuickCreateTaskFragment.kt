@@ -43,7 +43,7 @@ class QuickCreateTaskFragment : Fragment() {
             })
             doOnTextChanged { _, _, _, _ -> updateCreateViewState() }
             imeOptions = EditorInfo.IME_ACTION_DONE
-            setRawInputType(InputType.TYPE_CLASS_TEXT)
+            setRawInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
         }
         createView.setOnClickListener { saveTask() }
         updateCreateViewState()
