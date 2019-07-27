@@ -29,6 +29,8 @@ class QuickCreateTaskFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_quick_create_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.setOnClickListener { navigator.closeScreen() }
+        backgroundView.setOnClickListener { }
         descriptionView.apply {
             setOnEditorActionListener(object : TextView.OnEditorActionListener {
                 override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
