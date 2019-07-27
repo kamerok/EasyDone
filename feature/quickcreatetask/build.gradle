@@ -9,4 +9,5 @@ dependencies {
     implementation Deps.androidx_appcompat
     implementation Deps.androidx_constraintlayout
     implementation Deps.coroutines_core
+    implementation Deps.timber
 }

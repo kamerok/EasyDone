@@ -21,7 +21,7 @@
             android:noHistory="true"
             android:taskAffinity=""
             android:theme="@style/Theme.AppCompat.Translucent"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysVisible|adjustNothing" />
     </application>
 
 </manifest>
