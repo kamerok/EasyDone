@@ -7,4 +7,5 @@ dependencies {
     implementation project(':library:trelloapi')
 
     implementation Deps.kotilnStdlib
+    implementation Deps.coroutines_core
 }

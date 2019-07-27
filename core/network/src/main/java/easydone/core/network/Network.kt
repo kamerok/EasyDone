@@ -4,6 +4,8 @@ import easydone.core.model.Task
 import easydone.library.keyvalue.KeyValueStorage
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Card
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.UUID
 
 
@@ -12,6 +14,8 @@ class Network(
     private val authInfoHolder: AuthInfoHolder,
     private val idMappings: KeyValueStorage
 ) {
+
+    private val syncMutex = Mutex(false)
 
     suspend fun getAllTasks(): List<Task> {
         val boardId = authInfoHolder.getBoardId()!!
@@ -40,7 +44,7 @@ class Network(
             }
     }
 
-    suspend fun syncTaskDelta(delta: TaskDelta) {
+    suspend fun syncTaskDelta(delta: TaskDelta) = syncMutex.withLock {
         if (idMappings.contains(delta.id)) {
             val serverId: String = idMappings.getString(delta.id)!!
             api.editCard(
