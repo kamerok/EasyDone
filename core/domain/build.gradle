@@ -7,4 +7,5 @@ dependencies {
 
     implementation Deps.kotilnStdlib
     implementation Deps.coroutines_core
+    implementation Deps.timber_jdk
 }

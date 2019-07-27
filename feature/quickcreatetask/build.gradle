@@ -3,7 +3,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 dependencies {
+    implementation project(':core:domain')
+
     implementation Deps.kotilnStdlib
     implementation Deps.androidx_appcompat
     implementation Deps.androidx_constraintlayout
+    implementation Deps.coroutines_core
 }

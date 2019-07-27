@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import timber.log.error
 
 
 class Synchronizer(
@@ -54,7 +56,7 @@ class Synchronizer(
             }
             database.putData(network.getAllTasks())
         } catch (e: Exception) {
-            //TODO: handle sync error
+            Timber.error(e) { "sync error" }
         } finally {
             stateChannel.send(false)
         }

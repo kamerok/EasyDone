@@ -5,6 +5,7 @@ import easydone.core.model.Task
 import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import java.lang.IllegalArgumentException
 
 
 class DomainRepository(private val database: MyDatabase) {
@@ -14,7 +15,10 @@ class DomainRepository(private val database: MyDatabase) {
 
     suspend fun getTask(id: String): Task = database.getTask(id)
 
-    suspend fun saveTask(task: Task) = database.updateTask(task)
+    suspend fun saveTask(task: Task) {
+        if (task.title.isEmpty()) throw IllegalArgumentException("title should not be empty")
+        database.updateTask(task)
+    }
 
     suspend fun archiveTask(id: String) {
         val task = database.getTask(id)
@@ -27,6 +31,7 @@ class DomainRepository(private val database: MyDatabase) {
     }
 
     suspend fun createTask(title: String, description: String, skipInbox: Boolean) {
+        if (title.isEmpty()) throw IllegalArgumentException("title should not be empty")
         database.createTask(
             TaskTemplate(
                 type = if (skipInbox) Task.Type.TO_DO else Task.Type.INBOX,
