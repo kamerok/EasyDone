@@ -37,11 +37,13 @@
         <requestFocus />
     </EditText>
 
-    <Button
+    <ImageView
         android:id="@+id/createView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_send"
+        android:tint="@android:color/secondary_text_dark"
         app:layout_constraintBottom_toBottomOf="@id/backgroundView"
         app:layout_constraintEnd_toEndOf="@id/backgroundView" />
 
