@@ -1,5 +1,6 @@
 package easydone.feature.quickcreatetask
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.text.InputType
@@ -9,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
@@ -48,7 +48,7 @@ class QuickCreateTaskFragment : Fragment() {
             setRawInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
         }
         createView.setOnClickListener { saveTask() }
-        updateCreateViewState()
+        createView.alpha = 0f
     }
 
     private fun closeScreen() {
@@ -60,7 +60,16 @@ class QuickCreateTaskFragment : Fragment() {
     }
 
     private fun updateCreateViewState() {
-        createView.isVisible = !descriptionView.text.isNullOrEmpty()
+        val isVisible = !descriptionView.text.isNullOrEmpty()
+        val targetValue = if (isVisible) 1f else 0f
+        if (createView.alpha != targetValue) {
+            ValueAnimator.ofFloat(createView.alpha, targetValue)
+                .apply {
+                    duration = SHOW_ADD_DURATION
+                    addUpdateListener { createView.alpha = it.animatedValue as Float }
+                }
+                .start()
+        }
     }
 
     private fun saveTask() {
@@ -82,6 +91,7 @@ class QuickCreateTaskFragment : Fragment() {
 
     companion object {
         private const val KEYBOARD_WAIT_DELAY = 200L
+        private const val SHOW_ADD_DURATION = 100L
 
         fun create(dependencies: Dependencies): Fragment = QuickCreateTaskFragment().apply {
             repository = dependencies.repository
