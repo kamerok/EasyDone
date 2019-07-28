@@ -1,6 +1,7 @@
 package easydone.feature.quickcreatetask
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.InputType
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
+import easydone.coreui.utils.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_quick_create_task.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -29,7 +31,7 @@ class QuickCreateTaskFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_quick_create_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.setOnClickListener { navigator.closeScreen() }
+        view.setOnClickListener { closeScreen() }
         backgroundView.setOnClickListener { }
         descriptionView.apply {
             setOnEditorActionListener(object : TextView.OnEditorActionListener {
@@ -49,6 +51,14 @@ class QuickCreateTaskFragment : Fragment() {
         updateCreateViewState()
     }
 
+    private fun closeScreen() {
+        descriptionView.hideKeyboard()
+        //to prevent keyboard from blinking
+        Handler().postDelayed({
+            navigator.closeScreen()
+        }, 200)
+    }
+
     private fun updateCreateViewState() {
         createView.isVisible = !descriptionView.text.isNullOrEmpty()
     }
@@ -56,11 +66,11 @@ class QuickCreateTaskFragment : Fragment() {
     private fun saveTask() {
         val title = descriptionView.text.toString()
         if (title.isEmpty()) {
-            navigator.closeScreen()
+            closeScreen()
         } else {
             GlobalScope.launch {
                 repository.createTask(title, "", false)
-                navigator.closeScreen()
+                closeScreen()
             }
         }
     }
