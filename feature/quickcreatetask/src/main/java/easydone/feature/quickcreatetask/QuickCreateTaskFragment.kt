@@ -56,7 +56,7 @@ class QuickCreateTaskFragment : Fragment() {
         //to prevent keyboard from blinking
         Handler().postDelayed({
             navigator.closeScreen()
-        }, 200)
+        }, KEYBOARD_WAIT_DELAY)
     }
 
     private fun updateCreateViewState() {
@@ -81,6 +81,8 @@ class QuickCreateTaskFragment : Fragment() {
     )
 
     companion object {
+        private const val KEYBOARD_WAIT_DELAY = 200L
+
         fun create(dependencies: Dependencies): Fragment = QuickCreateTaskFragment().apply {
             repository = dependencies.repository
             navigator = dependencies.navigator
