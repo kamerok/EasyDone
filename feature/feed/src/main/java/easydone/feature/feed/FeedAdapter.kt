@@ -5,18 +5,22 @@ import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 
 
-class TaskAdapter(listener: (String) -> Unit) : AsyncListDifferDelegationAdapter<Any>(Callback) {
+internal class FeedAdapter(
+    listener: (String) -> Unit
+) : AsyncListDifferDelegationAdapter<Any>(Callback) {
 
     init {
-        delegatesManager.addDelegate(taskDeletage(listener))
+        delegatesManager
+            .addDelegate(taskDelegate(listener))
+            .addDelegate(headerDelegate())
     }
 
 }
 
-object Callback : DiffUtil.ItemCallback<Any>() {
+private object Callback : DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean = when {
         oldItem is TaskUiModel && newItem is TaskUiModel -> oldItem.id == newItem.id
-        else -> oldItem === newItem
+        else -> oldItem == newItem
     }
 
     @SuppressLint("DiffUtilEquals")
