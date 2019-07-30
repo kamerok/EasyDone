@@ -10,6 +10,7 @@ dependencies {
 
     implementation project(':feature:createtask')
     implementation project(':feature:edittask')
+    implementation project(':feature:feed')
     implementation project(':feature:home')
     implementation project(':feature:inbox')
     implementation project(':feature:login')
