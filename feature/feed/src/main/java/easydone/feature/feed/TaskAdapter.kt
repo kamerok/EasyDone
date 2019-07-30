@@ -1,4 +1,4 @@
-package easydone.coreui.taskitem
+package easydone.feature.feed
 
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +25,11 @@ class TaskAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false),
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_task,
+                parent,
+                false
+            ),
             listener
         )
 

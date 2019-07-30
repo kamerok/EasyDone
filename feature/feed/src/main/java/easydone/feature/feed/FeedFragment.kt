@@ -9,8 +9,6 @@ import easydone.core.domain.DomainRepository
 import easydone.core.model.Task
 import easydone.core.utils.logErrors
 import easydone.core.utils.onEachMain
-import easydone.coreui.taskitem.TaskAdapter
-import easydone.coreui.taskitem.TaskUiModel
 import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.combineLatest
@@ -22,7 +20,13 @@ class FeedFragment : Fragment() {
     private lateinit var repository: DomainRepository
     private lateinit var navigator: FeedNavigator
 
-    private val adapter by lazy { TaskAdapter { id -> navigator.navigateToTask(id) } }
+    private val adapter by lazy {
+        TaskAdapter { id ->
+            navigator.navigateToTask(
+                id
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
