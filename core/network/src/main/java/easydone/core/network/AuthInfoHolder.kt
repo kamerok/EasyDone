@@ -21,6 +21,10 @@ class AuthInfoHolder(private val storage: KeyValueStorage) {
 
     fun putTodoListId(id: String) = storage.putString(TO_DO_LIST_ID, id)
 
+    fun getWaitingListId(): String? = storage.getString(WAITING_LIST_ID)
+
+    fun putWaitingListId(id: String) = storage.putString(WAITING_LIST_ID, id)
+
     fun clear() = storage.clear()
 
     companion object {
@@ -28,6 +32,7 @@ class AuthInfoHolder(private val storage: KeyValueStorage) {
         private const val BOARD_ID = "board_id"
         private const val INBOX_LIST_ID = "inbox_list_id"
         private const val TO_DO_LIST_ID = "todo_list_id"
+        private const val WAITING_LIST_ID = "waiting_list_id"
     }
 
 }

@@ -13,7 +13,7 @@ data class Task constructor(
 ) {
 
     enum class Type {
-        INBOX, TO_DO
+        INBOX, TO_DO, WAITING
     }
 
 }

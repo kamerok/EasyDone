@@ -32,8 +32,15 @@ class Network(
         if (authInfoHolder.getTodoListId().isNullOrEmpty()) {
             authInfoHolder.putTodoListId(board.lists[1].id)
         }
+        if (authInfoHolder.getWaitingListId().isNullOrEmpty()) {
+            authInfoHolder.putWaitingListId(board.lists[2].id)
+        }
         return@withContext board.cards
-            .filter { it.idList == authInfoHolder.getTodoListId() || it.idList == authInfoHolder.getInboxListId() }
+            .filter {
+                it.idList == authInfoHolder.getTodoListId() ||
+                        it.idList == authInfoHolder.getInboxListId() ||
+                        it.idList == authInfoHolder.getWaitingListId()
+            }
             .map { card ->
                 val localId = idMappings.getString(card.id, UUID.randomUUID().toString())
                 if (!idMappings.contains(card.id)) {
@@ -43,6 +50,7 @@ class Network(
 
                 val type = when (card.idList) {
                     authInfoHolder.getInboxListId() -> Task.Type.INBOX
+                    authInfoHolder.getWaitingListId() -> Task.Type.WAITING
                     else -> Task.Type.TO_DO
                 }
                 card.toTask(localId, type)
@@ -80,6 +88,7 @@ class Network(
         return when (type) {
             Task.Type.INBOX -> authInfoHolder.getInboxListId()!!
             Task.Type.TO_DO -> authInfoHolder.getTodoListId()!!
+            Task.Type.WAITING -> authInfoHolder.getWaitingListId()!!
         }
     }
 
