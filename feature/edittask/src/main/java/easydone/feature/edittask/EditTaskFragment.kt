@@ -77,6 +77,7 @@ class EditTaskFragment : Fragment() {
                         originalTask.type,
                         titleView.text.toString(),
                         editDescriptionView.text.toString(),
+                        originalTask.dueDate,
                         false
                     )
                 )

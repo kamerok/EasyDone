@@ -6,5 +6,6 @@ data class Card(
     val idList: String,
     val name: String,
     val desc: String,
+    val due: String?,
     val pos: Float
 )

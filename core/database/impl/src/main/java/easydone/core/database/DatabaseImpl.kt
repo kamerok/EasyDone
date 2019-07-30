@@ -27,7 +27,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
         driver,
         Change.Adapter(EnumColumnAdapter()),
         Delta.Adapter(EnumColumnAdapter()),
-        DbTask.Adapter(EnumColumnAdapter())
+        DbTask.Adapter(EnumColumnAdapter(), DateColumnAdapter)
     ).apply { pragmaQueries.forceForeignKeys() }
     private val taskQueries = database.taskQueries
     private val changesQueries = database.changesQueries
@@ -67,6 +67,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
                 taskTemplate.type,
                 taskTemplate.title,
                 taskTemplate.description,
+                null,
                 false
             )
             changesQueries.apply {
@@ -129,7 +130,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
         database.transaction {
             taskQueries.clear()
             tasks.forEach {
-                taskQueries.insert(it.id, it.type, it.title, it.description, it.isDone)
+                taskQueries.insert(it.id, it.type, it.title, it.description, it.dueDate, it.isDone)
             }
         }
     }
@@ -139,7 +140,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
     }
 }
 
-fun DbTask.toTask() = Task(id, type, title, description, is_done)
+fun DbTask.toTask() = Task(id, type, title, description, due_date, is_done)
 
 fun <T : Any> Query<T>.asFlow() = asObservable().openSubscription().consumeAsFlow()
     .map { it.executeAsList() }

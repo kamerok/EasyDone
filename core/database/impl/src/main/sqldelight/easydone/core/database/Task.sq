@@ -1,4 +1,5 @@
 import easydone.core.model.Task;
+import java.util.Date;
 
 
 CREATE TABLE task (
@@ -6,6 +7,7 @@ CREATE TABLE task (
   type TEXT as Task.Type NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
+  due_date TEXT as Date DEFAULT NULL,
   is_done INTEGER as Boolean NOT NULL DEFAULT 0
 );
 
@@ -28,8 +30,8 @@ SELECT *
 FROM task;
 
 insert:
-INSERT INTO task(id, type, title, description, is_done)
-VALUES (?, ?, ?, ?, ?);
+INSERT INTO task(id, type, title, description, due_date, is_done)
+VALUES (?, ?, ?, ?, ?, ?);
 
 update:
 UPDATE task

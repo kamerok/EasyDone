@@ -8,6 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 import java.util.UUID
 
 
@@ -80,6 +83,22 @@ class Network(
         }
     }
 
-    private fun Card.toTask(id: String, type: Task.Type) = Task(id, type, name, desc, false)
+    private fun Card.toTask(id: String, type: Task.Type): Task {
+        val date = due?.let { dateFormat.parse(it) }
+        return Task(
+            id = id,
+            type = type,
+            title = name,
+            description = desc,
+            dueDate = date,
+            isDone = false
+        )
+    }
+
+    companion object {
+        private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", Locale.US).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
+    }
 
 }
