@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.combineLatest
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 
 class FeedFragment : Fragment() {
