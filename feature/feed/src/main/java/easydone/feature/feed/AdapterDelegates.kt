@@ -5,7 +5,7 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateLayoutContainer
 import kotlinx.android.synthetic.main.item_task.*
 
 
-fun taskDeletage(listener: (String) -> Unit) =
+internal fun taskDelegate(listener: (String) -> Unit) =
     adapterDelegateLayoutContainer<TaskUiModel, Any>(R.layout.item_task) {
         itemView.setOnClickListener { item.run { listener(this.id) } }
 
@@ -13,4 +13,9 @@ fun taskDeletage(listener: (String) -> Unit) =
             titleView.text = item.title
             descriptionView.isVisible = item.hasDescription
         }
+    }
+
+internal fun headerDelegate() =
+    adapterDelegateLayoutContainer<FeedHeader, Any>(R.layout.item_header) {
+        bind { titleView.text = item.title }
     }

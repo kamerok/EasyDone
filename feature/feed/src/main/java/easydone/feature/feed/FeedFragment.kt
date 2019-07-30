@@ -21,7 +21,7 @@ class FeedFragment : Fragment() {
     private lateinit var navigator: FeedNavigator
 
     private val adapter by lazy {
-        TaskAdapter { id ->
+        FeedAdapter { id ->
             navigator.navigateToTask(
                 id
             )
@@ -38,9 +38,8 @@ class FeedFragment : Fragment() {
         recyclerView.adapter = adapter
         repository.getTasks(Task.Type.INBOX)
             .combineLatest(repository.getTasks(Task.Type.TO_DO)) { inboxTasks, todoTasks ->
-                (inboxTasks + todoTasks).map {
-                    TaskUiModel(it.id, it.title, it.description.isNotEmpty())
-                }
+                listOf(FeedHeader("Inbox")) + inboxTasks.map { it.toUi() } +
+                        FeedHeader("TODO") + todoTasks.map { it.toUi() }
             }
             .onEachMain { adapter.items = it }
             .logErrors()
