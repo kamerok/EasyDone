@@ -14,6 +14,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.combineLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class FeedFragment : Fragment() {
@@ -56,7 +58,14 @@ class FeedFragment : Fragment() {
         .map { tasks -> listOf(FeedHeader("TODO")) + tasks.map { it.toUi() } }
 
     private fun getWaitingItems() = repository.getTasks(Task.Type.WAITING)
-        .map { tasks -> listOf(FeedHeader("WAITING")) + tasks.map { it.toUi() } }
+        .map { tasks ->
+            listOf(FeedHeader("WAITING")) +
+                    tasks
+                        .sortedBy { it.dueDate }
+                        .groupBy { it.dueDate }
+                        .map { (date, items) -> listOf(FeedHeader(DATE_FORMAT.format(date))) + items.map { it.toUi() } }
+                        .flatten()
+        }
 
     data class Dependencies(
         val repository: DomainRepository,
@@ -64,6 +73,8 @@ class FeedFragment : Fragment() {
     )
 
     companion object {
+        private val DATE_FORMAT = SimpleDateFormat("dd MMMM", Locale.US)
+
         fun create(dependencies: Dependencies): Fragment = FeedFragment().apply {
             repository = dependencies.repository
             navigator = dependencies.navigator
