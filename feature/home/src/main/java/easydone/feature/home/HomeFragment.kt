@@ -1,6 +1,5 @@
 package easydone.feature.home
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,8 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
+import androidx.fragment.app.commit
 import com.kamer.home.R
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
@@ -25,8 +23,7 @@ import kotlinx.coroutines.flow.launchIn
 
 class HomeFragment : Fragment() {
 
-    private lateinit var tabs: List<Tab>
-    private lateinit var fragmentFactory: (Int) -> Fragment
+    private lateinit var fragmentFactory: () -> Fragment
     private lateinit var repository: DomainRepository
     private lateinit var synchronizer: Synchronizer
     private lateinit var navigator: HomeNavigator
@@ -51,26 +48,8 @@ class HomeFragment : Fragment() {
         setupToolbar()
         subscribeOnSyncState()
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
-        viewPager.adapter = object : FragmentStateAdapter(this) {
-            override fun createFragment(position: Int): Fragment = fragmentFactory(position)
-
-            override fun getItemCount(): Int = tabs.size
-        }
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                bottomNavigationView.selectedItemId = position
-            }
-        })
-        bottomNavigationView.setBackgroundColor(Color.WHITE)
-        bottomNavigationView.menu.apply {
-            tabs.forEachIndexed { index, tab ->
-                add(Menu.NONE, index, Menu.NONE, getString(tab.nameRes))
-                    .setIcon(tab.iconRes)
-            }
-        }
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            viewPager.currentItem = item.itemId
-            true
+        childFragmentManager.commit {
+            replace(R.id.container, fragmentFactory())
         }
     }
 
@@ -113,8 +92,7 @@ class HomeFragment : Fragment() {
     }
 
     data class Dependencies(
-        val tabs: List<Tab>,
-        val fragmentFactory: (Int) -> Fragment,
+        val fragmentFactory: () -> Fragment,
         val repository: DomainRepository,
         val synchronizer: Synchronizer,
         val navigator: HomeNavigator
@@ -122,7 +100,6 @@ class HomeFragment : Fragment() {
 
     companion object {
         fun create(dependencies: Dependencies): Fragment = HomeFragment().apply {
-            tabs = dependencies.tabs
             fragmentFactory = dependencies.fragmentFactory
             repository = dependencies.repository
             synchronizer = dependencies.synchronizer
