@@ -16,6 +16,7 @@ import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.feed.FeedFragment
+import easydone.feature.feed.FeedNavigator
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.login.LoginFragment
@@ -145,7 +146,12 @@ object StartFlow {
                 fragmentFactory = {
                     FeedFragment.create(
                         FeedFragment.Dependencies(
-                            repository
+                            repository,
+                            object : FeedNavigator {
+                                override fun navigateToTask(id: String) {
+                                    startViewTask(id)
+                                }
+                            }
                         )
                     )
                 },
