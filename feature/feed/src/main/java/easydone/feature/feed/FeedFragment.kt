@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.combineLatest
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 
 
 class FeedFragment : Fragment() {
@@ -36,15 +37,26 @@ class FeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView.adapter = adapter
-        repository.getTasks(Task.Type.INBOX)
-            .combineLatest(repository.getTasks(Task.Type.TO_DO)) { inboxTasks, todoTasks ->
-                listOf(FeedHeader("Inbox")) + inboxTasks.map { it.toUi() } +
-                        FeedHeader("TODO") + todoTasks.map { it.toUi() }
+        getInboxItems()
+            .combineLatest(
+                getTodoItems(),
+                getWaitingItems()
+            ) { inboxItems, todoItems, waitingItems ->
+                inboxItems + todoItems + waitingItems
             }
             .onEachMain { adapter.items = it }
             .logErrors()
             .launchIn(GlobalScope)
     }
+
+    private fun getInboxItems() = repository.getTasks(Task.Type.INBOX)
+        .map { tasks -> listOf(FeedHeader("INBOX")) + tasks.map { it.toUi() } }
+
+    private fun getTodoItems() = repository.getTasks(Task.Type.TO_DO)
+        .map { tasks -> listOf(FeedHeader("TODO")) + tasks.map { it.toUi() } }
+
+    private fun getWaitingItems() = repository.getTasks(Task.Type.WAITING)
+        .map { tasks -> listOf(FeedHeader("WAITING")) + tasks.map { it.toUi() } }
 
     data class Dependencies(
         val repository: DomainRepository,
