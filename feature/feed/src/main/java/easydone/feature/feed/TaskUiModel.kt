@@ -1,4 +1,4 @@
-package easydone.coreui.taskitem
+package easydone.feature.feed
 
 
 data class TaskUiModel(

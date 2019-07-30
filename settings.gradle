@@ -12,7 +12,6 @@ include ':core:model'
 include ':core:utils'
 
 include ':core-ui:design'
-include ':core-ui:taskitem'
 include ':core-ui:utils'
 
 include ':feature:createtask'
