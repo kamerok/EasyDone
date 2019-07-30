@@ -17,8 +17,6 @@ import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
-import easydone.feature.home.InboxTab
-import easydone.feature.home.TodoTab
 import easydone.feature.inbox.InboxFragment
 import easydone.feature.inbox.InboxNavigator
 import easydone.feature.login.LoginFragment
@@ -30,8 +28,6 @@ import easydone.feature.settings.SettingsFragment
 import easydone.feature.settings.SettingsNavigator
 import easydone.feature.setupflow.SetupFlowNavigator
 import easydone.feature.setupflow.SetupFragment
-import easydone.feature.todo.TodoFragment
-import easydone.feature.todo.TodoNavigator
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
@@ -147,31 +143,18 @@ object StartFlow {
     private fun startMainFlow() {
         navigator.openScreen(HomeFragment.create(
             HomeFragment.Dependencies(
-                tabs = listOf(InboxTab, TodoTab),
-                fragmentFactory = { position ->
-                    when (position) {
-                        0 -> InboxFragment.create(
-                            InboxFragment.Dependencies(
-                                repository,
-                                navigator = object :
-                                    InboxNavigator {
-                                    override fun navigateToTask(id: String) {
-                                        startViewTask(id)
-                                    }
+                fragmentFactory = {
+                    InboxFragment.create(
+                        InboxFragment.Dependencies(
+                            repository,
+                            navigator = object :
+                                InboxNavigator {
+                                override fun navigateToTask(id: String) {
+                                    startViewTask(id)
                                 }
-                            )
+                            }
                         )
-                        else -> TodoFragment.create(
-                            TodoFragment.Dependencies(
-                                repository,
-                                navigator = object : TodoNavigator {
-                                    override fun navigateToTask(id: String) {
-                                        startViewTask(id)
-                                    }
-                                }
-                            )
-                        )
-                    }
+                    )
                 },
                 repository = repository,
                 synchronizer = synchronizer,
