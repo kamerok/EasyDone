@@ -15,10 +15,9 @@ import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
+import easydone.feature.feed.FeedFragment
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
-import easydone.feature.inbox.InboxFragment
-import easydone.feature.inbox.InboxNavigator
 import easydone.feature.login.LoginFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
@@ -144,15 +143,9 @@ object StartFlow {
         navigator.openScreen(HomeFragment.create(
             HomeFragment.Dependencies(
                 fragmentFactory = {
-                    InboxFragment.create(
-                        InboxFragment.Dependencies(
-                            repository,
-                            navigator = object :
-                                InboxNavigator {
-                                override fun navigateToTask(id: String) {
-                                    startViewTask(id)
-                                }
-                            }
+                    FeedFragment.create(
+                        FeedFragment.Dependencies(
+                            repository
                         )
                     )
                 },

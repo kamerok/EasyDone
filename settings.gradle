@@ -17,6 +17,7 @@ include ':core-ui:utils'
 
 include ':feature:createtask'
 include ':feature:edittask'
+include ':feature:feed'
 include ':feature:home'
 include ':feature:inbox'
 include ':feature:login'
