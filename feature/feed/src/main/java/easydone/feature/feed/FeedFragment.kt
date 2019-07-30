@@ -42,7 +42,7 @@ class FeedFragment : Fragment() {
                     TaskUiModel(it.id, it.title, it.description.isNotEmpty())
                 }
             }
-            .onEachMain { adapter.setData(it) }
+            .onEachMain { adapter.items = it }
             .logErrors()
             .launchIn(GlobalScope)
     }

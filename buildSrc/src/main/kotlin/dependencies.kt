@@ -14,6 +14,7 @@ object Versions {
     val androidx_navigation = "2.1.0-alpha05"
     val material = "1.1.0-alpha08"
 
+    val adapter_depegates = "4.1.1"
     val coroutines = "1.3.0-RC"
     val crashlytics = "2.10.1"
     val firebase = "17.0.1"
@@ -41,23 +42,32 @@ object Plugins {
     val gradle_android = "com.android.tools.build:gradle:${Versions.gradleandroid}"
     val gradleversions = "com.github.ben-manes:gradle-versions-plugin:${Versions.gradleversions}"
     val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-    val safeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidx_navigation}"
+    val safeArgs =
+        "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidx_navigation}"
     val sqldelight = "com.squareup.sqldelight:gradle-plugin:${Versions.sqldelight}"
 }
 
 object Deps {
     val androidx_appcompat = "androidx.appcompat:appcompat:${Versions.androidx_appcompat}"
     val androidx_core = "androidx.core:core-ktx:${Versions.androidx_core}"
-    val androidx_constraintlayout = "androidx.constraintlayout:constraintlayout:${Versions.androidx_constraintLayout}"
+    val androidx_constraintlayout =
+        "androidx.constraintlayout:constraintlayout:${Versions.androidx_constraintLayout}"
     val androidx_fragment = "androidx.fragment:fragment-ktx:${Versions.androidx_appcompat}"
     val androidx_material = "com.google.android.material:material:${Versions.material}"
-    val androidx_navigation_fragment = "androidx.navigation:navigation-fragment-ktx:${Versions.androidx_navigation}"
-    val androidx_navigation_ui = "androidx.navigation:navigation-ui-ktx:${Versions.androidx_navigation}"
-    val androidx_recyclerview = "androidx.recyclerview:recyclerview:${Versions.androidx_recyclerview}"
+    val androidx_navigation_fragment =
+        "androidx.navigation:navigation-fragment-ktx:${Versions.androidx_navigation}"
+    val androidx_navigation_ui =
+        "androidx.navigation:navigation-ui-ktx:${Versions.androidx_navigation}"
+    val androidx_recyclerview =
+        "androidx.recyclerview:recyclerview:${Versions.androidx_recyclerview}"
 
     val kotilnStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
+    val adapter_depelegates = "com.hannesdorfmann:adapterdelegates4:${Versions.adapter_depegates}"
+    val adapter_depelegates_dsl =
+        "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-layoutcontainer:${Versions.adapter_depegates}"
     val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
-    val coroutines_andorid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
+    val coroutines_andorid =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
     val coroutines_rx2 = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${Versions.coroutines}"
     val crashlytics = "com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}"
     val firebase = "com.google.firebase:firebase-core:${Versions.firebase}"
