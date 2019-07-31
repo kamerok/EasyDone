@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import easydone.coreui.utils.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_quick_create_task.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -77,7 +78,7 @@ class QuickCreateTaskFragment : Fragment() {
         if (title.isEmpty()) {
             closeScreen()
         } else {
-            GlobalScope.launch {
+            GlobalScope.launch(Dispatchers.Main) {
                 repository.createTask(title, "", false)
                 closeScreen()
             }
