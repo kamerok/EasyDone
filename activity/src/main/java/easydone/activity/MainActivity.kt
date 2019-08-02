@@ -8,6 +8,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setBackgroundDrawableResource(android.R.color.background_light)
         setContentView(R.layout.activity_main)
 
         StartFlow.start(this, R.id.containerView)

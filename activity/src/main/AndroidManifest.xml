@@ -20,7 +20,7 @@
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:taskAffinity=""
-            android:theme="@style/Theme.AppCompat.Translucent"
+            android:theme="@style/Theme.Translucent"
             android:windowSoftInputMode="stateAlwaysVisible|adjustNothing" />
     </application>
 
