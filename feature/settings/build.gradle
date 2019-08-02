@@ -7,7 +7,7 @@ dependencies {
     implementation project(':core:network')
     implementation project(':core-ui:design')
 
-    implementation Deps.kotilnStdlib
-    implementation Deps.androidx_appcompat
-    implementation Deps.androidx_constraintlayout
+    implementation Android.appCompat
+    implementation Android.constraintLayout
+    implementation Kotlin.stdlib
 }

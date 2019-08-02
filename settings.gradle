@@ -4,15 +4,14 @@ include ':activity'
 include ':app'
 include ':builder'
 
-include ':core:network'
+include ':core-ui:design'
+include ':core-ui:utils'
 include ':core:database:api'
 include ':core:database:impl'
 include ':core:domain'
 include ':core:model'
+include ':core:network'
 include ':core:utils'
-
-include ':core-ui:design'
-include ':core-ui:utils'
 
 include ':feature:createtask'
 include ':feature:edittask'

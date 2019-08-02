@@ -3,5 +3,5 @@ apply plugin: 'kotlin-android'
 
 
 dependencies {
-    implementation Deps.kotilnStdlib
+    implementation Kotlin.stdlib
 }

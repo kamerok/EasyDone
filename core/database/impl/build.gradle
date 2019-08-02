@@ -5,10 +5,10 @@ apply plugin: 'com.squareup.sqldelight'
 dependencies {
     implementation project(':core:database:api')
 
-    implementation Deps.kotilnStdlib
-    implementation Deps.coroutines_core
-    implementation Deps.coroutines_rx2
-    implementation Deps.rxjava
-    implementation Deps.sqldelight_android
-    implementation Deps.sqldelight_rxjava
+    implementation Kotlin.coroutinesCore
+    implementation Kotlin.coroutinesRx
+    implementation Kotlin.stdlib
+    implementation Libraries.rxJava
+    implementation Libraries.sqlDelightAndroid
+    implementation Libraries.sqlDelightRxJava
 }

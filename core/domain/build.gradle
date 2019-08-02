@@ -5,7 +5,7 @@ dependencies {
     implementation project(':core:database:api')
     api project(':core:model')
 
-    implementation Deps.kotilnStdlib
-    implementation Deps.coroutines_core
-    implementation Deps.timber_jdk
+    implementation Kotlin.coroutinesCore
+    implementation Kotlin.stdlib
+    implementation Libraries.timber
 }

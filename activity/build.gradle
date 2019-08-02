@@ -4,6 +4,6 @@ apply plugin: 'kotlin-android'
 dependencies {
     implementation project(':builder')
 
-    implementation Deps.kotilnStdlib
-    implementation Deps.androidx_appcompat
+    implementation Kotlin.stdlib
+    implementation Android.appCompat
 }

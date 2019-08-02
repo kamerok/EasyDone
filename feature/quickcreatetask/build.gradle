@@ -6,10 +6,10 @@ dependencies {
     implementation project(':core:domain')
     implementation project(':core-ui:utils')
 
-    implementation Deps.kotilnStdlib
-    implementation Deps.androidx_appcompat
-    implementation Deps.androidx_constraintlayout
-    implementation Deps.androidx_core
-    implementation Deps.coroutines_core
-    implementation Deps.timber
+    implementation Android.appCompat
+    implementation Android.constraintLayout
+    implementation Android.core
+    implementation Kotlin.coroutinesCore
+    implementation Kotlin.stdlib
+    implementation Libraries.timber
 }

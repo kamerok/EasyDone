@@ -10,12 +10,12 @@ dependencies {
     implementation project(':core:domain')
     implementation project(':core:utils')
 
-    implementation Deps.kotilnStdlib
-    implementation Deps.androidx_appcompat
-    implementation Deps.androidx_core
-    implementation Deps.androidx_recyclerview
-    implementation Deps.adapter_depelegates
-    implementation Deps.adapter_depelegates_dsl
-    implementation Deps.coroutines_core
-    implementation Deps.timber
+    implementation Android.appCompat
+    implementation Android.core
+    implementation Android.recyclerView
+    implementation Kotlin.coroutinesCore
+    implementation Kotlin.stdlib
+    implementation Libraries.adapterDepelegates
+    implementation Libraries.adapterDepelegatesDsl
+    implementation Libraries.timber
 }

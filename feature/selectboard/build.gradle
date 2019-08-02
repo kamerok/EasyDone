@@ -7,7 +7,7 @@ androidExtensions {
 }
 
 dependencies {
-    implementation Deps.kotilnStdlib
-    implementation Deps.androidx_appcompat
-    implementation Deps.androidx_recyclerview
+    implementation Android.appCompat
+    implementation Android.recyclerView
+    implementation Kotlin.stdlib
 }

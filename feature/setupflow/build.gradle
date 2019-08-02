@@ -6,8 +6,8 @@ dependencies {
     implementation project(':core:network')
     implementation project(':library:trelloapi')
 
-    implementation Deps.kotilnStdlib
-    implementation Deps.androidx_appcompat
-    implementation Deps.androidx_core
-    implementation Deps.androidx_fragment
+    implementation Android.appCompat
+    implementation Android.core
+    implementation Android.fragment
+    implementation Kotlin.stdlib
 }
