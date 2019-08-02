@@ -29,7 +29,7 @@ object Versions {
 
     val kotlin = "1.3.41"
     val fabric = "1.30.0"
-    val gradleandroid = "3.5.0-rc01"
+    val gradleandroid = "3.5.0-rc02"
     val gradleversions = "0.21.0"
     val sqldelight = "1.1.4"
     val google_services = "4.3.0"
