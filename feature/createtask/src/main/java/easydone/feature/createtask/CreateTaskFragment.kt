@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
 import easydone.coreui.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_create_task.*
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -45,7 +45,7 @@ class CreateTaskFragment : Fragment() {
             titleView.error = "Empty"
             return
         }
-        GlobalScope.launch {
+        lifecycleScope.launch {
             repository.createTask(
                 titleView.text.toString(),
                 descriptionView.text.toString(),

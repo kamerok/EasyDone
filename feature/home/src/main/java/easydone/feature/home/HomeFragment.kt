@@ -9,16 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import com.kamer.home.R
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
 import easydone.core.utils.logErrors
-import easydone.core.utils.onEachMain
 import easydone.coreui.design.setupToolbar
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.combineLatest
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 
 class HomeFragment : Fragment() {
@@ -58,14 +58,14 @@ class HomeFragment : Fragment() {
             .combineLatest(synchronizer.observeChanges()) { isSyncing, changesCount ->
                 isSyncing to changesCount
             }
-            .onEachMain { (isSyncing, changesCount) ->
+            .onEach { (isSyncing, changesCount) ->
                 syncView?.apply {
                     this.hasChanges = changesCount != 0L
                     this.isSyncing = isSyncing
                 }
             }
             .logErrors()
-            .launchIn(GlobalScope)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) =

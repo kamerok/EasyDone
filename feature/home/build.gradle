@@ -12,6 +12,7 @@ dependencies {
     implementation Android.constraintLayout
     implementation Android.core
     implementation Android.fragment
+    implementation Android.lifecycleRuntime
     implementation Android.material
     implementation Kotlin.coroutinesCore
     implementation Kotlin.stdlib

@@ -20,6 +20,7 @@ object Versions {
     val gradleVersions = "0.21.0"
     val junit = "4.12"
     val kotlin = "1.3.41"
+    val lifecycle = "2.2.0-alpha01"
     val markwon = "4.0.2"
     val material = "1.1.0-alpha08"
     val recyclerView = "1.0.0"
@@ -45,6 +46,7 @@ object Android {
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
     val core = "androidx.core:core-ktx:${Versions.core}"
     val fragment = "androidx.fragment:fragment-ktx:${Versions.appCompat}"
+    val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
     val material = "com.google.android.material:material:${Versions.material}"
     val recyclerView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"
 }

@@ -12,11 +12,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
 import easydone.coreui.utils.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_quick_create_task.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -78,7 +77,7 @@ class QuickCreateTaskFragment : Fragment() {
         if (title.isEmpty()) {
             closeScreen()
         } else {
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch {
                 repository.createTask(title, "", false)
                 closeScreen()
             }

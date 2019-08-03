@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.kamer.setupflow.R
 import easydone.core.network.AuthInfoHolder
 import easydone.library.trelloapi.model.Board
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -62,7 +62,7 @@ class SetupFragment : Fragment() {
     private fun startSelectBoard(token: String, boards: List<Board>) {
         isLogin = false
         navigator.navigateToSelectBoard(boards) { boardId ->
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch {
                 saveData(token, boardId)
                 finishListener()
             }

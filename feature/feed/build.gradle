@@ -12,6 +12,7 @@ dependencies {
 
     implementation Android.appCompat
     implementation Android.core
+    implementation Android.lifecycleRuntime
     implementation Android.recyclerView
     implementation Kotlin.coroutinesCore
     implementation Kotlin.stdlib

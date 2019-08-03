@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
 import easydone.core.model.Task
 import easydone.core.utils.logErrors
-import easydone.core.utils.onEachMain
 import kotlinx.android.synthetic.main.fragment_feed.*
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.combineLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -46,9 +46,9 @@ class FeedFragment : Fragment() {
             ) { inboxItems, todoItems, waitingItems ->
                 inboxItems + todoItems + waitingItems
             }
-            .onEachMain { adapter.items = it }
+            .onEach { adapter.items = it }
             .logErrors()
-            .launchIn(GlobalScope)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun getInboxItems() = repository.getTasks(Task.Type.INBOX)

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
 import easydone.core.model.Task
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -14,8 +15,6 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonVisitor
 import io.noties.markwon.linkify.LinkifyPlugin
 import kotlinx.android.synthetic.main.fragment_edit_task.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.commonmark.node.SoftLineBreak
 
@@ -53,7 +52,7 @@ class EditTaskFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_edit_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        GlobalScope.launch(Dispatchers.Main) {
+        viewLifecycleOwner.lifecycleScope.launch {
             val task = repository.getTask(id)
             originalTask = task
             titleView.setText(task.title)
@@ -70,7 +69,7 @@ class EditTaskFragment : Fragment() {
             }
         }
         saveView.setOnClickListener {
-            GlobalScope.launch {
+            lifecycleScope.launch {
                 repository.saveTask(
                     Task(
                         id,
@@ -85,13 +84,13 @@ class EditTaskFragment : Fragment() {
             }
         }
         archiveView.setOnClickListener {
-            GlobalScope.launch {
+            lifecycleScope.launch {
                 repository.archiveTask(id)
                 navigator.closeScreen()
             }
         }
         moveView.setOnClickListener {
-            GlobalScope.launch {
+            lifecycleScope.launch {
                 repository.moveTask(id)
                 navigator.closeScreen()
             }
