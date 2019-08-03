@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
 import easydone.core.model.Task
+import easydone.core.utils.daysBetween
 import easydone.core.utils.logErrors
 import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.coroutines.flow.combineLatest
@@ -15,6 +16,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 
@@ -63,7 +66,10 @@ class FeedFragment : Fragment() {
                     tasks
                         .sortedBy { it.dueDate }
                         .groupBy { it.dueDate }
-                        .map { (date, items) -> listOf(FeedHeader(DATE_FORMAT.format(date))) + items.map { it.toUi() } }
+                        .map { (date, items) ->
+                            val title = "${DATE_FORMAT.format(date)} (${date?.daysBetween(Date())} left)"
+                            listOf(FeedHeader(title)) + items.map { it.toUi() }
+                        }
                         .flatten()
         }
 
