@@ -3,5 +3,6 @@ apply plugin: 'kotlin-android'
 
 dependencies {
     implementation Android.appCompat
+    implementation Android.material
     implementation Kotlin.stdlib
 }
