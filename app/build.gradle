@@ -34,6 +34,7 @@ android {
 
 dependencies {
     implementation project(":activity")
+    implementation project(":core-ui:design")
 
     implementation Android.appCompat
     implementation Kotlin.stdlib
