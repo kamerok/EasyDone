@@ -2,7 +2,7 @@
 
 object Config {
     val compileSdk = 28
-    val minSdk = 21
+    val minSdk = 28
     val targetSdk = 28
 }
 
