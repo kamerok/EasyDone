@@ -2,6 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 dependencies {
-    implementation Kotlin.stdlib
     implementation Android.appCompat
+    implementation Kotlin.stdlib
 }

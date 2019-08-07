@@ -35,11 +35,12 @@ android {
 dependencies {
     implementation project(":activity")
 
+    implementation Android.appCompat
     implementation Kotlin.stdlib
+    implementation Libraries.timber
     implementation Tools.crashlytics
     implementation Tools.firebase
     implementation Tools.stetho
-    implementation Libraries.timber
 }
 
 apply plugin: 'com.google.gms.google-services'
