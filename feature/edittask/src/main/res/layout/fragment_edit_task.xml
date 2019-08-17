@@ -41,13 +41,32 @@
         app:constraint_referenced_ids="descriptionView,editDescriptionView" />
 
     <Button
+        android:id="@+id/dateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+    <Button
+        android:id="@+id/clearDateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="clear date"
+        app:layout_constraintStart_toEndOf="@id/dateView"
+        app:layout_constraintTop_toBottomOf="@id/dateView"
+        app:layout_constraintTop_toTopOf="@id/dateView" />
+
+    <Button
         android:id="@+id/editView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit"
         app:layout_constraintEnd_toStartOf="@id/saveView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier" />
+        app:layout_constraintTop_toBottomOf="@id/dateView" />
 
     <Button
         android:id="@+id/saveView"

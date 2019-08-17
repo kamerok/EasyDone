@@ -1,5 +1,6 @@
 package easydone.feature.edittask
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.LayoutInflater
@@ -17,6 +18,8 @@ import io.noties.markwon.linkify.LinkifyPlugin
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.coroutines.launch
 import org.commonmark.node.SoftLineBreak
+import java.util.Calendar
+import java.util.Date
 
 
 class EditTaskFragment : Fragment() {
@@ -26,6 +29,7 @@ class EditTaskFragment : Fragment() {
     private lateinit var navigator: EditTaskNavigator
 
     private lateinit var originalTask: Task
+    private var date: Date? = null
 
     private val markwon by lazy {
         Markwon
@@ -55,9 +59,31 @@ class EditTaskFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             val task = repository.getTask(id)
             originalTask = task
+            date = task.dueDate
             titleView.setText(task.title)
             editDescriptionView.setText(task.description)
             markwon.setMarkdown(descriptionView, task.description)
+            updateDate()
+        }
+        dateView.setOnClickListener {
+            val dateCalendar = Calendar.getInstance().apply { date?.let { time = it } }
+            DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    date = Calendar.getInstance().apply {
+                        date?.let { time = it }
+                        set(year, month, dayOfMonth)
+                    }.time
+                    updateDate()
+                },
+                dateCalendar.get(Calendar.YEAR),
+                dateCalendar.get(Calendar.MONTH),
+                dateCalendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+        clearDateView.setOnClickListener {
+            date = null
+            updateDate()
         }
         editView.setOnClickListener {
             isEdit = !isEdit
@@ -76,7 +102,7 @@ class EditTaskFragment : Fragment() {
                         originalTask.type,
                         titleView.text.toString(),
                         editDescriptionView.text.toString(),
-                        originalTask.dueDate,
+                        date,
                         false
                     )
                 )
@@ -95,6 +121,11 @@ class EditTaskFragment : Fragment() {
                 navigator.closeScreen()
             }
         }
+    }
+
+    private fun updateDate() {
+        dateView.text = date?.toString() ?: "Select date"
+        clearDateView.isVisible = date != null
     }
 
     data class Dependencies(
