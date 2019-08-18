@@ -68,6 +68,7 @@ class Network(
                     name = delta.title,
                     desc = delta.description,
                     closed = delta.isDone,
+                    due = delta.dueDate?.let { dateFormat.format(it) } ?: "",
                     listId = delta.type?.let { getListId(it) }
                 )
             } else {

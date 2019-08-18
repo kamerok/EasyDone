@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import timber.log.error
+import java.util.Date
 
 
 class Synchronizer(
@@ -68,5 +69,6 @@ private fun ChangeEntry.toDelta() = TaskDelta(
     type = fields[EntityField.TYPE] as Task.Type?,
     title = fields[EntityField.TITLE] as String?,
     description = fields[EntityField.DESCRIPTION] as String?,
+    dueDate = fields[EntityField.DUE_DATE] as Date?,
     isDone = fields[EntityField.IS_DONE] as Boolean?
 )

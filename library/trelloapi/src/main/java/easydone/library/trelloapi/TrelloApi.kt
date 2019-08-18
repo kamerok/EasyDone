@@ -1,11 +1,17 @@
 package easydone.library.trelloapi
 
-import easydone.library.trelloapi.model.*
+import easydone.library.trelloapi.model.Card
+import easydone.library.trelloapi.model.NestedBoard
+import easydone.library.trelloapi.model.NestedBoards
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface TrelloApi {
@@ -28,6 +34,7 @@ interface TrelloApi {
         @Query("name") name: String?,
         @Query("desc") desc: String?,
         @Query("closed") closed: Boolean?,
+        @Query("due") due: String?,
         @Query("idList") listId: String?
     ): Card
 
