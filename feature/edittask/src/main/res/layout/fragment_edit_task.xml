@@ -50,16 +50,6 @@
         app:layout_constraintTop_toBottomOf="@id/barrier" />
 
     <Button
-        android:id="@+id/clearDateView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="clear date"
-        app:layout_constraintStart_toEndOf="@id/dateView"
-        app:layout_constraintTop_toBottomOf="@id/dateView"
-        app:layout_constraintTop_toTopOf="@id/dateView" />
-
-    <Button
         android:id="@+id/editView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

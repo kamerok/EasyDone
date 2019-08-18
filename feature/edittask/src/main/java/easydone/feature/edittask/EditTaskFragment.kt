@@ -1,6 +1,7 @@
 package easydone.feature.edittask
 
 import android.app.DatePickerDialog
+import android.content.DialogInterface.BUTTON_NEUTRAL
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.LayoutInflater
@@ -18,7 +19,10 @@ import io.noties.markwon.linkify.LinkifyPlugin
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.coroutines.launch
 import org.commonmark.node.SoftLineBreak
-import java.util.Calendar
+import java.util.Calendar.DAY_OF_MONTH
+import java.util.Calendar.MONTH
+import java.util.Calendar.YEAR
+import java.util.Calendar.getInstance
 import java.util.Date
 
 
@@ -66,24 +70,27 @@ class EditTaskFragment : Fragment() {
             updateDate()
         }
         dateView.setOnClickListener {
-            val dateCalendar = Calendar.getInstance().apply { date?.let { time = it } }
+            val dateCalendar = getInstance().apply { date?.let { time = it } }
             DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
-                    date = Calendar.getInstance().apply {
+                    date = getInstance().apply {
                         date?.let { time = it }
                         set(year, month, dayOfMonth)
                     }.time
                     updateDate()
                 },
-                dateCalendar.get(Calendar.YEAR),
-                dateCalendar.get(Calendar.MONTH),
-                dateCalendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
-        }
-        clearDateView.setOnClickListener {
-            date = null
-            updateDate()
+                dateCalendar.get(YEAR),
+                dateCalendar.get(MONTH),
+                dateCalendar.get(DAY_OF_MONTH)
+            ).apply {
+                if (date != null) {
+                    setButton(BUTTON_NEUTRAL, "Clear") { _, _ ->
+                        date = null
+                        updateDate()
+                    }
+                }
+            }.show()
         }
         editView.setOnClickListener {
             isEdit = !isEdit
@@ -125,7 +132,6 @@ class EditTaskFragment : Fragment() {
 
     private fun updateDate() {
         dateView.text = date?.toString() ?: "Select date"
-        clearDateView.isVisible = date != null
     }
 
     data class Dependencies(
