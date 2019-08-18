@@ -11,4 +11,7 @@ dependencies {
     implementation Libraries.rxJava
     implementation Libraries.sqlDelightAndroid
     implementation Libraries.sqlDelightRxJava
+
+    testImplementation Tests.junit
+    testImplementation Tests.assertk
 }

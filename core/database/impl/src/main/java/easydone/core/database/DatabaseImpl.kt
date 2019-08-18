@@ -97,7 +97,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
                     lastInsertedRow().executeAsOne()
                 }
 
-                fun <T : Any> writeDelta(field: EntityField, getField: Task.() -> T) {
+                fun <T : Any> writeDelta(field: EntityField, getField: Task.() -> T?) {
                     val mapper = field.getMapper()
                     val previousValue = mapper.toString(oldTask.getField())
                     val newValue = mapper.toString(task.getField())
@@ -117,6 +117,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
                 writeDelta(EntityField.TYPE) { type }
                 writeDelta(EntityField.TITLE) { title }
                 writeDelta(EntityField.DESCRIPTION) { description }
+                writeDelta(EntityField.DUE_DATE) { dueDate }
                 writeDelta(EntityField.IS_DONE) { isDone }
 
                 if (selectDeltaCount(changeId).executeAsOne() == 0L) {

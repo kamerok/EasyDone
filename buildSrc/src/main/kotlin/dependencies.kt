@@ -9,6 +9,7 @@ object Config {
 object Versions {
     val adapterDelegates = "4.1.1"
     val appCompat = "1.1.0-rc01"
+    val assertk = "0.19"
     val constraintLayout = "1.1.3"
     val core = "1.2.0-alpha02"
     val coroutines = "1.3.0-RC"
@@ -80,6 +81,7 @@ object Libraries {
     val timber = arrayOf(timberAndroid, timberJdk)
 }
 
-object Test {
+object Tests {
+    val assertk = "com.willowtreeapps.assertk:assertk-jvm:${Versions.assertk}"
     val junit = "junit:junit:${Versions.junit}"
 }
