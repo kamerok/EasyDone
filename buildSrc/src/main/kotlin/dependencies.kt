@@ -17,7 +17,7 @@ object Versions {
     val fabric = "1.31.0"
     val firebase = "17.1.0"
     val googleServices = "4.3.0"
-    val gradleAndroid = "3.5.0-rc03"
+    val gradleAndroid = "3.5.0"
     val gradleVersions = "0.22.0"
     val junit = "4.12"
     val kotlin = "1.3.41"
