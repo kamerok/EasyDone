@@ -25,6 +25,11 @@ SELECT *
 FROM task
 WHERE type = ? AND is_done = 0;
 
+selectWithDate:
+SELECT *
+FROM task
+WHERE due_date != '' AND is_done = 0;
+
 selectAll:
 SELECT *
 FROM task;
@@ -35,5 +40,5 @@ VALUES (?, ?, ?, ?, ?, ?);
 
 update:
 UPDATE task
-SET type = ?, title = ?, description = ?, is_done = ?
+SET type = ?, title = ?, description = ?, due_date = ?, is_done = ?
 WHERE id = ?;

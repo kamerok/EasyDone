@@ -11,23 +11,29 @@ import java.lang.IllegalArgumentException
 class DomainRepository(private val database: MyDatabase) {
 
     @ExperimentalCoroutinesApi
-    fun getTasks(type: Task.Type): Flow<List<Task>> = database.getTasks(type)
+    fun getTasks(type: Task.Type): Flow<List<Task>> = database.getTasksStream(type)
 
     suspend fun getTask(id: String): Task = database.getTask(id)
 
     suspend fun saveTask(task: Task) {
         if (task.title.isEmpty()) throw IllegalArgumentException("title should not be empty")
-        database.updateTask(task)
+        database.transaction { updateTask(task) }
     }
 
     suspend fun archiveTask(id: String) {
         val task = database.getTask(id)
-        database.updateTask(task.copy(isDone = true))
+        database.transaction { updateTask(task.copy(isDone = true)) }
     }
 
     suspend fun moveTask(id: String) {
         val task = database.getTask(id)
-        database.updateTask(task.copy(type = if (task.type == Task.Type.INBOX) Task.Type.TO_DO else Task.Type.INBOX))
+        database.transaction {
+            updateTask(
+                task.copy(
+                    type = if (task.type == Task.Type.INBOX) Task.Type.TO_DO else Task.Type.INBOX
+                )
+            )
+        }
     }
 
     suspend fun createTask(title: String, description: String, skipInbox: Boolean) {

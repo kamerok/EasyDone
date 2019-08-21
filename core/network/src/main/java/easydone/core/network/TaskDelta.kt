@@ -10,5 +10,6 @@ data class TaskDelta(
     val title: String?,
     val description: String?,
     val dueDate: Date?,
+    val dueDateChanged: Boolean,
     val isDone: Boolean?
 )

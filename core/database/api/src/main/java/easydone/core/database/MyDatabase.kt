@@ -13,16 +13,22 @@ interface MyDatabase {
 
     suspend fun deleteChange(id: Long)
 
-    fun getTasks(type: Task.Type): Flow<List<Task>>
+    fun getTasksStream(type: Task.Type): Flow<List<Task>>
+
+    fun getTasks(type: Task.Type): List<Task>
 
     suspend fun getTask(id: String): Task
 
     suspend fun createTask(taskTemplate: TaskTemplate)
 
-    suspend fun updateTask(task: Task)
+    fun updateTask(task: Task)
 
-    suspend fun putData(tasks: List<Task>)
+    fun putData(tasks: List<Task>)
 
-    suspend fun clear()
+    fun clear()
+
+    fun getTasksWithDate(): List<Task>
+
+    suspend fun transaction(body: MyDatabase.() -> Unit)
 
 }

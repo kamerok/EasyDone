@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -64,13 +63,18 @@ class FeedFragment : Fragment() {
         .map { tasks ->
             listOf(FeedHeader("WAITING")) +
                     tasks
+                        .asSequence()
+                            //todo: filtering null logic should be somewhere else
+                        .filter { it.dueDate != null }
                         .sortedBy { it.dueDate }
                         .groupBy { it.dueDate }
                         .map { (date, items) ->
-                            val title = "${DATE_FORMAT.format(date)} (${date?.daysBetween(Date())} left)"
+                            val title =
+                                "${DATE_FORMAT.format(date)} (${date?.daysBetween(Date())} left)"
                             listOf(FeedHeader(title)) + items.map { it.toUi() }
                         }
                         .flatten()
+                        .toList()
         }
 
     data class Dependencies(

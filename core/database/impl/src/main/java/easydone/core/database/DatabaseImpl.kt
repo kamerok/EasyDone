@@ -52,8 +52,11 @@ class DatabaseImpl(application: Application) : MyDatabase {
         changesQueries.deleteChange(id)
     }
 
-    override fun getTasks(type: Task.Type): Flow<List<Task>> =
+    override fun getTasksStream(type: Task.Type): Flow<List<Task>> =
         taskQueries.selectByType(type).asFlow().map { dbTasks -> dbTasks.map { it.toTask() } }
+
+    override fun getTasks(type: Task.Type): List<Task> =
+        taskQueries.selectByType(type).executeAsList().map { it.toTask() }
 
     override suspend fun getTask(id: String): Task = withContext(Dispatchers.IO) {
         taskQueries.selectById(id).executeAsOne().toTask()
@@ -82,62 +85,60 @@ class DatabaseImpl(application: Application) : MyDatabase {
         }
     }
 
-    override suspend fun updateTask(task: Task) = withContext(Dispatchers.IO) {
-        database.transaction {
-            val id = task.id
-            val oldTask = taskQueries.selectById(id).executeAsOne().toTask()
-            taskQueries.update(task.type, task.title, task.description, task.isDone, id)
+    override fun updateTask(task: Task) {
+        val id = task.id
+        val oldTask = taskQueries.selectById(id).executeAsOne().toTask()
+        taskQueries.update(task.type, task.title, task.description, task.dueDate, task.isDone, id)
 
-            changesQueries.apply {
-                val existingChange = selectChange(EntityName.TASK, id).executeAsOneOrNull()
-                val changeId = if (existingChange != null) {
-                    existingChange.id
+        changesQueries.apply {
+            val existingChange = selectChange(EntityName.TASK, id).executeAsOneOrNull()
+            val changeId = if (existingChange != null) {
+                existingChange.id
+            } else {
+                insertChange(EntityName.TASK, id)
+                lastInsertedRow().executeAsOne()
+            }
+
+            fun <T : Any> writeDelta(field: EntityField, getField: Task.() -> T?) {
+                val mapper = field.getMapper()
+                val previousValue = mapper.toString(oldTask.getField())
+                val newValue = mapper.toString(task.getField())
+                if (newValue == previousValue) return
+                val oldDelta = selectDelta(changeId, field).executeAsOneOrNull()
+
+                if (oldDelta == null) {
+                    insertUpdateDelta(changeId, field, previousValue, newValue)
                 } else {
-                    insertChange(EntityName.TASK, id)
-                    lastInsertedRow().executeAsOne()
-                }
-
-                fun <T : Any> writeDelta(field: EntityField, getField: Task.() -> T?) {
-                    val mapper = field.getMapper()
-                    val previousValue = mapper.toString(oldTask.getField())
-                    val newValue = mapper.toString(task.getField())
-                    if (newValue == previousValue) return
-                    val oldDelta = selectDelta(changeId, field).executeAsOneOrNull()
-
-                    if (oldDelta == null) {
-                        insertUpdateDelta(changeId, field, previousValue, newValue)
+                    if (newValue != oldDelta.old_value) {
+                        updateDelta(newValue, changeId, field)
                     } else {
-                        if (newValue != oldDelta.old_value) {
-                            updateDelta(newValue, changeId, field)
-                        } else {
-                            deleteDelta(changeId, field)
-                        }
+                        deleteDelta(changeId, field)
                     }
                 }
-                writeDelta(EntityField.TYPE) { type }
-                writeDelta(EntityField.TITLE) { title }
-                writeDelta(EntityField.DESCRIPTION) { description }
-                writeDelta(EntityField.DUE_DATE) { dueDate }
-                writeDelta(EntityField.IS_DONE) { isDone }
+            }
+            writeDelta(EntityField.TYPE) { type }
+            writeDelta(EntityField.TITLE) { title }
+            writeDelta(EntityField.DESCRIPTION) { description }
+            writeDelta(EntityField.DUE_DATE) { dueDate }
+            writeDelta(EntityField.IS_DONE) { isDone }
 
-                if (selectDeltaCount(changeId).executeAsOne() == 0L) {
-                    deleteChange(changeId)
-                }
+            if (selectDeltaCount(changeId).executeAsOne() == 0L) {
+                deleteChange(changeId)
             }
         }
     }
 
-    override suspend fun putData(tasks: List<Task>) = withContext(Dispatchers.IO) {
-        database.transaction {
-            taskQueries.clear()
-            tasks.forEach {
-                taskQueries.insert(it.id, it.type, it.title, it.description, it.dueDate, it.isDone)
-            }
-        }
+    override fun putData(tasks: List<Task>) = tasks.forEach {
+        taskQueries.insert(it.id, it.type, it.title, it.description, it.dueDate, it.isDone)
     }
 
-    override suspend fun clear() = withContext(Dispatchers.IO) {
-        database.taskQueries.clear()
+    override fun clear() = taskQueries.clear()
+
+    override fun getTasksWithDate(): List<Task> =
+        taskQueries.selectWithDate().executeAsList().map { it.toTask() }
+
+    override suspend fun transaction(body: MyDatabase.() -> Unit) = withContext(Dispatchers.IO) {
+        database.transaction { body() }
     }
 }
 

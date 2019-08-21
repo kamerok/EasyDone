@@ -1,9 +1,15 @@
 package easydone.core.domain
 
 import easydone.core.database.ChangeEntry
-import easydone.core.database.EntityField
+import easydone.core.database.EntityField.DESCRIPTION
+import easydone.core.database.EntityField.DUE_DATE
+import easydone.core.database.EntityField.IS_DONE
+import easydone.core.database.EntityField.TITLE
+import easydone.core.database.EntityField.TYPE
 import easydone.core.database.MyDatabase
 import easydone.core.model.Task
+import easydone.core.model.Task.Type.INBOX
+import easydone.core.model.Task.Type.WAITING
 import easydone.core.network.Network
 import easydone.core.network.TaskDelta
 import kotlinx.coroutines.GlobalScope
@@ -15,6 +21,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import timber.log.error
 import java.util.Date
@@ -55,7 +62,28 @@ class Synchronizer(
                 network.syncTaskDelta(change.toDelta())
                 database.deleteChange(change.changeId)
             }
-            database.putData(network.getAllTasks())
+            val networkTasks = network.getAllTasks()
+            database.transaction {
+                clear()
+                putData(networkTasks)
+                val tasksWithDate = getTasksWithDate()
+                tasksWithDate.forEach { task ->
+                    when {
+                        task.dueDate!! < Date() -> runBlocking {
+                            updateTask(task.copy(dueDate = null, type = INBOX))
+                        }
+                        task.dueDate!! > Date() -> runBlocking {
+                            updateTask(task.copy(type = WAITING))
+                        }
+                    }
+                }
+                getTasks(WAITING).forEach { task ->
+                    if (task.dueDate == null) {
+                        updateTask(task.copy(type = INBOX))
+                    }
+                }
+
+            }
         } catch (e: Exception) {
             Timber.error(e) { "sync error" }
         } finally {
@@ -66,9 +94,10 @@ class Synchronizer(
 
 private fun ChangeEntry.toDelta() = TaskDelta(
     id = entityId,
-    type = fields[EntityField.TYPE] as Task.Type?,
-    title = fields[EntityField.TITLE] as String?,
-    description = fields[EntityField.DESCRIPTION] as String?,
-    dueDate = fields[EntityField.DUE_DATE] as Date?,
-    isDone = fields[EntityField.IS_DONE] as Boolean?
+    type = fields[TYPE] as Task.Type?,
+    title = fields[TITLE] as String?,
+    description = fields[DESCRIPTION] as String?,
+    dueDate = fields[DUE_DATE] as Date?,
+    dueDateChanged = fields.containsKey(DUE_DATE),
+    isDone = fields[IS_DONE] as Boolean?
 )
