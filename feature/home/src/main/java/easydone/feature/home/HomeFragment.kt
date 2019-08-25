@@ -16,7 +16,7 @@ import easydone.core.domain.Synchronizer
 import easydone.core.utils.logErrors
 import easydone.coreui.design.setupToolbar
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.flow.combineLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -54,10 +54,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun subscribeOnSyncState() {
-        synchronizer.isSyncing()
-            .combineLatest(synchronizer.observeChanges()) { isSyncing, changesCount ->
-                isSyncing to changesCount
-            }
+        combine(
+            synchronizer.isSyncing(),
+            synchronizer.observeChanges()
+        ) { isSyncing, changesCount -> isSyncing to changesCount }
             .onEach { (isSyncing, changesCount) ->
                 syncView?.apply {
                     this.hasChanges = changesCount != 0L

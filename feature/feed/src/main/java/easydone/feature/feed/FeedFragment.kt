@@ -11,7 +11,7 @@ import easydone.core.model.Task
 import easydone.core.utils.daysBetween
 import easydone.core.utils.logErrors
 import kotlinx.android.synthetic.main.fragment_feed.*
-import kotlinx.coroutines.flow.combineLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -41,13 +41,11 @@ class FeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView.adapter = adapter
-        getInboxItems()
-            .combineLatest(
-                getTodoItems(),
-                getWaitingItems()
-            ) { inboxItems, todoItems, waitingItems ->
-                inboxItems + todoItems + waitingItems
-            }
+        combine(
+            getInboxItems(),
+            getTodoItems(),
+            getWaitingItems()
+        ) { inboxItems, todoItems, waitingItems -> inboxItems + todoItems + waitingItems }
             .onEach { adapter.items = it }
             .logErrors()
             .launchIn(viewLifecycleOwner.lifecycleScope)
@@ -64,7 +62,7 @@ class FeedFragment : Fragment() {
             listOf(FeedHeader("WAITING")) +
                     tasks
                         .asSequence()
-                            //todo: filtering null logic should be somewhere else
+                        //todo: filtering null logic should be somewhere else
                         .filter { it.dueDate != null }
                         .sortedBy { it.dueDate }
                         .groupBy { it.dueDate }
