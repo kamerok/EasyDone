@@ -1,9 +1,7 @@
 package easydone.feature.feed
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
@@ -20,7 +18,7 @@ import java.util.Date
 import java.util.Locale
 
 
-class FeedFragment : Fragment() {
+class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     private lateinit var repository: DomainRepository
     private lateinit var navigator: FeedNavigator
@@ -32,12 +30,6 @@ class FeedFragment : Fragment() {
             )
         }
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_feed, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView.adapter = adapter

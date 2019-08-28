@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.InputType
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
@@ -19,16 +17,10 @@ import kotlinx.android.synthetic.main.fragment_quick_create_task.*
 import kotlinx.coroutines.launch
 
 
-class QuickCreateTaskFragment : Fragment() {
+class QuickCreateTaskFragment : Fragment(R.layout.fragment_quick_create_task) {
 
     private lateinit var repository: DomainRepository
     private lateinit var navigator: QuickCreateTaskNavigator
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_quick_create_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.setOnClickListener { closeScreen() }

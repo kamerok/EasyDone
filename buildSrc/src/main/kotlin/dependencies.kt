@@ -7,6 +7,7 @@ object Config {
 }
 
 object Versions {
+    val activity = "1.0.0-rc01"
     val adapterDelegates = "4.1.1"
     val appCompat = "1.1.0-rc01"
     val assertk = "0.19"
@@ -16,6 +17,7 @@ object Versions {
     val crashlytics = "2.10.1"
     val fabric = "1.31.0"
     val firebase = "17.1.0"
+    val fragment = "1.1.0-rc04"
     val googleServices = "4.3.1"
     val gradleAndroid = "3.5.0"
     val gradleVersions = "0.22.0"
@@ -43,10 +45,11 @@ object Plugins {
 }
 
 object Android {
+    val activity = "androidx.activity:activity-ktx:${Versions.activity}"
     val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
     val core = "androidx.core:core-ktx:${Versions.core}"
-    val fragment = "androidx.fragment:fragment-ktx:${Versions.appCompat}"
+    val fragment = "androidx.fragment:fragment-ktx:${Versions.fragment}"
     val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
     val material = "com.google.android.material:material:${Versions.material}"
     val recyclerView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"

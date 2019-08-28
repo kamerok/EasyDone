@@ -6,11 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.kamer.builder.StartFlow
 
 
-class TransparentActivity : AppCompatActivity() {
+class TransparentActivity : AppCompatActivity(R.layout.activity_transparent) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_transparent)
         window.attributes = window.attributes.apply {
             height = WindowManager.LayoutParams.MATCH_PARENT
         }

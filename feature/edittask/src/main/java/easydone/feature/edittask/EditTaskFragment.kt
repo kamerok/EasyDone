@@ -4,9 +4,7 @@ import android.app.DatePickerDialog
 import android.content.DialogInterface.BUTTON_NEUTRAL
 import android.os.Bundle
 import android.text.util.Linkify
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -26,7 +24,7 @@ import java.util.Calendar.getInstance
 import java.util.Date
 
 
-class EditTaskFragment : Fragment() {
+class EditTaskFragment : Fragment(R.layout.fragment_edit_task) {
 
     private lateinit var id: String
     private lateinit var repository: DomainRepository
@@ -52,12 +50,6 @@ class EditTaskFragment : Fragment() {
     }
 
     private var isEdit = false
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_edit_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewLifecycleOwner.lifecycleScope.launch {

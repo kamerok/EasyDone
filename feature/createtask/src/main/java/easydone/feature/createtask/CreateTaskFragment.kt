@@ -2,9 +2,7 @@ package easydone.feature.createtask
 
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -15,16 +13,10 @@ import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.coroutines.launch
 
 
-class CreateTaskFragment : Fragment() {
+class CreateTaskFragment : Fragment(R.layout.fragment_create_task) {
 
     private lateinit var repository: DomainRepository
     private lateinit var navigator: CreateTaskNavigator
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_create_task, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         titleView.showKeyboard()

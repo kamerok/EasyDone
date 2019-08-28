@@ -1,9 +1,7 @@
 package easydone.feature.setupflow
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -15,20 +13,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class SetupFragment : Fragment() {
+class SetupFragment : Fragment(R.layout.fragment_setup) {
 
     private lateinit var finishListener: () -> Unit
     private lateinit var navigator: SetupFlowNavigator
     private lateinit var authInfoHolder: AuthInfoHolder
 
     private var isLogin = true
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_setup, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
