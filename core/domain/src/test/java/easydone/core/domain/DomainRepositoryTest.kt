@@ -23,7 +23,7 @@ class DomainRepositoryTest {
 
         repository.getTask(id)
 
-        verify(database).getTask(id)
+        verify(database).getTask("wrong")
     }
 
     private fun buildRepository() {
