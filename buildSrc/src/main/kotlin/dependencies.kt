@@ -26,6 +26,7 @@ object Versions {
     val lifecycle = "2.2.0-alpha01"
     val markwon = "4.1.1"
     val material = "1.1.0-alpha08"
+    val mockitoKotlin = "2.2.0"
     val recyclerView = "1.0.0"
     val retrofit = "2.6.2"
     val retrofitLogging = "4.2.0"
@@ -59,6 +60,7 @@ object Kotlin {
     val coroutinesAndorid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
     val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     val coroutinesRx = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${Versions.coroutines}"
+    val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
     val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
 }
 
@@ -87,4 +89,5 @@ object Libraries {
 object Tests {
     val assertk = "com.willowtreeapps.assertk:assertk-jvm:${Versions.assertk}"
     val junit = "junit:junit:${Versions.junit}"
+    val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoKotlin}"
 }

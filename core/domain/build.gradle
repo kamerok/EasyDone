@@ -1,11 +1,15 @@
 apply plugin: 'kotlin'
 
 dependencies {
-    implementation project(':core:network')
-    implementation project(':core:database:api')
     api project(':core:model')
+    implementation project(':core:database:api')
+    implementation project(':core:network')
 
     implementation Kotlin.coroutinesCore
     implementation Kotlin.stdlib
     implementation Libraries.timber
+
+    testImplementation Kotlin.coroutinesTest
+    testImplementation Tests.junit
+    testImplementation Tests.mockitoKotlin
 }
