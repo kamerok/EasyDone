@@ -45,6 +45,15 @@ subprojects {
                     targetCompatibility = JavaVersion.VERSION_1_8
                     sourceCompatibility = JavaVersion.VERSION_1_8
                 }
+
+                testOptions {
+                    unitTests.all {
+                        reports {
+                            junitXml.enabled = true
+                            junitXml.destination = file("build/test-results/${project.path}")
+                        }
+                    }
+                }
             }
         }
     }
