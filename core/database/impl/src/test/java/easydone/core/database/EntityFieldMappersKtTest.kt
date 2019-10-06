@@ -2,7 +2,6 @@ package easydone.core.database
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
 import assertk.assertions.isNull
 import easydone.core.model.Task
 import org.junit.Test
@@ -22,7 +21,6 @@ class EntityFieldMappersKtTest {
         val mapper = BooleanMapper
         assertThat(mapper.toValue(mapper.toString(null))).isNull()
         assertThat(mapper.toValue(mapper.toString(true))).isEqualTo(true)
-        assertThat(true).isFalse()
     }
 
     @Test
