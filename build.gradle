@@ -50,7 +50,7 @@ subprojects {
                     unitTests.all {
                         reports {
                             junitXml.enabled = true
-                            junitXml.destination = file("build/test-results/${project.path}")
+                            junitXml.destination = file("$buildDir/../../build/test-results/${project.name}")
                         }
                     }
                 }
