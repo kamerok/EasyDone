@@ -19,5 +19,6 @@ dependencies {
     implementation Kotlin.stdlib
     implementation Libraries.adapterDepelegates
     implementation Libraries.adapterDepelegatesDsl
+    implementation Libraries.koin
     implementation Libraries.timber
 }

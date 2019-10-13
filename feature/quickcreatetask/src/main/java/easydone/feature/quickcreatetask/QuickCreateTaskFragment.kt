@@ -15,12 +15,13 @@ import easydone.core.domain.DomainRepository
 import easydone.coreui.utils.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_quick_create_task.*
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 
 class QuickCreateTaskFragment : Fragment(R.layout.fragment_quick_create_task) {
 
-    private lateinit var repository: DomainRepository
-    private lateinit var navigator: QuickCreateTaskNavigator
+    private val repository: DomainRepository by inject()
+    private val navigator: QuickCreateTaskNavigator by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.setOnClickListener { closeScreen() }
@@ -76,19 +77,11 @@ class QuickCreateTaskFragment : Fragment(R.layout.fragment_quick_create_task) {
         }
     }
 
-    data class Dependencies(
-        val repository: DomainRepository,
-        val navigator: QuickCreateTaskNavigator
-    )
-
     companion object {
         private const val KEYBOARD_WAIT_DELAY = 200L
         private const val SHOW_ADD_DURATION = 100L
 
-        fun create(dependencies: Dependencies): Fragment = QuickCreateTaskFragment().apply {
-            repository = dependencies.repository
-            navigator = dependencies.navigator
-        }
+        fun create(): Fragment = QuickCreateTaskFragment()
     }
 
 }

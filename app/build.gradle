@@ -34,6 +34,7 @@ android {
 
 dependencies {
     implementation project(":activity")
+    implementation project(":builder")
     implementation project(":core-ui:design")
 
     implementation Android.appCompat

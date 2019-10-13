@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.kamer.home.R
-import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
 import easydone.core.utils.logErrors
 import easydone.coreui.design.setupToolbar
@@ -17,19 +16,20 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.android.ext.android.inject
 
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private lateinit var fragmentFactory: () -> Fragment
-    private lateinit var repository: DomainRepository
-    private lateinit var synchronizer: Synchronizer
-    private lateinit var navigator: HomeNavigator
+    private val fragmentFactory: FragmentFactory by inject()
+    private val synchronizer: Synchronizer by inject()
+    private val navigator: HomeNavigator by inject()
 
     private var syncView: SyncView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         synchronizer.initiateSync()
     }
 
@@ -39,7 +39,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         subscribeOnSyncState()
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         childFragmentManager.commit {
-            replace(R.id.container, fragmentFactory())
+            replace(R.id.container, fragmentFactory.create())
         }
     }
 
@@ -81,20 +81,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         else -> super.onOptionsItemSelected(item)
     }
 
-    data class Dependencies(
-        val fragmentFactory: () -> Fragment,
-        val repository: DomainRepository,
-        val synchronizer: Synchronizer,
-        val navigator: HomeNavigator
-    )
-
     companion object {
-        fun create(dependencies: Dependencies): Fragment = HomeFragment().apply {
-            fragmentFactory = dependencies.fragmentFactory
-            repository = dependencies.repository
-            synchronizer = dependencies.synchronizer
-            navigator = dependencies.navigator
-        }
+        fun create(): Fragment = HomeFragment()
     }
 
 }

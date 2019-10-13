@@ -11,13 +11,13 @@ import easydone.library.trelloapi.model.Board
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 
 
 class SetupFragment : Fragment(R.layout.fragment_setup) {
 
-    private lateinit var finishListener: () -> Unit
-    private lateinit var navigator: SetupFlowNavigator
-    private lateinit var authInfoHolder: AuthInfoHolder
+    private val navigator: SetupFlowNavigator by inject()
+    private val authInfoHolder: AuthInfoHolder by inject()
 
     private var isLogin = true
 
@@ -55,7 +55,7 @@ class SetupFragment : Fragment(R.layout.fragment_setup) {
         navigator.navigateToSelectBoard(boards) { boardId ->
             lifecycleScope.launch {
                 saveData(token, boardId)
-                finishListener()
+                navigator.onFinishSetup()
             }
         }
     }
@@ -65,18 +65,8 @@ class SetupFragment : Fragment(R.layout.fragment_setup) {
         authInfoHolder.putBoardId(boardId)
     }
 
-    data class Dependencies(
-        val finishSetupListener: () -> Unit,
-        val navigator: SetupFlowNavigator,
-        val authInfoHolder: AuthInfoHolder
-    )
-
     companion object {
-        fun create(dependencies: Dependencies): Fragment = SetupFragment().apply {
-            finishListener = dependencies.finishSetupListener
-            navigator = dependencies.navigator
-            authInfoHolder = dependencies.authInfoHolder
-        }
+        fun create(): Fragment = SetupFragment()
     }
 
 }

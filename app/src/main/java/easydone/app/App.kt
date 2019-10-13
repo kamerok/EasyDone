@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
+import com.kamer.builder.StartFlow
 import com.kamer.easydone.BuildConfig
 import timber.log.LogcatTree
 import timber.log.Timber
@@ -20,6 +21,7 @@ class App : Application() {
         } else {
             Timber.plant(CrashReportingTree())
         }
+        StartFlow.initDependencies(this)
     }
 
     private class CrashReportingTree : Tree() {

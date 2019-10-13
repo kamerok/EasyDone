@@ -17,6 +17,7 @@ import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.feed.FeedFragment
 import easydone.feature.feed.FeedNavigator
+import easydone.feature.home.FragmentFactory
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.login.LoginFragment
@@ -32,26 +33,26 @@ import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Board
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
 
 
 object StartFlow {
 
     private lateinit var navigator: Navigator
 
-    private lateinit var application: Application
-    private val authInfoHolder by lazy {
-        AuthInfoHolder(SharedPrefsKeyValueStorage(application, "prefs"))
+    var fragment: Fragment? = null
+    val localNavigator: Navigator by lazy {
+        Navigator(
+            fragment!!.childFragmentManager,
+            R.id.container
+        )
     }
-    private val api: TrelloApi by lazy { TrelloApi.build() }
-    private val database: MyDatabase by lazy { DatabaseImpl(application) }
-    private val network: Network by lazy {
-        Network(api, authInfoHolder, SharedPrefsKeyValueStorage(application, "id_mapping"))
-    }
-    private val synchronizer by lazy { Synchronizer(network, database) }
-    private val repository by lazy { DomainRepository(database) }
 
     fun start(activity: AppCompatActivity, containerId: Int) {
-        application = activity.application
+        ActivityHolder.setActivity(activity)
         navigator = Navigator(activity.supportFragmentManager, containerId)
         activity.onBackPressedDispatcher.addCallback(
             activity,
@@ -72,51 +73,79 @@ object StartFlow {
     }
 
     fun startCreate(activity: AppCompatActivity, containerId: Int) {
-        application = activity.application
+        ActivityHolder.setActivity(activity)
         navigator = Navigator(activity.supportFragmentManager, containerId)
 
-        navigator.openScreen(
-            QuickCreateTaskFragment.create(
-                QuickCreateTaskFragment.Dependencies(
-                    repository = repository,
-                    navigator = object : QuickCreateTaskNavigator {
-                        override fun closeScreen() {
-                            activity.finishAffinity()
-                        }
-                    }
-                )
-            ),
-            false
-        )
+        navigator.openScreen(QuickCreateTaskFragment.create(), false)
 
         //to start syncing
-        synchronizer
+        GlobalContext.get().koin.get<Synchronizer>()
     }
 
-    private fun startInitialFlow() {
-        navigator.clearStack()
-        if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
-            startMainFlow()
-        } else {
-            startSetupFlow()
-        }
-    }
+    fun initDependencies(application: Application) {
+        val module = module {
+            single { DomainRepository(get()) }
+            single { Synchronizer(get(), get()) }
+            single { AuthInfoHolder(SharedPrefsKeyValueStorage(get(), "prefs")) }
+            single { Network(get(), get(), SharedPrefsKeyValueStorage(application, "id_mapping")) }
+            single { TrelloApi.build() }
+            single<MyDatabase> { DatabaseImpl(get()) }
+            factory<FragmentFactory> {
+                object : FragmentFactory {
+                    override fun create(): Fragment = FeedFragment.create()
+                }
+            }
+            factory<HomeNavigator> {
+                object : HomeNavigator {
+                    override fun navigateToCreate() {
+                        startCreateTask()
+                    }
 
-    private fun startSetupFlow() {
-        var fragment: Fragment? = null
-        val localNavigator: Navigator by lazy {
-            Navigator(
-                fragment!!.childFragmentManager,
-                R.id.container
-            )
-        }
-        fragment = SetupFragment.create(
-            SetupFragment.Dependencies(
-                finishSetupListener = { startMainFlow() },
-                navigator = object : SetupFlowNavigator {
+                    override fun navigateToSettings() {
+                        startSettings()
+                    }
+                }
+            }
+            factory<FeedNavigator> {
+                object : FeedNavigator {
+                    override fun navigateToTask(id: String) {
+                        startViewTask(id)
+                    }
+                }
+            }
+            factory<QuickCreateTaskNavigator> {
+                object : QuickCreateTaskNavigator {
+                    override fun closeScreen() {
+                        ActivityHolder.getActivity().finishAffinity()
+                    }
+                }
+            }
+            factory<EditTaskNavigator> {
+                object : EditTaskNavigator {
+                    override fun closeScreen() {
+                        navigator.popScreen()
+                    }
+                }
+            }
+            factory<CreateTaskNavigator> {
+                object : CreateTaskNavigator {
+                    override fun closeScreen() {
+                        navigator.popScreen()
+                    }
+                }
+            }
+            factory<SettingsNavigator> {
+                object : SettingsNavigator {
+                    override fun navigateToSetup() {
+                        startInitialFlow()
+                    }
+                }
+            }
+            factory<SetupFlowNavigator> {
+                object : SetupFlowNavigator {
                     override fun navigateToLogin(loginListener: (String, List<Board>) -> Unit) {
                         localNavigator.openScreen(
-                            LoginFragment.create(LoginFragment.Dependencies(loginListener, api))
+                            LoginFragment.create(LoginFragment.Dependencies(loginListener, get()))
                         )
                     }
 
@@ -133,86 +162,38 @@ object StartFlow {
                             )
                         )
                     }
-                },
-                authInfoHolder = authInfoHolder
-            )
-        )
-        navigator.openScreen(fragment)
-    }
 
-    private fun startMainFlow() {
-        navigator.openScreen(HomeFragment.create(
-            HomeFragment.Dependencies(
-                fragmentFactory = {
-                    FeedFragment.create(
-                        FeedFragment.Dependencies(
-                            repository,
-                            object : FeedNavigator {
-                                override fun navigateToTask(id: String) {
-                                    startViewTask(id)
-                                }
-                            }
-                        )
-                    )
-                },
-                repository = repository,
-                synchronizer = synchronizer,
-                navigator = object : HomeNavigator {
-                    override fun navigateToCreate() {
-                        startCreateTask()
-                    }
-
-                    override fun navigateToSettings() {
-                        startSettings()
-                    }
+                    override fun onFinishSetup() = startMainFlow()
                 }
-            )
-        ))
+            }
+        }
+        startKoin {
+            androidContext(application)
+            modules(module)
+        }
     }
 
-    private fun startViewTask(id: String) {
-        navigator.openScreen(
-            EditTaskFragment.create(EditTaskFragment.Dependencies(
-                id,
-                repository,
-                object : EditTaskNavigator {
-                    override fun closeScreen() {
-                        navigator.popScreen()
-                    }
-                }
-            )),
-            true
-        )
+    private fun startInitialFlow() {
+        val authInfoHolder: AuthInfoHolder = GlobalContext.get().koin.get()
+        navigator.clearStack()
+        if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
+            startMainFlow()
+        } else {
+            startSetupFlow()
+        }
     }
 
-    fun startCreateTask() {
-        navigator.openScreen(
-            CreateTaskFragment.create(CreateTaskFragment.Dependencies(
-                repository,
-                object : CreateTaskNavigator {
-                    override fun closeScreen() {
-                        navigator.popScreen()
-                    }
-                }
-            )),
-            true
-        )
+    private fun startSetupFlow() {
+        fragment = SetupFragment.create()
+        navigator.openScreen(fragment!!)
     }
 
-    private fun startSettings() {
-        navigator.openScreen(
-            SettingsFragment.create(
-                SettingsFragment.Dependencies(
-                    authInfoHolder,
-                    object : SettingsNavigator {
-                        override fun navigateToSetup() {
-                            startInitialFlow()
-                        }
-                    }
-                )
-            ),
-            true
-        )
-    }
+    private fun startMainFlow() = navigator.openScreen(HomeFragment.create())
+
+    private fun startViewTask(id: String) = navigator.openScreen(EditTaskFragment.create(id), true)
+
+    private fun startCreateTask() = navigator.openScreen(CreateTaskFragment.create(), true)
+
+    private fun startSettings() = navigator.openScreen(SettingsFragment.create(), true)
 
 }

@@ -17,6 +17,7 @@ import io.noties.markwon.linkify.LinkifyPlugin
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.coroutines.launch
 import org.commonmark.node.SoftLineBreak
+import org.koin.android.ext.android.inject
 import java.util.Calendar.DAY_OF_MONTH
 import java.util.Calendar.MONTH
 import java.util.Calendar.YEAR
@@ -26,9 +27,10 @@ import java.util.Date
 
 class EditTaskFragment : Fragment(R.layout.fragment_edit_task) {
 
+    private val repository: DomainRepository by inject()
+    private val navigator: EditTaskNavigator by inject()
+
     private lateinit var id: String
-    private lateinit var repository: DomainRepository
-    private lateinit var navigator: EditTaskNavigator
 
     private lateinit var originalTask: Task
     private var date: Date? = null
@@ -126,17 +128,9 @@ class EditTaskFragment : Fragment(R.layout.fragment_edit_task) {
         dateView.text = date?.toString() ?: "Select date"
     }
 
-    data class Dependencies(
-        val id: String,
-        val repository: DomainRepository,
-        val navigator: EditTaskNavigator
-    )
-
     companion object {
-        fun create(dependencies: Dependencies): Fragment = EditTaskFragment().apply {
-            id = dependencies.id
-            repository = dependencies.repository
-            navigator = dependencies.navigator
+        fun create(id: String): Fragment = EditTaskFragment().apply {
+            this.id = id
         }
     }
 

@@ -9,4 +9,6 @@ interface SetupFlowNavigator {
 
     fun navigateToSelectBoard(boards: List<Board>, listener: (String) -> Unit)
 
+    fun onFinishSetup()
+
 }

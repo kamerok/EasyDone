@@ -22,6 +22,7 @@ object Versions {
     val gradleAndroid = "3.5.0"
     val gradleVersions = "0.25.0"
     val junit = "4.12"
+    val koin = "2.0.1"
     val kotlin = "1.3.50"
     val lifecycle = "2.2.0-alpha01"
     val markwon = "4.1.1"
@@ -73,6 +74,7 @@ object Tools {
 object Libraries {
     val adapterDepelegates = "com.hannesdorfmann:adapterdelegates4:${Versions.adapterDelegates}"
     val adapterDepelegatesDsl = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-layoutcontainer:${Versions.adapterDelegates}"
+    val koin = "org.koin:koin-android:${Versions.koin}"
     val markwon = "io.noties.markwon:core:${Versions.markwon}"
     val markwonLinkify = "io.noties.markwon:linkify:${Versions.markwon}"
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
