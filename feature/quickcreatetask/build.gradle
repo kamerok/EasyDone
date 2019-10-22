@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 
 dependencies {
     implementation project(':core:domain')
+    implementation project(':core-ui:design')
     implementation project(':core-ui:utils')
 
     implementation Android.appCompat

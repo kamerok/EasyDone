@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppToolbar" parent="ThemeOverlay.AppCompat.ActionBar">
-        <item name="android:textColorPrimary">@color/status_bar_gray</item>
+        <item name="android:textColorPrimary">@color/text_main</item>
     </style>
 </resources>

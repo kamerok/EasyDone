@@ -26,6 +26,8 @@
         android:layout_marginEnd="16dp"
         android:background="@null"
         android:hint="@string/title_hint"
+        android:textColor="@color/text_main"
+        android:textColorHint="@color/text_inactive"
         app:layout_constraintEnd_toEndOf="@id/backgroundView"
         app:layout_constraintStart_toStartOf="@id/backgroundView"
         app:layout_constraintTop_toTopOf="@id/backgroundView">

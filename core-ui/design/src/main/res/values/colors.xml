@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryLight">#cce6e3</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="brand">#008577</color>
+    <color name="brand_light">#cce6e3</color>
+    <color name="brand_dark">#00574B</color>
+    <color name="brand_accent">#D81B60</color>
 
-    <color name="status_bar_gray">#535353</color>
+    <color name="background">#ffffff</color>
+
+    <!--Text-->
+    <color name="text_main">#535353</color>
+    <color name="text_inactive">#808080</color>
 
 </resources>
