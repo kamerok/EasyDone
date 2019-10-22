@@ -1,8 +1,6 @@
 package com.kamer.builder
 
 import android.app.Application
-import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
 import easydone.core.database.DatabaseImpl
@@ -31,6 +29,7 @@ import easydone.feature.setupflow.SetupFlowNavigator
 import easydone.feature.setupflow.SetupFragment
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
 import easydone.library.navigation.Navigator
+import easydone.library.navigation.FragmentManagerNavigator
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Board
 import org.koin.android.ext.koin.androidContext
@@ -41,42 +40,21 @@ import org.koin.dsl.module
 
 object StartFlow {
 
-    private lateinit var navigator: Navigator
-
-    var fragment: Fragment? = null
-    val localNavigator: Navigator by lazy {
-        Navigator(
+    private var fragment: Fragment? = null
+    private val localNavigator: Navigator by lazy {
+        FragmentManagerNavigator(
             fragment!!.childFragmentManager,
             R.id.container
         )
     }
 
-    fun start(activity: AppCompatActivity, containerId: Int) {
-        ActivityHolder.setActivity(activity)
-        navigator = Navigator(activity.supportFragmentManager, containerId)
-        activity.onBackPressedDispatcher.addCallback(
-            activity,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (!navigator.isEmpty()) {
-                        navigator.popScreen()
-                    } else {
-                        isEnabled = false
-                        activity.onBackPressed()
-                        isEnabled = true
-                    }
-                }
-            }
-        )
-
+    fun start() {
         startInitialFlow()
     }
 
-    fun startCreate(activity: AppCompatActivity, containerId: Int) {
-        ActivityHolder.setActivity(activity)
-        navigator = Navigator(activity.supportFragmentManager, containerId)
-
-        navigator.openScreen(QuickCreateTaskFragment.create(), false)
+    fun startCreate() {
+        GlobalContext.get().koin.get<Navigator>()
+            .openScreen(QuickCreateTaskFragment.create(), false)
 
         //to start syncing
         GlobalContext.get().koin.get<Synchronizer>()
@@ -90,6 +68,8 @@ object StartFlow {
             single { Network(get(), get(), SharedPrefsKeyValueStorage(application, "id_mapping")) }
             single { TrelloApi.build() }
             single<MyDatabase> { DatabaseImpl(get()) }
+            single { ActivityNavigator() }
+            single { get<ActivityNavigator>() as Navigator }
             factory<FragmentFactory> {
                 object : FragmentFactory {
                     override fun create(): Fragment = FeedFragment.create()
@@ -98,18 +78,18 @@ object StartFlow {
             factory<HomeNavigator> {
                 object : HomeNavigator {
                     override fun navigateToCreate() {
-                        startCreateTask()
+                        startCreateTask(get())
                     }
 
                     override fun navigateToSettings() {
-                        startSettings()
+                        startSettings(get())
                     }
                 }
             }
             factory<FeedNavigator> {
                 object : FeedNavigator {
                     override fun navigateToTask(id: String) {
-                        startViewTask(id)
+                        startViewTask(id, get())
                     }
                 }
             }
@@ -123,14 +103,14 @@ object StartFlow {
             factory<EditTaskNavigator> {
                 object : EditTaskNavigator {
                     override fun closeScreen() {
-                        navigator.popScreen()
+                        get<Navigator>().popScreen()
                     }
                 }
             }
             factory<CreateTaskNavigator> {
                 object : CreateTaskNavigator {
                     override fun closeScreen() {
-                        navigator.popScreen()
+                        get<Navigator>().popScreen()
                     }
                 }
             }
@@ -163,7 +143,7 @@ object StartFlow {
                         )
                     }
 
-                    override fun onFinishSetup() = startMainFlow()
+                    override fun onFinishSetup() = startMainFlow(get())
                 }
             }
         }
@@ -175,25 +155,29 @@ object StartFlow {
 
     private fun startInitialFlow() {
         val authInfoHolder: AuthInfoHolder = GlobalContext.get().koin.get()
+        val navigator: Navigator = GlobalContext.get().koin.get()
         navigator.clearStack()
         if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
-            startMainFlow()
+            startMainFlow(navigator)
         } else {
-            startSetupFlow()
+            startSetupFlow(navigator)
         }
     }
 
-    private fun startSetupFlow() {
+    private fun startSetupFlow(navigator: Navigator) {
         fragment = SetupFragment.create()
         navigator.openScreen(fragment!!)
     }
 
-    private fun startMainFlow() = navigator.openScreen(HomeFragment.create())
+    private fun startMainFlow(navigator: Navigator) = navigator.openScreen(HomeFragment.create())
 
-    private fun startViewTask(id: String) = navigator.openScreen(EditTaskFragment.create(id), true)
+    private fun startViewTask(id: String, navigator: Navigator) =
+        navigator.openScreen(EditTaskFragment.create(id), true)
 
-    private fun startCreateTask() = navigator.openScreen(CreateTaskFragment.create(), true)
+    private fun startCreateTask(navigator: Navigator) =
+        navigator.openScreen(CreateTaskFragment.create(), true)
 
-    private fun startSettings() = navigator.openScreen(SettingsFragment.create(), true)
+    private fun startSettings(navigator: Navigator) =
+        navigator.openScreen(SettingsFragment.create(), true)
 
 }

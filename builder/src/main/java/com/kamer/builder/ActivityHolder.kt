@@ -1,6 +1,5 @@
 package com.kamer.builder
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import java.lang.ref.WeakReference
 

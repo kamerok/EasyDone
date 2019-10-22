@@ -3,7 +3,9 @@ apply plugin: 'kotlin-android'
 
 dependencies {
     implementation project(':builder')
+    implementation project(':library:navigation')
 
     implementation Kotlin.stdlib
     implementation Android.appCompat
+    implementation Libraries.koin
 }
