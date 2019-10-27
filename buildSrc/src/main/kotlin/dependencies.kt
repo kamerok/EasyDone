@@ -17,7 +17,7 @@ object Versions {
     val crashlytics = "2.10.1"
     val fabric = "1.31.1"
     val firebase = "17.2.0"
-    val fragment = "1.1.0"
+    val fragment = "1.2.0-rc01"
     val googleServices = "4.3.2"
     val gradleAndroid = "3.5.0"
     val gradleVersions = "0.25.0"

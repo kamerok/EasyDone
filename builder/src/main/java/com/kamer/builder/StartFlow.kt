@@ -169,7 +169,7 @@ object StartFlow {
         navigator.openScreen(fragment!!)
     }
 
-    private fun startMainFlow(navigator: Navigator) = navigator.openScreen(HomeFragment.create())
+    private fun startMainFlow(navigator: Navigator) = navigator.openScreen(HomeFragment::class.java)
 
     private fun startViewTask(id: String, navigator: Navigator) =
         navigator.openScreen(EditTaskFragment.create(id), true)

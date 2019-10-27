@@ -16,14 +16,13 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.android.ext.android.inject
 
 
-class HomeFragment : Fragment(R.layout.fragment_home) {
-
-    private val fragmentFactory: FragmentFactory by inject()
-    private val synchronizer: Synchronizer by inject()
-    private val navigator: HomeNavigator by inject()
+class HomeFragment(
+    private val fragmentFactory: FragmentFactory,
+    private val synchronizer: Synchronizer,
+    private val navigator: HomeNavigator
+) : Fragment(R.layout.fragment_home) {
 
     private var syncView: SyncView? = null
 
@@ -79,10 +78,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             true
         }
         else -> super.onOptionsItemSelected(item)
-    }
-
-    companion object {
-        fun create(): Fragment = HomeFragment()
     }
 
 }

@@ -15,6 +15,10 @@ class ActivityNavigator : Navigator {
         navigator?.openScreen(fragment, addToBackStack)
     }
 
+    override fun openScreen(fragmentClass: Class<out Fragment>, addToBackStack: Boolean) {
+        navigator?.openScreen(fragmentClass, addToBackStack)
+    }
+
     override fun isEmpty(): Boolean = navigator?.isEmpty() ?: true
 
     override fun popScreen() {
