@@ -13,7 +13,6 @@ dependencies {
     implementation Kotlin.coroutinesAndorid
     implementation Kotlin.coroutinesCore
     implementation Kotlin.stdlib
-    implementation Libraries.koin
     implementation Libraries.markwon
     implementation Libraries.markwonLinkify
 

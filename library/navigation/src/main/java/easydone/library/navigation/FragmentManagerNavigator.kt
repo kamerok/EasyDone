@@ -1,11 +1,15 @@
 package easydone.library.navigation
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 
 
-class FragmentManagerNavigator(private val fragmentManager: FragmentManager, private val containerId: Int) :
+class FragmentManagerNavigator(
+    private val fragmentManager: FragmentManager,
+    private val containerId: Int
+) :
     Navigator {
 
     override fun openScreen(fragment: Fragment, addToBackStack: Boolean) =
@@ -19,13 +23,17 @@ class FragmentManagerNavigator(private val fragmentManager: FragmentManager, pri
         }
 
 
-    override fun openScreen(fragmentClass: Class<out Fragment>, addToBackStack: Boolean) =
+    override fun openScreen(
+        fragmentClass: Class<out Fragment>,
+        addToBackStack: Boolean,
+        args: Bundle?
+    ) =
         fragmentManager.commit {
             setCustomAnimations(
                 R.anim.overlay_open_enter, R.anim.overlay_open_exit,
                 R.anim.overlay_close_enter, R.anim.overlay_close_exit
             )
-            replace(containerId, fragmentClass, null)
+            replace(containerId, fragmentClass, args)
             if (addToBackStack) addToBackStack(null)
         }
 

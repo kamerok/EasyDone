@@ -1,5 +1,6 @@
 package com.kamer.builder
 
+import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -15,8 +16,12 @@ class ActivityNavigator : Navigator {
         navigator?.openScreen(fragment, addToBackStack)
     }
 
-    override fun openScreen(fragmentClass: Class<out Fragment>, addToBackStack: Boolean) {
-        navigator?.openScreen(fragmentClass, addToBackStack)
+    override fun openScreen(
+        fragmentClass: Class<out Fragment>,
+        addToBackStack: Boolean,
+        args: Bundle?
+    ) {
+        navigator?.openScreen(fragmentClass, addToBackStack, args)
     }
 
     override fun isEmpty(): Boolean = navigator?.isEmpty() ?: true

@@ -1,6 +1,7 @@
 package com.kamer.builder
 
 import android.app.Application
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
 import easydone.core.database.DatabaseImpl
@@ -76,13 +77,6 @@ object StartFlow {
                     }
                 }
             }
-            factory<EditTaskNavigator> {
-                object : EditTaskNavigator {
-                    override fun closeScreen() {
-                        get<Navigator>().popScreen()
-                    }
-                }
-            }
             factory<CreateTaskNavigator> {
                 object : CreateTaskNavigator {
                     override fun closeScreen() {
@@ -149,6 +143,16 @@ object StartFlow {
                     }
                 )
             }
+            factory {
+                EditTaskFragment(
+                    get(),
+                    object : EditTaskNavigator {
+                        override fun closeScreen() {
+                            get<Navigator>().popScreen()
+                        }
+                    }
+                )
+            }
         }
         startKoin {
             androidContext(application)
@@ -175,7 +179,11 @@ object StartFlow {
     private fun startMainFlow(navigator: Navigator) = navigator.openScreen(HomeFragment::class.java)
 
     private fun startViewTask(id: String, navigator: Navigator) =
-        navigator.openScreen(EditTaskFragment.create(id), true)
+        navigator.openScreen(
+            EditTaskFragment::class.java,
+            true,
+            Bundle().apply { putString(EditTaskFragment.TASK_ID, id) }
+        )
 
     private fun startCreateTask(navigator: Navigator) =
         navigator.openScreen(CreateTaskFragment.create(), true)
