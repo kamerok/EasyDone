@@ -13,16 +13,15 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 
-class FeedFragment : Fragment(R.layout.fragment_feed) {
-
-    private val repository: DomainRepository by inject()
-    private val navigator: FeedNavigator by inject()
+class FeedFragment(
+    private val repository: DomainRepository,
+    private val navigator: FeedNavigator
+) : Fragment(R.layout.fragment_feed) {
 
     private val adapter by lazy {
         FeedAdapter { id ->
@@ -70,8 +69,6 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     companion object {
         private val DATE_FORMAT = SimpleDateFormat("dd MMMM", Locale.US)
-
-        fun create(): Fragment = FeedFragment()
     }
 
 }

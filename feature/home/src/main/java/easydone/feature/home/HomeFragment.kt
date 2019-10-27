@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.onEach
 
 
 class HomeFragment(
-    private val fragmentFactory: FragmentFactory,
+    private val contentFragmentClass: Class<out Fragment>,
     private val synchronizer: Synchronizer,
     private val navigator: HomeNavigator
 ) : Fragment(R.layout.fragment_home) {
@@ -38,7 +38,7 @@ class HomeFragment(
         subscribeOnSyncState()
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         childFragmentManager.commit {
-            replace(R.id.container, fragmentFactory.create())
+            replace(R.id.container, contentFragmentClass, null)
         }
     }
 
