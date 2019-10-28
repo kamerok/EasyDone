@@ -54,7 +54,7 @@ object StartFlow {
 
     fun startCreate() {
         GlobalContext.get().koin.get<Navigator>()
-            .openScreen(QuickCreateTaskFragment.create(), false)
+            .openScreen(QuickCreateTaskFragment::class.java, false)
 
         //to start syncing
         GlobalContext.get().koin.get<Synchronizer>()
@@ -70,13 +70,6 @@ object StartFlow {
             single<MyDatabase> { DatabaseImpl(get()) }
             single { ActivityNavigator() }
             single { get<ActivityNavigator>() as Navigator }
-            factory<QuickCreateTaskNavigator> {
-                object : QuickCreateTaskNavigator {
-                    override fun closeScreen() {
-                        ActivityHolder.getActivity().finishAffinity()
-                    }
-                }
-            }
             factory<CreateTaskNavigator> {
                 object : CreateTaskNavigator {
                     override fun closeScreen() {
@@ -149,6 +142,16 @@ object StartFlow {
                     object : EditTaskNavigator {
                         override fun closeScreen() {
                             get<Navigator>().popScreen()
+                        }
+                    }
+                )
+            }
+            factory {
+                QuickCreateTaskFragment(
+                    get(),
+                    object : QuickCreateTaskNavigator {
+                        override fun closeScreen() {
+                            ActivityHolder.getActivity().finishAffinity()
                         }
                     }
                 )

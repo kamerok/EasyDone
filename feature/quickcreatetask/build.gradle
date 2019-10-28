@@ -13,6 +13,5 @@ dependencies {
     implementation Android.lifecycleRuntime
     implementation Kotlin.coroutinesCore
     implementation Kotlin.stdlib
-    implementation Libraries.koin
     implementation Libraries.timber
 }

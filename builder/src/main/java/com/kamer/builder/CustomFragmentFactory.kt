@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.feed.FeedFragment
 import easydone.feature.home.HomeFragment
+import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import org.koin.core.context.GlobalContext
 
 
@@ -15,6 +16,7 @@ class CustomFragmentFactory : FragmentFactory() {
             HomeFragment::class.java.name -> GlobalContext.get().koin.get<HomeFragment>()
             FeedFragment::class.java.name -> GlobalContext.get().koin.get<FeedFragment>()
             EditTaskFragment::class.java.name -> GlobalContext.get().koin.get<EditTaskFragment>()
+            QuickCreateTaskFragment::class.java.name -> GlobalContext.get().koin.get<QuickCreateTaskFragment>()
             else -> super.instantiate(classLoader, className)
         }
 
