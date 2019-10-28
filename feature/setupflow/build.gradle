@@ -11,5 +11,4 @@ dependencies {
     implementation Android.fragment
     implementation Android.lifecycleRuntime
     implementation Kotlin.stdlib
-    implementation Libraries.koin
 }

@@ -8,6 +8,7 @@ import easydone.feature.feed.FeedFragment
 import easydone.feature.home.HomeFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.settings.SettingsFragment
+import easydone.feature.setupflow.SetupFragment
 import org.koin.core.context.GlobalContext
 
 
@@ -21,6 +22,7 @@ class CustomFragmentFactory : FragmentFactory() {
             QuickCreateTaskFragment::class.java.name -> GlobalContext.get().koin.get<QuickCreateTaskFragment>()
             CreateTaskFragment::class.java.name -> GlobalContext.get().koin.get<CreateTaskFragment>()
             SettingsFragment::class.java.name -> GlobalContext.get().koin.get<SettingsFragment>()
+            SetupFragment::class.java.name -> GlobalContext.get().koin.get<SetupFragment>()
             else -> super.instantiate(classLoader, className)
         }
 

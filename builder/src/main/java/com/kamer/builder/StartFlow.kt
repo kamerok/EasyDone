@@ -2,7 +2,6 @@ package com.kamer.builder
 
 import android.app.Application
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
 import easydone.core.database.DatabaseImpl
 import easydone.core.database.MyDatabase
@@ -28,8 +27,8 @@ import easydone.feature.settings.SettingsNavigator
 import easydone.feature.setupflow.SetupFlowNavigator
 import easydone.feature.setupflow.SetupFragment
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
-import easydone.library.navigation.Navigator
 import easydone.library.navigation.FragmentManagerNavigator
+import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Board
 import org.koin.android.ext.koin.androidContext
@@ -40,21 +39,12 @@ import org.koin.dsl.module
 
 object StartFlow {
 
-    private var fragment: Fragment? = null
-    private val localNavigator: Navigator by lazy {
-        FragmentManagerNavigator(
-            fragment!!.childFragmentManager,
-            R.id.container
-        )
-    }
-
     fun start() {
         startInitialFlow()
     }
 
     fun startCreate() {
-        GlobalContext.get().koin.get<Navigator>()
-            .openScreen(QuickCreateTaskFragment::class.java, false)
+        GlobalContext.get().koin.get<Navigator>().openScreen(QuickCreateTaskFragment::class.java)
 
         //to start syncing
         GlobalContext.get().koin.get<Synchronizer>()
@@ -70,31 +60,6 @@ object StartFlow {
             single<MyDatabase> { DatabaseImpl(get()) }
             single { ActivityNavigator() }
             single { get<ActivityNavigator>() as Navigator }
-            factory<SetupFlowNavigator> {
-                object : SetupFlowNavigator {
-                    override fun navigateToLogin(loginListener: (String, List<Board>) -> Unit) {
-                        localNavigator.openScreen(
-                            LoginFragment.create(LoginFragment.Dependencies(loginListener, get()))
-                        )
-                    }
-
-                    override fun navigateToSelectBoard(
-                        boards: List<Board>,
-                        listener: (String) -> Unit
-                    ) {
-                        localNavigator.openScreen(
-                            SelectBoardFragment.create(
-                                SelectBoardFragment.Dependencies(
-                                    boards = boards.map { BoardUiModel(it.id, it.name) },
-                                    listener = listener
-                                )
-                            )
-                        )
-                    }
-
-                    override fun onFinishSetup() = startMainFlow(get())
-                }
-            }
         }
         val fragmentModule = module {
             factory {
@@ -162,6 +127,42 @@ object StartFlow {
                     }
                 )
             }
+            factory {
+                var fragment: SetupFragment? = null
+                val localNavigator: Navigator by lazy {
+                    FragmentManagerNavigator(
+                        fragment!!.childFragmentManager,
+                        R.id.container
+                    )
+                }
+                fragment = SetupFragment(
+                    get(),
+                    object : SetupFlowNavigator {
+                        override fun navigateToLogin(loginListener: (String, List<Board>) -> Unit) {
+                            localNavigator.openScreen(
+                                LoginFragment.create(LoginFragment.Dependencies(loginListener, get()))
+                            )
+                        }
+
+                        override fun navigateToSelectBoard(
+                            boards: List<Board>,
+                            listener: (String) -> Unit
+                        ) {
+                            localNavigator.openScreen(
+                                SelectBoardFragment.create(
+                                    SelectBoardFragment.Dependencies(
+                                        boards = boards.map { BoardUiModel(it.id, it.name) },
+                                        listener = listener
+                                    )
+                                )
+                            )
+                        }
+
+                        override fun onFinishSetup() = startMainFlow(get())
+                    }
+                )
+                fragment
+            }
         }
         startKoin {
             androidContext(application)
@@ -181,8 +182,7 @@ object StartFlow {
     }
 
     private fun startSetupFlow(navigator: Navigator) {
-        fragment = SetupFragment.create()
-        navigator.openScreen(fragment!!)
+        navigator.openScreen(SetupFragment::class.java)
     }
 
     private fun startMainFlow(navigator: Navigator) = navigator.openScreen(HomeFragment::class.java)
