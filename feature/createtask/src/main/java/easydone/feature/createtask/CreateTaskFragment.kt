@@ -11,13 +11,12 @@ import easydone.core.domain.DomainRepository
 import easydone.coreui.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 
 
-class CreateTaskFragment : Fragment(R.layout.fragment_create_task) {
-
-    private val repository: DomainRepository by inject()
-    private val navigator: CreateTaskNavigator by inject()
+class CreateTaskFragment(
+    private val repository: DomainRepository,
+    private val navigator: CreateTaskNavigator
+) : Fragment(R.layout.fragment_create_task) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         titleView.showKeyboard()
@@ -46,10 +45,6 @@ class CreateTaskFragment : Fragment(R.layout.fragment_create_task) {
             )
             navigator.closeScreen()
         }
-    }
-
-    companion object {
-        fun create(): Fragment = CreateTaskFragment()
     }
 
 }

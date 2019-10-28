@@ -70,13 +70,6 @@ object StartFlow {
             single<MyDatabase> { DatabaseImpl(get()) }
             single { ActivityNavigator() }
             single { get<ActivityNavigator>() as Navigator }
-            factory<CreateTaskNavigator> {
-                object : CreateTaskNavigator {
-                    override fun closeScreen() {
-                        get<Navigator>().popScreen()
-                    }
-                }
-            }
             factory<SettingsNavigator> {
                 object : SettingsNavigator {
                     override fun navigateToSetup() {
@@ -156,6 +149,16 @@ object StartFlow {
                     }
                 )
             }
+            factory {
+                CreateTaskFragment(
+                    get(),
+                    object : CreateTaskNavigator {
+                        override fun closeScreen() {
+                            get<Navigator>().popScreen()
+                        }
+                    }
+                )
+            }
         }
         startKoin {
             androidContext(application)
@@ -189,7 +192,7 @@ object StartFlow {
         )
 
     private fun startCreateTask(navigator: Navigator) =
-        navigator.openScreen(CreateTaskFragment.create(), true)
+        navigator.openScreen(CreateTaskFragment::class.java, true)
 
     private fun startSettings(navigator: Navigator) =
         navigator.openScreen(SettingsFragment.create(), true)
