@@ -6,13 +6,12 @@ import androidx.fragment.app.Fragment
 import easydone.core.network.AuthInfoHolder
 import easydone.coreui.design.setupToolbar
 import kotlinx.android.synthetic.main.fragment_settings.*
-import org.koin.android.ext.android.inject
 
 
-class SettingsFragment : Fragment(R.layout.fragment_settings) {
-
-    private val authInfoHolder: AuthInfoHolder by inject()
-    private val navigator: SettingsNavigator by inject()
+class SettingsFragment(
+    private val authInfoHolder: AuthInfoHolder,
+    private val navigator: SettingsNavigator
+) : Fragment(R.layout.fragment_settings) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupToolbar(R.string.title)
@@ -20,10 +19,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             authInfoHolder.clear()
             navigator.navigateToSetup()
         }
-    }
-
-    companion object {
-        fun create(): Fragment = SettingsFragment()
     }
 
 }

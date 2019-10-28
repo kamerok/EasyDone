@@ -70,13 +70,6 @@ object StartFlow {
             single<MyDatabase> { DatabaseImpl(get()) }
             single { ActivityNavigator() }
             single { get<ActivityNavigator>() as Navigator }
-            factory<SettingsNavigator> {
-                object : SettingsNavigator {
-                    override fun navigateToSetup() {
-                        startInitialFlow()
-                    }
-                }
-            }
             factory<SetupFlowNavigator> {
                 object : SetupFlowNavigator {
                     override fun navigateToLogin(loginListener: (String, List<Board>) -> Unit) {
@@ -159,6 +152,16 @@ object StartFlow {
                     }
                 )
             }
+            factory {
+                SettingsFragment(
+                    get(),
+                    object : SettingsNavigator {
+                        override fun navigateToSetup() {
+                            startInitialFlow()
+                        }
+                    }
+                )
+            }
         }
         startKoin {
             androidContext(application)
@@ -195,6 +198,6 @@ object StartFlow {
         navigator.openScreen(CreateTaskFragment::class.java, true)
 
     private fun startSettings(navigator: Navigator) =
-        navigator.openScreen(SettingsFragment.create(), true)
+        navigator.openScreen(SettingsFragment::class.java, true)
 
 }

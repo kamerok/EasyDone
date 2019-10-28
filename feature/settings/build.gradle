@@ -10,5 +10,4 @@ dependencies {
     implementation Android.appCompat
     implementation Android.constraintLayout
     implementation Kotlin.stdlib
-    implementation Libraries.koin
 }
