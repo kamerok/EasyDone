@@ -8,6 +8,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -46,6 +47,24 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 return false
             }
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            requireActivity(),
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (webView.isVisible) {
+                        webView.isVisible = false
+                        webView.loadUrl("about:blank")
+                        webView.clearCache(true)
+                        loginButton.isVisible = true
+                    } else {
+                        isEnabled = false
+                        requireActivity().onBackPressed()
+                        isEnabled = true
+                    }
+                }
+            }
+        )
     }
 
     private fun processToken(token: String) {
