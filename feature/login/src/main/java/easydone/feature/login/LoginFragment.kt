@@ -4,6 +4,9 @@ package easydone.feature.login
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -27,17 +30,32 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         loginButton.setOnClickListener {
             loginButton.isVisible = false
             webView.isVisible = true
-            webView.loadUrl("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${TrelloApi.API_KEY}\n")
+            webView.loadUrl("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${TrelloApi.API_KEY}&callback_method=fragment&return_url=http://easydone.com")
         }
-        submitView.setOnClickListener {
-            lifecycleScope.launch {
-                try {
-                    val token = enterTokenView.text.toString()
-                    val nestedBoards = api.boards(TrelloApi.API_KEY, token)
-                    successLogin(token, nestedBoards.boards)
-                } catch (e: Exception) {
-                    Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                request?.url?.let { url ->
+                    if (url.host?.equals("easydone.com") == true) {
+                        processToken(url.fragment?.substringAfter('=') ?: "")
+                        return true
+                    }
                 }
+                return false
+            }
+        }
+    }
+
+    private fun processToken(token: String) {
+        lifecycleScope.launch {
+            try {
+                val nestedBoards = api.boards(TrelloApi.API_KEY, token)
+                successLogin(token, nestedBoards.boards)
+            } catch (e: Exception) {
+                Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
