@@ -26,7 +26,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        webView.settings.javaScriptEnabled = true
+        webView.settings.apply {
+            javaScriptEnabled = true
+            userAgentString = userAgentString.replace("; wv", "")
+        }
 
         loginButton.setOnClickListener {
             loginButton.isVisible = false
