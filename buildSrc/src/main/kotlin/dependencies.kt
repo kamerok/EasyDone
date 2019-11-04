@@ -11,6 +11,7 @@ object Versions {
     val adapterDelegates = "4.2.0"
     val appCompat = "1.1.0"
     val assertk = "0.19"
+    val browser = "1.0.0"
     val constraintLayout = "1.1.3"
     val core = "1.2.0-alpha02"
     val coroutines = "1.3.2"
@@ -49,6 +50,7 @@ object Plugins {
 object Android {
     val activity = "androidx.activity:activity-ktx:${Versions.activity}"
     val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
+    val browser = "androidx.browser:browser:${Versions.browser}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
     val core = "androidx.core:core-ktx:${Versions.core}"
     val fragment = "androidx.fragment:fragment-ktx:${Versions.fragment}"

@@ -7,6 +7,7 @@ dependencies {
     implementation project(":library:trelloapi")
 
     implementation Android.appCompat
+    implementation Android.browser
     implementation Android.constraintLayout
     implementation Android.core
     implementation Android.lifecycleRuntime

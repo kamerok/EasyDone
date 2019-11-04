@@ -18,6 +18,7 @@ import easydone.feature.feed.FeedNavigator
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.login.LoginFragment
+import easydone.feature.login.TokenProvider
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
 import easydone.feature.selectboard.BoardUiModel
@@ -31,6 +32,7 @@ import easydone.library.navigation.FragmentManagerNavigator
 import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Board
+import kotlinx.coroutines.flow.Flow
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
@@ -60,6 +62,12 @@ object StartFlow {
             single<MyDatabase> { DatabaseImpl(get()) }
             single { ActivityNavigator() }
             single { get<ActivityNavigator>() as Navigator }
+            single { DeepLinkResolver() }
+            single {
+                object : TokenProvider {
+                    override fun observeToken(): Flow<String> = get<DeepLinkResolver>().observeToken()
+                } as TokenProvider
+            }
         }
         val fragmentModule = module {
             factory {
@@ -140,7 +148,13 @@ object StartFlow {
                     object : SetupFlowNavigator {
                         override fun navigateToLogin(loginListener: (String, List<Board>) -> Unit) {
                             localNavigator.openScreen(
-                                LoginFragment.create(LoginFragment.Dependencies(loginListener, get()))
+                                LoginFragment.create(
+                                    LoginFragment.Dependencies(
+                                        loginListener,
+                                        get(),
+                                        get()
+                                    )
+                                )
                             )
                         }
 

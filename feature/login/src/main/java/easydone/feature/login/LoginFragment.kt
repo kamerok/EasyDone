@@ -1,21 +1,21 @@
 package easydone.feature.login
 
 
-import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.core.view.isVisible
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.kamer.login.R
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Board
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 
@@ -23,51 +23,26 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private lateinit var listener: (String, List<Board>) -> Unit
     private lateinit var api: TrelloApi
+    private lateinit var tokenProvider: TokenProvider
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        webView.settings.apply {
-            javaScriptEnabled = true
-            userAgentString = userAgentString.replace("; wv", "")
-        }
-
         loginButton.setOnClickListener {
-            loginButton.isVisible = false
-            webView.isVisible = true
-            webView.loadUrl("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${TrelloApi.API_KEY}&callback_method=fragment&return_url=http://easydone.com")
-        }
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                request?.url?.let { url ->
-                    if (url.host?.equals("easydone.com") == true) {
-                        processToken(url.fragment?.substringAfter('=') ?: "")
-                        return true
-                    }
-                }
-                return false
-            }
-        }
+            val customTabsIntent = CustomTabsIntent.Builder()
+                .setShowTitle(true)
+                .build()
 
-        requireActivity().onBackPressedDispatcher.addCallback(
-            requireActivity(),
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (webView.isVisible) {
-                        webView.isVisible = false
-                        webView.loadUrl("about:blank")
-                        webView.clearCache(true)
-                        loginButton.isVisible = true
-                    } else {
-                        isEnabled = false
-                        requireActivity().onBackPressed()
-                        isEnabled = true
-                    }
-                }
+            val uri = Uri.parse(URL)
+            try {
+                customTabsIntent.launchUrl(requireContext(), uri)
+            } catch (e: ActivityNotFoundException) {
+                startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
-        )
+        }
+        tokenProvider.observeToken()
+            .onEach {
+                processToken(it)
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun processToken(token: String) {
@@ -76,8 +51,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 val nestedBoards = api.boards(TrelloApi.API_KEY, token)
                 successLogin(token, nestedBoards.boards)
             } catch (e: Exception) {
-                Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -88,13 +62,18 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     data class Dependencies(
         val loginListener: (String, List<Board>) -> Unit,
-        val api: TrelloApi
+        val api: TrelloApi,
+        val tokenProvider: TokenProvider
     )
 
     companion object {
+        private const val URL =
+            "https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${TrelloApi.API_KEY}&callback_method=fragment&return_url=easydone://auth"
+
         fun create(dependencies: Dependencies): Fragment = LoginFragment().apply {
             listener = dependencies.loginListener
             api = dependencies.api
+            tokenProvider = dependencies.tokenProvider
         }
     }
 }

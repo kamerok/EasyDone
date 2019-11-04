@@ -1,16 +1,20 @@
 package easydone.activity
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.kamer.builder.ActivityHolder
 import com.kamer.builder.ActivityNavigator
 import com.kamer.builder.CustomFragmentFactory
+import com.kamer.builder.DeepLinkResolver
 import com.kamer.builder.StartFlow
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val navigator: ActivityNavigator by inject()
+    private val deepLinkResolver: DeepLinkResolver by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.fragmentFactory = CustomFragmentFactory()
@@ -23,6 +27,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         if (savedInstanceState == null) {
             StartFlow.start()
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        Handler().postDelayed({
+            deepLinkResolver.resolveIntent(intent)
+        }, 2000)
     }
 
     override fun onSupportNavigateUp(): Boolean {
