@@ -22,6 +22,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
 import timber.log.Timber
 import timber.log.error
 import java.util.Date
@@ -68,11 +71,14 @@ class Synchronizer(
                 putData(networkTasks)
                 val tasksWithDate = getTasksWithDate()
                 tasksWithDate.forEach { task ->
+                    val taskDate = Instant.ofEpochMilli(task.dueDate!!.time)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
                     when {
-                        task.dueDate!! < Date() -> runBlocking {
+                        !taskDate.isAfter(LocalDate.now()) -> runBlocking {
                             updateTask(task.copy(dueDate = null, type = INBOX))
                         }
-                        task.dueDate!! > Date() -> runBlocking {
+                        taskDate.isAfter(LocalDate.now()) -> runBlocking {
                             updateTask(task.copy(type = WAITING))
                         }
                     }
