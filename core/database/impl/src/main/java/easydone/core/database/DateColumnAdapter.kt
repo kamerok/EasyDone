@@ -1,19 +1,13 @@
 package easydone.core.database
 
 import com.squareup.sqldelight.ColumnAdapter
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 
 
-object DateColumnAdapter : ColumnAdapter<Date, String> {
+object DateColumnAdapter : ColumnAdapter<LocalDate, String> {
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'", Locale.US).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
-    }
+    override fun decode(databaseValue: String): LocalDate = LocalDate.parse(databaseValue)
 
-    override fun decode(databaseValue: String): Date = dateFormat.parse(databaseValue)
-
-    override fun encode(value: Date): String = dateFormat.format(value)
+    override fun encode(value: LocalDate): String = value.format(DateTimeFormatter.ISO_LOCAL_DATE)
 }

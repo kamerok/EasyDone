@@ -5,7 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import easydone.core.model.Task
 import org.junit.Test
-import java.util.Date
+import org.threeten.bp.LocalDate
 
 class EntityFieldMappersKtTest {
 
@@ -35,7 +35,7 @@ class EntityFieldMappersKtTest {
     fun `Date mapper`() {
         val mapper = DateMapper
         //date without seconds
-        val date = DateColumnAdapter.decode(DateColumnAdapter.encode(Date()))
+        val date = DateColumnAdapter.decode(DateColumnAdapter.encode(LocalDate.now()))
         assertThat(mapper.toValue(mapper.toString(null))).isNull()
         assertThat(mapper.toValue(mapper.toString(date))).isEqualTo(date)
     }

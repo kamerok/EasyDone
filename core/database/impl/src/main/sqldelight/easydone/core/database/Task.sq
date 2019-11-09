@@ -1,5 +1,5 @@
 import easydone.core.model.Task;
-import java.util.Date;
+import org.threeten.bp.LocalDate;
 
 
 CREATE TABLE task (
@@ -7,7 +7,7 @@ CREATE TABLE task (
   type TEXT as Task.Type NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
-  due_date TEXT as Date DEFAULT NULL,
+  due_date TEXT as LocalDate DEFAULT NULL,
   is_done INTEGER as Boolean NOT NULL DEFAULT 0
 );
 

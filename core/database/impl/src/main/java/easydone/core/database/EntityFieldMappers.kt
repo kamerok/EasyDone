@@ -1,7 +1,7 @@
 package easydone.core.database
 
 import easydone.core.model.Task
-import java.util.Date
+import org.threeten.bp.LocalDate
 
 fun EntityField.getMapper(): Mapper = when (this) {
     EntityField.TYPE -> TypeMapper
@@ -36,7 +36,7 @@ object StringMapper : Mapper {
 
 object DateMapper : Mapper {
     override fun toString(value: Any?): String =
-        (value as? Date)?.let { DateColumnAdapter.encode(it) } ?: ""
+        (value as? LocalDate)?.let { DateColumnAdapter.encode(it) } ?: ""
 
     override fun toValue(string: String): Any? =
         if (string.isEmpty()) null else DateColumnAdapter.decode(string)

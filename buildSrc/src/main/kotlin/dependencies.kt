@@ -36,6 +36,7 @@ object Versions {
     val sqlDelight = "1.2.0"
     val stetho = "1.5.1"
     val threeTen = "1.2.1"
+    val threeTenJava = "1.3.1"
     val timber = "5.0.0-SNAPSHOT"
 }
 
@@ -87,6 +88,7 @@ object Libraries {
     val sqlDelightAndroid = "com.squareup.sqldelight:android-driver:${Versions.sqlDelight}"
     val sqlDelightRxJava = "com.squareup.sqldelight:rxjava2-extensions:${Versions.sqlDelight}"
     val threeTen = "com.jakewharton.threetenabp:threetenabp:${Versions.threeTen}"
+    val threeTenJava = "org.threeten:threetenbp:${Versions.threeTenJava}"
     val timberAndroid = "com.jakewharton.timber:timber-android:${Versions.timber}"
     val timberJdk = "com.jakewharton.timber:timber-jdk:${Versions.timber}"
     val timber = arrayOf(timberAndroid, timberJdk)

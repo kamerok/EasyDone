@@ -1,6 +1,6 @@
 package easydone.core.model
 
-import java.util.Date
+import org.threeten.bp.LocalDate
 
 
 data class Task constructor(
@@ -8,7 +8,7 @@ data class Task constructor(
     val type: Type,
     val title: String,
     val description: String,
-    val dueDate: Date?,
+    val dueDate: LocalDate?,
     val isDone: Boolean
 ) {
 

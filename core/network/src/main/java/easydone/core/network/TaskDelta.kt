@@ -1,7 +1,7 @@
 package easydone.core.network
 
 import easydone.core.model.Task
-import java.util.Date
+import org.threeten.bp.LocalDate
 
 
 data class TaskDelta(
@@ -9,7 +9,7 @@ data class TaskDelta(
     val type: Task.Type?,
     val title: String?,
     val description: String?,
-    val dueDate: Date?,
+    val dueDate: LocalDate?,
     val dueDateChanged: Boolean,
     val isDone: Boolean?
 )

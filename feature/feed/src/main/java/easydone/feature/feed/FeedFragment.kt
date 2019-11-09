@@ -6,16 +6,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
 import easydone.core.model.Task
-import easydone.core.utils.daysFrom
 import easydone.core.utils.logErrors
 import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import org.threeten.bp.LocalDate
+import org.threeten.bp.Period
+import org.threeten.bp.format.DateTimeFormatter
 
 
 class FeedFragment(
@@ -62,8 +61,8 @@ class FeedFragment(
                             .sortedBy { it.dueDate }
                             .groupBy { it.dueDate }
                             .map { (date, items) ->
-                                val title =
-                                    "${DATE_FORMAT.format(date)} (${date?.daysFrom(Date())} left)"
+                                val days = Period.between(LocalDate.now(), date!!).days
+                                val title = "${date.format(DATE_FORMAT)} ($days left)"
                                 listOf(FeedHeader(title)) + items.map { it.toUi() }
                             }
                             .flatten()
@@ -72,7 +71,7 @@ class FeedFragment(
         }
 
     companion object {
-        private val DATE_FORMAT = SimpleDateFormat("dd MMMM", Locale.US)
+        private val DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMMM")
     }
 
 }

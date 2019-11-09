@@ -8,9 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.UUID
 
 
@@ -69,7 +68,7 @@ class Network(
                     desc = delta.description,
                     closed = delta.isDone,
                     due = if (delta.dueDateChanged) {
-                        delta.dueDate?.let { dateFormat.format(it) } ?: ""
+                        delta.dueDate?.format(DateTimeFormatter.ISO_DATE) ?: ""
                     } else {
                         null
                     },
@@ -98,7 +97,7 @@ class Network(
     }
 
     private fun Card.toTask(id: String, type: Task.Type): Task {
-        val date = due?.let { dateFormat.parse(it) }
+        val date = due?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME) }
         return Task(
             id = id,
             type = type,
@@ -107,12 +106,6 @@ class Network(
             dueDate = date,
             isDone = false
         )
-    }
-
-    companion object {
-        private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", Locale.US).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }
     }
 
 }

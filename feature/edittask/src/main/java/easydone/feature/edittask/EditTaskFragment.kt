@@ -17,11 +17,7 @@ import io.noties.markwon.linkify.LinkifyPlugin
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.coroutines.launch
 import org.commonmark.node.SoftLineBreak
-import java.util.Calendar.DAY_OF_MONTH
-import java.util.Calendar.MONTH
-import java.util.Calendar.YEAR
-import java.util.Calendar.getInstance
-import java.util.Date
+import org.threeten.bp.LocalDate
 
 
 class EditTaskFragment(
@@ -32,7 +28,7 @@ class EditTaskFragment(
     private val id: String by lazy { arguments?.getString(TASK_ID) ?: error("ID must be provided") }
 
     private lateinit var originalTask: Task
-    private var date: Date? = null
+    private var date: LocalDate? = null
 
     private val markwon by lazy {
         Markwon
@@ -63,19 +59,16 @@ class EditTaskFragment(
             updateDate()
         }
         dateView.setOnClickListener {
-            val dateCalendar = getInstance().apply { date?.let { time = it } }
+            val dateCalendar = date ?: LocalDate.now()
             DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
-                    date = getInstance().apply {
-                        date?.let { time = it }
-                        set(year, month, dayOfMonth)
-                    }.time
+                    date = LocalDate.of(year, month, dayOfMonth)
                     updateDate()
                 },
-                dateCalendar.get(YEAR),
-                dateCalendar.get(MONTH),
-                dateCalendar.get(DAY_OF_MONTH)
+                dateCalendar.year,
+                dateCalendar.monthValue,
+                dateCalendar.dayOfMonth
             ).apply {
                 if (date != null) {
                     setButton(BUTTON_NEUTRAL, "Clear") { _, _ ->
