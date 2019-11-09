@@ -1,9 +1,14 @@
 package easydone.core.utils
 
+import org.threeten.bp.Instant
+import org.threeten.bp.Period
+import org.threeten.bp.ZoneId
 import java.util.Date
-import java.util.concurrent.TimeUnit
-import kotlin.math.abs
 
 
-fun Date.daysBetween(date: Date): Int =
-    TimeUnit.DAYS.convert(abs(time - date.time), TimeUnit.MILLISECONDS).toInt()
+fun Date.daysFrom(date: Date): Int {
+    val leftDate = Instant.ofEpochMilli(date.time).atZone(ZoneId.systemDefault()).toLocalDate()
+    val rightDate = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate()
+    val period = Period.between(leftDate, rightDate)
+    return period.days
+}

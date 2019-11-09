@@ -39,6 +39,7 @@ dependencies {
 
     implementation Android.appCompat
     implementation Kotlin.stdlib
+    implementation Libraries.threeTen
     implementation Libraries.timber
     implementation Tools.crashlytics
     implementation Tools.firebase

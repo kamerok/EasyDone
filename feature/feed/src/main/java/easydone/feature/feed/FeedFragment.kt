@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
 import easydone.core.model.Task
-import easydone.core.utils.daysBetween
+import easydone.core.utils.daysFrom
 import easydone.core.utils.logErrors
 import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.coroutines.flow.combine
@@ -63,7 +63,7 @@ class FeedFragment(
                             .groupBy { it.dueDate }
                             .map { (date, items) ->
                                 val title =
-                                    "${DATE_FORMAT.format(date)} (${date?.daysBetween(Date())} left)"
+                                    "${DATE_FORMAT.format(date)} (${date?.daysFrom(Date())} left)"
                                 listOf(FeedHeader(title)) + items.map { it.toUi() }
                             }
                             .flatten()
