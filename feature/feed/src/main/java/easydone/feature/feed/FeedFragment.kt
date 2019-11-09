@@ -51,20 +51,24 @@ class FeedFragment(
 
     private fun getWaitingItems() = repository.getTasks(Task.Type.WAITING)
         .map { tasks ->
-            listOf(FeedHeader("WAITING")) +
-                    tasks
-                        .asSequence()
-                        //todo: filtering null logic should be somewhere else
-                        .filter { it.dueDate != null }
-                        .sortedBy { it.dueDate }
-                        .groupBy { it.dueDate }
-                        .map { (date, items) ->
-                            val title =
-                                "${DATE_FORMAT.format(date)} (${date?.daysBetween(Date())} left)"
-                            listOf(FeedHeader(title)) + items.map { it.toUi() }
-                        }
-                        .flatten()
-                        .toList()
+            if (tasks.isEmpty()) {
+                emptyList()
+            } else {
+                listOf(FeedHeader("WAITING")) +
+                        tasks
+                            .asSequence()
+                            //todo: filtering null logic should be somewhere else
+                            .filter { it.dueDate != null }
+                            .sortedBy { it.dueDate }
+                            .groupBy { it.dueDate }
+                            .map { (date, items) ->
+                                val title =
+                                    "${DATE_FORMAT.format(date)} (${date?.daysBetween(Date())} left)"
+                                listOf(FeedHeader(title)) + items.map { it.toUi() }
+                            }
+                            .flatten()
+                            .toList()
+            }
         }
 
     companion object {
