@@ -89,10 +89,15 @@ class EditTaskFragment(
         }
         saveView.setOnClickListener {
             lifecycleScope.launch {
+                val newType = when {
+                    originalTask.type == Task.Type.WAITING && date == null -> Task.Type.INBOX
+                    originalTask.type != Task.Type.WAITING && date != null -> Task.Type.WAITING
+                    else -> originalTask.type
+                }
                 repository.saveTask(
                     Task(
                         id,
-                        originalTask.type,
+                        newType,
                         titleView.text.toString(),
                         editDescriptionView.text.toString(),
                         date,

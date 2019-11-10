@@ -5,7 +5,6 @@ import easydone.core.model.Task
 import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import java.lang.IllegalArgumentException
 
 
 class DomainRepository(private val database: MyDatabase) {
@@ -16,7 +15,7 @@ class DomainRepository(private val database: MyDatabase) {
     suspend fun getTask(id: String): Task = database.getTask(id)
 
     suspend fun saveTask(task: Task) {
-        if (task.title.isEmpty()) throw IllegalArgumentException("title should not be empty")
+        require(task.title.isNotEmpty()) { "title should not be empty" }
         database.transaction { updateTask(task) }
     }
 
