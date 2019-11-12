@@ -13,8 +13,6 @@ import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
-import easydone.feature.feed.FeedFragment
-import easydone.feature.feed.FeedNavigator
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.login.LoginFragment
@@ -65,14 +63,24 @@ object StartFlow {
             single { DeepLinkResolver() }
             single {
                 object : TokenProvider {
-                    override fun observeToken(): Flow<String> = get<DeepLinkResolver>().observeToken()
+                    override fun observeToken(): Flow<String> =
+                        get<DeepLinkResolver>().observeToken()
                 } as TokenProvider
+            }
+            single {
+                object : DeepLinkNavigator {
+                    override fun execute(command: NavigationCommand) {
+                        when(command) {
+                            is NavigationCommand.EditTask -> startViewTask(command.id, get())
+                        }
+                    }
+                } as DeepLinkNavigator
             }
         }
         val fragmentModule = module {
             factory {
                 HomeFragment(
-                    FeedFragment::class.java,
+                    Features.registries[Feature.FEED]!!.featureClass,
                     get(),
                     object : HomeNavigator {
                         override fun navigateToCreate() {
@@ -81,16 +89,6 @@ object StartFlow {
 
                         override fun navigateToSettings() {
                             startSettings(get())
-                        }
-                    }
-                )
-            }
-            factory {
-                FeedFragment(
-                    get(),
-                    object : FeedNavigator {
-                        override fun navigateToTask(id: String) {
-                            startViewTask(id, get())
                         }
                     }
                 )

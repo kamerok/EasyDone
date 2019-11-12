@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val deepLinkResolver: DeepLinkResolver by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        supportFragmentManager.fragmentFactory = CustomFragmentFactory()
+        supportFragmentManager.fragmentFactory = CustomFragmentFactory
 
         super.onCreate(savedInstanceState)
         window.setBackgroundDrawableResource(R.color.background)

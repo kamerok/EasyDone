@@ -15,7 +15,7 @@ class TransparentActivity : AppCompatActivity(R.layout.activity_transparent) {
     private val navigator: ActivityNavigator by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        supportFragmentManager.fragmentFactory = CustomFragmentFactory()
+        supportFragmentManager.fragmentFactory = CustomFragmentFactory
 
         super.onCreate(savedInstanceState)
         window.attributes = window.attributes.apply {

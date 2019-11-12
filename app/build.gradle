@@ -22,14 +22,17 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            manifestPlaceholders = [enableCrashReporting:"true"]
+            manifestPlaceholders = [enableCrashReporting: "true"]
             signingConfig = signingConfigs.debugConfig
         }
         debug {
-            manifestPlaceholders = [enableCrashReporting:"false"]
+            manifestPlaceholders = [enableCrashReporting: "false"]
             signingConfig = signingConfigs.debugConfig
         }
     }
+
+    dynamicFeatures = [":feature:feed"]
+
 }
 
 dependencies {
