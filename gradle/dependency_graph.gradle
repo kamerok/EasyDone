@@ -57,6 +57,9 @@ task projectDependencyGraph {
                             if (config.name.toLowerCase().endsWith('implementation')) {
                                 traits.add('style=dotted')
                             }
+                            if (config.name.endsWith('MetadataValues')) {
+                                traits.add('style=invis')
+                            }
                         }
             }
         }
