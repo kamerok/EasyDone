@@ -1,4 +1,4 @@
-package easydone.feature.feed
+package easydone.mediator.feed
 
 import android.content.ContentProvider
 import android.content.ContentValues
@@ -10,6 +10,8 @@ import com.kamer.builder.Feature
 import com.kamer.builder.FeatureRegistry
 import com.kamer.builder.Features
 import com.kamer.builder.NavigationCommand
+import easydone.feature.feed.FeedFragment
+import easydone.feature.feed.FeedNavigator
 import org.koin.core.context.GlobalContext
 
 

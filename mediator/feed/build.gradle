@@ -1,0 +1,17 @@
+apply plugin: 'com.android.dynamic-feature'
+apply plugin: 'kotlin-android'
+
+dependencies {
+    implementation project(':app')
+    implementation project(':builder')
+
+    implementation project(':core:domain')
+
+    implementation project(':feature:feed')
+
+    implementation Android.appCompat
+    implementation Kotlin.coroutinesCore
+    implementation Kotlin.stdlib
+    implementation Libraries.koin
+    implementation Libraries.timber
+}

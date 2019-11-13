@@ -31,7 +31,7 @@ android {
         }
     }
 
-    dynamicFeatures = [":feature:feed"]
+    dynamicFeatures = [":mediator:feed"]
 
 }
 

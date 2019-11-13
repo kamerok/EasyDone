@@ -13,6 +13,8 @@ include ':core:model'
 include ':core:network'
 include ':core:utils'
 
+include ':mediator:feed'
+
 include ':feature:createtask'
 include ':feature:edittask'
 include ':feature:feed'
