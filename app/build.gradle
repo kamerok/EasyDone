@@ -26,6 +26,7 @@ android {
             signingConfig = signingConfigs.debugConfig
         }
         debug {
+            ext.alwaysUpdateBuildId = false
             manifestPlaceholders = [enableCrashReporting: "false"]
             signingConfig = signingConfigs.debugConfig
         }
