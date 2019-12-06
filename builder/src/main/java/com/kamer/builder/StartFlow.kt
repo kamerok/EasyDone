@@ -2,6 +2,7 @@ package com.kamer.builder
 
 import android.app.Application
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.kamer.setupflow.R
 import easydone.core.database.DatabaseImpl
 import easydone.core.database.MyDatabase
@@ -13,6 +14,8 @@ import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
+import easydone.feature.feed.FeedFragment
+import easydone.feature.feed.FeedNavigator
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.login.LoginFragment
@@ -38,6 +41,23 @@ import org.koin.dsl.module
 
 
 object StartFlow {
+
+    init {
+        Features.registries[Feature.FEED] = object : FeatureRegistry {
+            override val featureClass: Class<out Fragment> = FeedFragment::class.java
+
+            override fun create(): Fragment =
+                FeedFragment(
+                    GlobalContext.get().koin.get(),
+                    object : FeedNavigator {
+                        override fun navigateToTask(id: String) {
+                            GlobalContext.get().koin.get<DeepLinkNavigator>()
+                                .execute(NavigationCommand.EditTask(id))
+                        }
+                    }
+                )
+        }
+    }
 
     fun start() {
         startInitialFlow()

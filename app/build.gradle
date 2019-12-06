@@ -31,9 +31,6 @@ android {
             signingConfig = signingConfigs.debugConfig
         }
     }
-
-    dynamicFeatures = [":mediator:feed"]
-
 }
 
 dependencies {
