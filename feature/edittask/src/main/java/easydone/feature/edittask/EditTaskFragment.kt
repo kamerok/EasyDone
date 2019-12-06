@@ -37,7 +37,7 @@ class EditTaskFragment(
                 listOf(
                     object : AbstractMarkwonPlugin() {
                         override fun configureVisitor(builder: MarkwonVisitor.Builder) {
-                            builder.on(SoftLineBreak::class.java) { visitor, softLineBreak -> visitor.forceNewLine() }
+                            builder.on(SoftLineBreak::class.java) { visitor, _ -> visitor.forceNewLine() }
                         }
                     },
                     LinkifyPlugin.create(Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS or Linkify.WEB_URLS)
@@ -63,11 +63,11 @@ class EditTaskFragment(
             DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
-                    date = LocalDate.of(year, month, dayOfMonth)
+                    date = LocalDate.of(year, month + 1, dayOfMonth)
                     updateDate()
                 },
                 dateCalendar.year,
-                dateCalendar.monthValue,
+                dateCalendar.monthValue - 1,
                 dateCalendar.dayOfMonth
             ).apply {
                 if (date != null) {
