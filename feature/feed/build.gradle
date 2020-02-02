@@ -16,6 +16,8 @@ dependencies {
     implementation Android.core
     implementation Android.lifecycleRuntime
     implementation Android.recyclerView
+    implementation Android.savedState
+    implementation Android.viewModel
     implementation Kotlin.coroutinesCore
     implementation Kotlin.stdlib
     implementation Libraries.adapterDepelegates

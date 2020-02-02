@@ -27,5 +27,6 @@ dependencies {
     implementation Kotlin.stdlib
     implementation Android.appCompat
     implementation Android.fragment
+    implementation Android.savedState
     implementation Libraries.koin
 }

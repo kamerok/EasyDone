@@ -3,6 +3,11 @@ package com.kamer.builder
 import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.kamer.setupflow.R
 import easydone.core.database.DatabaseImpl
 import easydone.core.database.MyDatabase
@@ -16,6 +21,7 @@ import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.feed.FeedFragment
 import easydone.feature.feed.FeedNavigator
+import easydone.feature.feed.FeedViewModel
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.login.LoginFragment
@@ -47,15 +53,26 @@ object StartFlow {
             override val featureClass: Class<out Fragment> = FeedFragment::class.java
 
             override fun create(): Fragment =
-                FeedFragment(
-                    GlobalContext.get().koin.get(),
-                    object : FeedNavigator {
-                        override fun navigateToTask(id: String) {
-                            GlobalContext.get().koin.get<DeepLinkNavigator>()
-                                .execute(NavigationCommand.EditTask(id))
-                        }
-                    }
-                )
+                FeedFragment { fragment ->
+                    ViewModelProvider(
+                        fragment,
+                        object : AbstractSavedStateViewModelFactory(fragment, null) {
+                            override fun <T : ViewModel?> create(
+                                key: String,
+                                modelClass: Class<T>,
+                                handle: SavedStateHandle
+                            ): T =
+                                FeedViewModel(
+                                    GlobalContext.get().koin.get(),
+                                    object : FeedNavigator {
+                                        override fun navigateToTask(id: String) {
+                                            GlobalContext.get().koin.get<DeepLinkNavigator>()
+                                                .execute(NavigationCommand.EditTask(id))
+                                        }
+                                    }
+                                ) as T
+                        }).get()
+                }
         }
     }
 
@@ -90,7 +107,7 @@ object StartFlow {
             single {
                 object : DeepLinkNavigator {
                     override fun execute(command: NavigationCommand) {
-                        when(command) {
+                        when (command) {
                             is NavigationCommand.EditTask -> startViewTask(command.id, get())
                         }
                     }

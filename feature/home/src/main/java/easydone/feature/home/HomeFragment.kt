@@ -42,8 +42,10 @@ class HomeFragment(
         setupToolbar()
         subscribeOnSyncState()
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
-        childFragmentManager.commit {
-            replace(R.id.container, contentFragmentClass, null)
+        if (savedInstanceState == null) {
+            childFragmentManager.commit {
+                replace(R.id.container, contentFragmentClass, null)
+            }
         }
 
         view.setOnApplyWindowInsetsListener { v, insets ->

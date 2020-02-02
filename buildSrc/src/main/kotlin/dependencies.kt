@@ -7,14 +7,14 @@ object Config {
 }
 
 object Versions {
-    val activity = "1.0.0-rc01"
+    val activity = "1.1.0"
     val adapterDelegates = "4.2.0"
     val appCompat = "1.1.0"
     val assertk = "0.19"
     val browser = "1.0.0"
     val constraintLayout = "1.1.3"
     val core = "1.2.0-alpha02"
-    val coroutines = "1.3.2"
+    val coroutines = "1.3.3"
     val crashlytics = "2.10.1"
     val fabric = "1.31.2"
     val firebase = "17.2.1"
@@ -34,10 +34,12 @@ object Versions {
     val retrofitLogging = "4.2.2"
     val rxJava = "2.2.14"
     val sqlDelight = "1.2.0"
+    val savedState = "1.0.0"
     val stetho = "1.5.1"
     val threeTen = "1.2.1"
     val threeTenJava = "1.3.1"
     val timber = "5.0.0-SNAPSHOT"
+    val viewModel = "2.2.0"
 }
 
 object Plugins {
@@ -59,6 +61,8 @@ object Android {
     val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
     val material = "com.google.android.material:material:${Versions.material}"
     val recyclerView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"
+    val savedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:${Versions.savedState}"
+    val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.viewModel}"
 }
 
 object Kotlin {
