@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.util.Linkify
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
@@ -118,6 +119,14 @@ class EditTaskFragment(
                 repository.moveTask(id)
                 navigator.closeScreen()
             }
+        }
+
+        view.setOnApplyWindowInsetsListener { v, insets ->
+            v.updatePadding(
+                top = insets.systemWindowInsetTop,
+                bottom = insets.systemWindowInsetBottom
+            )
+            insets.consumeSystemWindowInsets()
         }
     }
 

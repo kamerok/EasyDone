@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
@@ -30,6 +31,14 @@ class CreateTaskFragment(
             }
         })
         createView.setOnClickListener { saveTask() }
+
+        view.setOnApplyWindowInsetsListener { v, insets ->
+            v.updatePadding(
+                top = insets.systemWindowInsetTop,
+                bottom = insets.systemWindowInsetBottom
+            )
+            insets.consumeSystemWindowInsets()
+        }
     }
 
     private fun saveTask() {

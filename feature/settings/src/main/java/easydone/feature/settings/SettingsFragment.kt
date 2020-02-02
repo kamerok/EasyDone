@@ -2,6 +2,7 @@ package easydone.feature.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import easydone.core.network.AuthInfoHolder
 import easydone.coreui.design.setupToolbar
@@ -18,6 +19,14 @@ class SettingsFragment(
         logoutView.setOnClickListener {
             authInfoHolder.clear()
             navigator.navigateToSetup()
+        }
+
+        view.setOnApplyWindowInsetsListener { v, insets ->
+            v.updatePadding(
+                top = insets.systemWindowInsetTop,
+                bottom = insets.systemWindowInsetBottom
+            )
+            insets.consumeSystemWindowInsets()
         }
     }
 

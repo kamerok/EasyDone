@@ -8,6 +8,7 @@ androidExtensions {
 
 dependencies {
     implementation Android.appCompat
+    implementation Android.core
     implementation Android.recyclerView
     implementation Kotlin.stdlib
 }

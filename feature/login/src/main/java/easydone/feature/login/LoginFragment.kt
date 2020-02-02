@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.kamer.login.R
@@ -43,6 +44,14 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 processToken(it)
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        view.setOnApplyWindowInsetsListener { v, insets ->
+            v.updatePadding(
+                top = insets.systemWindowInsetTop,
+                bottom = insets.systemWindowInsetBottom
+            )
+            insets.consumeSystemWindowInsets()
+        }
     }
 
     private fun processToken(token: String) {

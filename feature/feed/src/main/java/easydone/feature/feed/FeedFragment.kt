@@ -2,6 +2,7 @@ package easydone.feature.feed
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
@@ -40,6 +41,12 @@ class FeedFragment(
             .onEach { adapter.items = it }
             .logErrors()
             .launchIn(viewLifecycleOwner.lifecycleScope)
+
+        view.setOnApplyWindowInsetsListener { v, insets ->
+            v.updatePadding(top = insets.systemWindowInsetTop)
+            recyclerView.updatePadding(bottom = insets.systemWindowInsetBottom)
+            insets
+        }
     }
 
     private fun getInboxItems() = repository.getTasks(Task.Type.INBOX)

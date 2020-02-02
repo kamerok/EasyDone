@@ -5,6 +5,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
+import androidx.core.view.marginBottom
+import androidx.core.view.updateMargins
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
@@ -40,6 +45,28 @@ class HomeFragment(
         childFragmentManager.commit {
             replace(R.id.container, contentFragmentClass, null)
         }
+
+        view.setOnApplyWindowInsetsListener { v, insets ->
+            v.updatePadding(top = insets.systemWindowInsetTop)
+            insets.replaceSystemWindowInsets(
+                insets.systemWindowInsetLeft,
+                0,
+                insets.stableInsetRight,
+                insets.systemWindowInsetBottom
+            )
+        }
+        addTaskView.setOnApplyWindowInsetsListener(object : View.OnApplyWindowInsetsListener {
+            private var originalMargin = 0
+
+            override fun onApplyWindowInsets(v: View, insets: WindowInsets): WindowInsets {
+                if (originalMargin == 0) {
+                    originalMargin = v.marginBottom
+                }
+                (v.layoutParams as? ViewGroup.MarginLayoutParams)
+                    ?.updateMargins(bottom = originalMargin + insets.systemWindowInsetBottom)
+                return insets
+            }
+        })
     }
 
     private fun subscribeOnSyncState() {

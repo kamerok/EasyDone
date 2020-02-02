@@ -3,6 +3,7 @@ package easydone.feature.selectboard
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import com.kamer.selectboard.R
 import kotlinx.android.synthetic.main.fragment_select_board.*
@@ -18,6 +19,14 @@ class SelectBoardFragment : Fragment(R.layout.fragment_select_board) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerView.adapter = adapter
         adapter.setData(boards)
+
+        view.setOnApplyWindowInsetsListener { v, insets ->
+            v.updatePadding(
+                top = insets.systemWindowInsetTop,
+                bottom = insets.systemWindowInsetBottom
+            )
+            insets.consumeSystemWindowInsets()
+        }
     }
 
     data class Dependencies(
