@@ -58,6 +58,12 @@ class EditTaskFragment(
             editDescriptionView.setText(task.description)
             markwon.setMarkdown(descriptionView, task.description)
             updateDate()
+            labelsView.text = when {
+                task.isUrgent && task.isImportant -> "Urgent, Important"
+                task.isUrgent -> "Urgent"
+                task.isImportant -> "Important"
+                else -> ""
+            }
         }
         dateView.setOnClickListener {
             val dateCalendar = date ?: LocalDate.now()
@@ -102,8 +108,8 @@ class EditTaskFragment(
                         title = titleView.text.toString(),
                         description = editDescriptionView.text.toString(),
                         dueDate = date,
-                        isUrgent = false,
-                        isImportant = false,
+                        isUrgent = originalTask.isUrgent,
+                        isImportant = originalTask.isImportant,
                         isDone = false
                     )
                 )
