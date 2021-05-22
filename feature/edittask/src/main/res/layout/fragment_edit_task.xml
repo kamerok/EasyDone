@@ -97,4 +97,22 @@
         app:layout_constraintStart_toEndOf="@id/moveView"
         app:layout_constraintTop_toTopOf="@id/editView" />
 
+    <Button
+        android:id="@+id/urgentView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Urgent"
+        app:layout_constraintEnd_toStartOf="@id/importantView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editView" />
+
+    <Button
+        android:id="@+id/importantView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Important"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/urgentView"
+        app:layout_constraintTop_toTopOf="@id/urgentView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

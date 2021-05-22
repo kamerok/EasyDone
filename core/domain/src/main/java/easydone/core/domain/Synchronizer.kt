@@ -4,9 +4,11 @@ import easydone.core.database.ChangeEntry
 import easydone.core.database.EntityField.DESCRIPTION
 import easydone.core.database.EntityField.DUE_DATE
 import easydone.core.database.EntityField.IS_DONE
+import easydone.core.database.EntityField.MARKERS
 import easydone.core.database.EntityField.TITLE
 import easydone.core.database.EntityField.TYPE
 import easydone.core.database.MyDatabase
+import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.core.model.Task.Type.INBOX
 import easydone.core.model.Task.Type.WAITING
@@ -99,5 +101,6 @@ private fun ChangeEntry.toDelta() = TaskDelta(
     description = fields[DESCRIPTION] as String?,
     dueDate = fields[DUE_DATE] as LocalDate?,
     dueDateChanged = fields.containsKey(DUE_DATE),
+    markers = fields[MARKERS] as Markers?,
     isDone = fields[IS_DONE] as Boolean?
 )

@@ -6,6 +6,7 @@ import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.rx.asObservable
+import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.Dispatchers
@@ -95,8 +96,8 @@ class DatabaseImpl(application: Application) : MyDatabase {
             title = task.title,
             description = task.description,
             due_date = task.dueDate,
-            is_urgent = task.isUrgent,
-            is_important = task.isImportant,
+            is_urgent = task.markers.isUrgent,
+            is_important = task.markers.isImportant,
             is_done = task.isDone,
             id = id
         )
@@ -131,8 +132,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
             writeDelta(EntityField.TITLE) { title }
             writeDelta(EntityField.DESCRIPTION) { description }
             writeDelta(EntityField.DUE_DATE) { dueDate }
-            writeDelta(EntityField.IS_URGENT) { isUrgent }
-            writeDelta(EntityField.IS_IMPORTANT) { isImportant }
+            writeDelta(EntityField.MARKERS) { markers }
             writeDelta(EntityField.IS_DONE) { isDone }
 
             if (selectDeltaCount(changeId).executeAsOne() == 0L) {
@@ -148,8 +148,8 @@ class DatabaseImpl(application: Application) : MyDatabase {
             title = it.title,
             description = it.description,
             due_date = it.dueDate,
-            is_urgent = it.isUrgent,
-            is_important = it.isImportant,
+            is_urgent = it.markers.isUrgent,
+            is_important = it.markers.isImportant,
             is_done = it.isDone
         )
     }
@@ -164,7 +164,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
     }
 }
 
-fun DbTask.toTask() = Task(id, type, title, description, due_date, is_urgent, is_important, is_done)
+fun DbTask.toTask() = Task(id, type, title, description, due_date, Markers(is_urgent, is_important), is_done)
 
 fun <T : Any> Query<T>.asFlow() = asObservable().openSubscription().consumeAsFlow()
     .map { it.executeAsList() }

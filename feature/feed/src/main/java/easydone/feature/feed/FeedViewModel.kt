@@ -52,9 +52,9 @@ class FeedViewModel(
         .sortedWith(compareBy(
             {
                 when {
-                    it.isUrgent && it.isImportant -> 0
-                    it.isUrgent -> 1
-                    it.isImportant -> 2
+                    it.markers.isUrgent && it.markers.isImportant -> 0
+                    it.markers.isUrgent -> 1
+                    it.markers.isImportant -> 2
                     else -> 3
                 }
             },

@@ -59,9 +59,9 @@ class EditTaskFragment(
             markwon.setMarkdown(descriptionView, task.description)
             updateDate()
             labelsView.text = when {
-                task.isUrgent && task.isImportant -> "Urgent, Important"
-                task.isUrgent -> "Urgent"
-                task.isImportant -> "Important"
+                task.markers.isUrgent && task.markers.isImportant -> "Urgent, Important"
+                task.markers.isUrgent -> "Urgent"
+                task.markers.isImportant -> "Important"
                 else -> ""
             }
         }
@@ -108,8 +108,7 @@ class EditTaskFragment(
                         title = titleView.text.toString(),
                         description = editDescriptionView.text.toString(),
                         dueDate = date,
-                        isUrgent = originalTask.isUrgent,
-                        isImportant = originalTask.isImportant,
+                        markers = originalTask.markers,
                         isDone = false
                     )
                 )
@@ -125,6 +124,18 @@ class EditTaskFragment(
         moveView.setOnClickListener {
             lifecycleScope.launch {
                 repository.moveTask(id)
+                navigator.closeScreen()
+            }
+        }
+        urgentView.setOnClickListener {
+            lifecycleScope.launch {
+                repository.switchUrgent(id)
+                navigator.closeScreen()
+            }
+        }
+        importantView.setOnClickListener {
+            lifecycleScope.launch {
+                repository.switchImportant(id)
                 navigator.closeScreen()
             }
         }

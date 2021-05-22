@@ -35,7 +35,8 @@ interface TrelloApi {
         @Query("desc") desc: String?,
         @Query("closed") closed: Boolean?,
         @Query("due") due: String?,
-        @Query("idList") listId: String?
+        @Query("idList") listId: String?,
+        @Query("idLabels") idLabels: String?
     ): Card
 
     @POST("cards")
@@ -45,7 +46,8 @@ interface TrelloApi {
         @Query("desc") desc: String?,
         @Query("pos") pos: String = "bottom",
         @Query("key") apiKey: String,
-        @Query("token") token: String
+        @Query("token") token: String,
+        @Query("idLabels") idLabels: String?
     ): Card
 
     companion object {

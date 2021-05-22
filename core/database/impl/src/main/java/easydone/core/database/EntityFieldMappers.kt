@@ -1,5 +1,6 @@
 package easydone.core.database
 
+import easydone.core.model.Markers
 import easydone.core.model.Task
 import org.threeten.bp.LocalDate
 
@@ -8,8 +9,7 @@ fun EntityField.getMapper(): Mapper = when (this) {
     EntityField.TITLE -> StringMapper
     EntityField.DESCRIPTION -> StringMapper
     EntityField.DUE_DATE -> DateMapper
-    EntityField.IS_URGENT -> BooleanMapper
-    EntityField.IS_IMPORTANT -> BooleanMapper
+    EntityField.MARKERS -> MarkersMapper
     EntityField.IS_DONE -> BooleanMapper
 }
 
@@ -42,4 +42,17 @@ object DateMapper : Mapper {
 
     override fun toValue(string: String): Any? =
         if (string.isEmpty()) null else DateColumnAdapter.decode(string)
+}
+
+object MarkersMapper : Mapper {
+    override fun toString(value: Any?): String =
+        (value as? Markers)?.let {
+            (if (it.isUrgent) "1" else "0") + (if (it.isImportant) "1" else "0")
+        } ?: ""
+
+    override fun toValue(string: String): Any? =
+        if (string.isEmpty()) null else Markers(
+            isUrgent = string.getOrNull(0) == '1',
+            isImportant = string.getOrNull(1) == '1'
+        )
 }

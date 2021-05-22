@@ -3,14 +3,13 @@ package easydone.core.model
 import org.threeten.bp.LocalDate
 
 
-data class Task constructor(
+data class Task(
     val id: String,
     val type: Type,
     val title: String,
     val description: String,
     val dueDate: LocalDate?,
-    val isUrgent: Boolean,
-    val isImportant: Boolean,
+    val markers: Markers,
     val isDone: Boolean
 ) {
 

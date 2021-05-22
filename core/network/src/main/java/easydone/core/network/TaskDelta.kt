@@ -1,5 +1,6 @@
 package easydone.core.network
 
+import easydone.core.model.Markers
 import easydone.core.model.Task
 import org.threeten.bp.LocalDate
 
@@ -11,5 +12,6 @@ data class TaskDelta(
     val description: String?,
     val dueDate: LocalDate?,
     val dueDateChanged: Boolean,
+    val markers: Markers?,
     val isDone: Boolean?
 )

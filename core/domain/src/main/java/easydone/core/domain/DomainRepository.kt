@@ -35,6 +35,24 @@ class DomainRepository(private val database: MyDatabase) {
         }
     }
 
+    suspend fun switchUrgent(taskId: String) {
+        val task = database.getTask(taskId)
+        database.transaction {
+            updateTask(
+                task.copy(markers = task.markers.copy(isUrgent = !task.markers.isUrgent))
+            )
+        }
+    }
+
+    suspend fun switchImportant(taskId: String) {
+        val task = database.getTask(taskId)
+        database.transaction {
+            updateTask(
+                task.copy(markers = task.markers.copy(isImportant = !task.markers.isImportant))
+            )
+        }
+    }
+
     suspend fun createTask(
         title: String,
         description: String,

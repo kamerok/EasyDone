@@ -1,5 +1,6 @@
 package easydone.core.network
 
+import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.library.keyvalue.KeyValueStorage
 import easydone.library.trelloapi.TrelloApi
@@ -11,7 +12,6 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.UUID
-import kotlin.random.Random
 
 
 class Network(
@@ -67,6 +67,12 @@ class Network(
 
     suspend fun syncTaskDelta(delta: TaskDelta) = withContext(Dispatchers.IO) {
         syncMutex.withLock {
+            val labels = delta.markers?.let { markers ->
+                mutableListOf<String>().apply {
+                    if (markers.isUrgent) add(authInfoHolder.getUrgentLabelId()!!)
+                    if (markers.isImportant) add(authInfoHolder.getImportantLabelId()!!)
+                }.joinToString(separator = ",")
+            }
             if (idMappings.contains(delta.id)) {
                 val serverId: String = idMappings.getString(delta.id)!!
                 api.editCard(
@@ -81,7 +87,8 @@ class Network(
                     } else {
                         null
                     },
-                    listId = delta.type?.let { getListId(it) }
+                    listId = delta.type?.let { getListId(it) },
+                    idLabels = labels
                 )
             } else {
                 val card = api.postCard(
@@ -89,7 +96,8 @@ class Network(
                     name = delta.title!!,
                     desc = delta.description,
                     apiKey = TrelloApi.API_KEY,
-                    token = authInfoHolder.getToken()!!
+                    token = authInfoHolder.getToken()!!,
+                    idLabels = labels
                 )
                 idMappings.putString(delta.id, card.id)
                 idMappings.putString(card.id, delta.id)
@@ -118,8 +126,10 @@ class Network(
             title = name,
             description = desc,
             dueDate = date,
-            isUrgent = isUrgent,
-            isImportant = isImportant,
+            markers = Markers(
+                isUrgent = isUrgent,
+                isImportant = isImportant
+            ),
             isDone = false
         )
     }

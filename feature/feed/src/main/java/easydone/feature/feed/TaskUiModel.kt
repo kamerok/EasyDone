@@ -1,7 +1,6 @@
 package easydone.feature.feed
 
 import easydone.core.model.Task
-import kotlin.random.Random
 
 
 internal data class TaskUiModel(
@@ -16,6 +15,6 @@ internal fun Task.toUi() = TaskUiModel(
     id = id,
     title = title,
     hasDescription = description.isNotEmpty(),
-    isImportant = isImportant,
-    isUrgent = isUrgent
+    isImportant = markers.isImportant,
+    isUrgent = markers.isUrgent
 )
