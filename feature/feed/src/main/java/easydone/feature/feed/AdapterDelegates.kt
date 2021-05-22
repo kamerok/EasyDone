@@ -12,6 +12,8 @@ internal fun taskDelegate(listener: (String) -> Unit) =
         bind {
             titleView.text = item.title
             descriptionView.isVisible = item.hasDescription
+            importantView.isVisible = item.isImportant
+            urgentView.isVisible = item.isUrgent
         }
     }
 
