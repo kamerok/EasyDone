@@ -70,7 +70,13 @@ class QuickCreateTaskFragment(
             closeScreen()
         } else {
             lifecycleScope.launch {
-                repository.createTask(title, "", false)
+                repository.createTask(
+                    title = title,
+                    description = "",
+                    skipInbox = false,
+                    isUrgent = false,
+                    isImportant = false
+                )
                 closeScreen()
             }
         }

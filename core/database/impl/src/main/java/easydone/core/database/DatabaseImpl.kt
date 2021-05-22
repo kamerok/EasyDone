@@ -66,12 +66,14 @@ class DatabaseImpl(application: Application) : MyDatabase {
         database.transaction {
             val id = UUID.randomUUID().toString()
             taskQueries.insert(
-                id,
-                taskTemplate.type,
-                taskTemplate.title,
-                taskTemplate.description,
-                null,
-                false
+                id = id,
+                type = taskTemplate.type,
+                title = taskTemplate.title,
+                description = taskTemplate.description,
+                due_date = null,
+                is_urgent = taskTemplate.isUrgent,
+                is_important = taskTemplate.isImportant,
+                is_done = false
             )
             changesQueries.apply {
                 insertChange(EntityName.TASK, id)
@@ -88,7 +90,16 @@ class DatabaseImpl(application: Application) : MyDatabase {
     override fun updateTask(task: Task) {
         val id = task.id
         val oldTask = taskQueries.selectById(id).executeAsOne().toTask()
-        taskQueries.update(task.type, task.title, task.description, task.dueDate, task.isDone, id)
+        taskQueries.update(
+            type = task.type,
+            title = task.title,
+            description = task.description,
+            due_date = task.dueDate,
+            is_urgent = task.isUrgent,
+            is_important = task.isImportant,
+            is_done = task.isDone,
+            id = id
+        )
 
         changesQueries.apply {
             val existingChange = selectChange(EntityName.TASK, id).executeAsOneOrNull()
@@ -120,6 +131,8 @@ class DatabaseImpl(application: Application) : MyDatabase {
             writeDelta(EntityField.TITLE) { title }
             writeDelta(EntityField.DESCRIPTION) { description }
             writeDelta(EntityField.DUE_DATE) { dueDate }
+            writeDelta(EntityField.IS_URGENT) { isUrgent }
+            writeDelta(EntityField.IS_IMPORTANT) { isImportant }
             writeDelta(EntityField.IS_DONE) { isDone }
 
             if (selectDeltaCount(changeId).executeAsOne() == 0L) {
@@ -129,7 +142,16 @@ class DatabaseImpl(application: Application) : MyDatabase {
     }
 
     override fun putData(tasks: List<Task>) = tasks.forEach {
-        taskQueries.insert(it.id, it.type, it.title, it.description, it.dueDate, it.isDone)
+        taskQueries.insert(
+            id = it.id,
+            type = it.type,
+            title = it.title,
+            description = it.description,
+            due_date = it.dueDate,
+            is_urgent = it.isUrgent,
+            is_important = it.isImportant,
+            is_done = it.isDone
+        )
     }
 
     override fun clear() = taskQueries.clear()
@@ -142,7 +164,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
     }
 }
 
-fun DbTask.toTask() = Task(id, type, title, description, due_date, is_done)
+fun DbTask.toTask() = Task(id, type, title, description, due_date, is_urgent, is_important, is_done)
 
 fun <T : Any> Query<T>.asFlow() = asObservable().openSubscription().consumeAsFlow()
     .map { it.executeAsList() }

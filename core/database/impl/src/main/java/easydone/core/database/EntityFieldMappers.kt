@@ -8,6 +8,8 @@ fun EntityField.getMapper(): Mapper = when (this) {
     EntityField.TITLE -> StringMapper
     EntityField.DESCRIPTION -> StringMapper
     EntityField.DUE_DATE -> DateMapper
+    EntityField.IS_URGENT -> BooleanMapper
+    EntityField.IS_IMPORTANT -> BooleanMapper
     EntityField.IS_DONE -> BooleanMapper
 }
 

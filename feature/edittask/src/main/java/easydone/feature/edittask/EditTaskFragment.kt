@@ -97,12 +97,14 @@ class EditTaskFragment(
                 }
                 repository.saveTask(
                     Task(
-                        id,
-                        newType,
-                        titleView.text.toString(),
-                        editDescriptionView.text.toString(),
-                        date,
-                        false
+                        id = id,
+                        type = newType,
+                        title = titleView.text.toString(),
+                        description = editDescriptionView.text.toString(),
+                        dueDate = date,
+                        isUrgent = false,
+                        isImportant = false,
+                        isDone = false
                     )
                 )
                 navigator.closeScreen()

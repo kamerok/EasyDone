@@ -35,13 +35,21 @@ class DomainRepository(private val database: MyDatabase) {
         }
     }
 
-    suspend fun createTask(title: String, description: String, skipInbox: Boolean) {
+    suspend fun createTask(
+        title: String,
+        description: String,
+        skipInbox: Boolean,
+        isUrgent: Boolean,
+        isImportant: Boolean
+    ) {
         if (title.isEmpty()) throw IllegalArgumentException("title should not be empty")
         database.createTask(
             TaskTemplate(
                 type = if (skipInbox) Task.Type.TO_DO else Task.Type.INBOX,
                 title = title,
-                description = description
+                description = description,
+                isUrgent = isUrgent,
+                isImportant = isImportant
             )
         )
     }

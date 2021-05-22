@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.UUID
+import kotlin.random.Random
 
 
 class Network(
@@ -104,6 +105,8 @@ class Network(
             title = name,
             description = desc,
             dueDate = date,
+            isUrgent = Random.nextBoolean(),
+            isImportant = Random.nextBoolean(),
             isDone = false
         )
     }

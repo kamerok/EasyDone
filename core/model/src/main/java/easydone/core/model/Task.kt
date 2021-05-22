@@ -9,6 +9,8 @@ data class Task constructor(
     val title: String,
     val description: String,
     val dueDate: LocalDate?,
+    val isUrgent: Boolean,
+    val isImportant: Boolean,
     val isDone: Boolean
 ) {
 

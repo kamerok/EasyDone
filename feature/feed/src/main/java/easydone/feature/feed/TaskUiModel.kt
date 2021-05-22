@@ -16,6 +16,6 @@ internal fun Task.toUi() = TaskUiModel(
     id = id,
     title = title,
     hasDescription = description.isNotEmpty(),
-    isImportant = Random.nextBoolean(),
-    isUrgent = Random.nextBoolean()
+    isImportant = isImportant,
+    isUrgent = isUrgent
 )

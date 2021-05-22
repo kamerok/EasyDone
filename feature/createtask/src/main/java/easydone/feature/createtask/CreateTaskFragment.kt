@@ -48,9 +48,11 @@ class CreateTaskFragment(
         }
         lifecycleScope.launch {
             repository.createTask(
-                titleView.text.toString(),
-                descriptionView.text.toString(),
-                skipInboxView.isChecked
+                title = titleView.text.toString(),
+                description = descriptionView.text.toString(),
+                skipInbox = skipInboxView.isChecked,
+                isUrgent = false,
+                isImportant = false
             )
             navigator.closeScreen()
         }
