@@ -19,7 +19,7 @@ interface TrelloApi {
     @GET("members/me?fields=none&boards=open&board_fields=id,name")
     suspend fun boards(@Query("key") apiKey: String, @Query("token") token: String): NestedBoards
 
-    @GET("boards/{id}?fields=none&lists=open&cards=visible&list_fields=id&card_fields=id,idList,name,desc,due,pos")
+    @GET("boards/{id}?fields=none&lists=open&cards=visible&labels=all&list_fields=id&card_fields=id,idList,name,desc,due,pos,idLabels&label_fields=id,name")
     suspend fun boardData(
         @Path("id") boardId: String,
         @Query("key") apiKey: String,

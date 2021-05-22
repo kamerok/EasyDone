@@ -35,6 +35,12 @@ class Network(
         if (authInfoHolder.getWaitingListId().isNullOrEmpty()) {
             authInfoHolder.putWaitingListId(board.lists[2].id)
         }
+        if (authInfoHolder.getUrgentLabelId().isNullOrEmpty()) {
+            authInfoHolder.putUrgentLabelId(board.labels.find { it.name == "Urgent" }!!.id)
+        }
+        if (authInfoHolder.getImportantLabelId().isNullOrEmpty()) {
+            authInfoHolder.putImportantLabelId(board.labels.find { it.name == "Important" }!!.id)
+        }
         return@withContext board.cards
             .filter {
                 it.idList == authInfoHolder.getTodoListId() ||
@@ -53,7 +59,9 @@ class Network(
                     authInfoHolder.getWaitingListId() -> Task.Type.WAITING
                     else -> Task.Type.TO_DO
                 }
-                card.toTask(localId, type)
+                val isUrgent = card.idLabels.contains(authInfoHolder.getUrgentLabelId()!!)
+                val isImportant = card.idLabels.contains(authInfoHolder.getImportantLabelId()!!)
+                card.toTask(localId, type, isUrgent, isImportant)
             }
     }
 
@@ -97,7 +105,12 @@ class Network(
         }
     }
 
-    private fun Card.toTask(id: String, type: Task.Type): Task {
+    private fun Card.toTask(
+        id: String,
+        type: Task.Type,
+        isUrgent: Boolean,
+        isImportant: Boolean
+    ): Task {
         val date = due?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME) }
         return Task(
             id = id,
@@ -105,8 +118,8 @@ class Network(
             title = name,
             description = desc,
             dueDate = date,
-            isUrgent = Random.nextBoolean(),
-            isImportant = Random.nextBoolean(),
+            isUrgent = isUrgent,
+            isImportant = isImportant,
             isDone = false
         )
     }

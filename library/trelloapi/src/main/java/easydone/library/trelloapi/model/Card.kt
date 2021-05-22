@@ -7,5 +7,6 @@ data class Card(
     val name: String,
     val desc: String,
     val due: String?,
-    val pos: Float
+    val pos: Float,
+    val idLabels: List<String>
 )
