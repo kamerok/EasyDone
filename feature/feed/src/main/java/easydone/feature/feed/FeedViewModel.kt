@@ -43,10 +43,24 @@ class FeedViewModel(
     }
 
     private fun getInboxItems() = repository.getTasks(Task.Type.INBOX)
-        .map { tasks -> listOf(FeedHeader("INBOX")) + tasks.map { it.toUi() } }
+        .map { tasks -> listOf(FeedHeader("INBOX")) + tasks.sortAndMap() }
 
     private fun getTodoItems() = repository.getTasks(Task.Type.TO_DO)
-        .map { tasks -> listOf(FeedHeader("TODO")) + tasks.map { it.toUi() } }
+        .map { tasks -> listOf(FeedHeader("TODO")) + tasks.sortAndMap() }
+
+    private fun List<Task>.sortAndMap() = this
+        .sortedWith(compareBy(
+            {
+                when {
+                    it.isUrgent && it.isImportant -> 0
+                    it.isUrgent -> 1
+                    it.isImportant -> 2
+                    else -> 3
+                }
+            },
+            { it.title }
+        ))
+        .map { it.toUi() }
 
     private fun getWaitingItems() = repository.getTasks(Task.Type.WAITING)
         .map { tasks ->
