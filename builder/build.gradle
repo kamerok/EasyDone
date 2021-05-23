@@ -29,4 +29,5 @@ dependencies {
     implementation Android.fragment
     implementation Android.savedState
     implementation Libraries.koin
+    implementation Libraries.retrofit
 }

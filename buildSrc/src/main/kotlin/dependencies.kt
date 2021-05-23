@@ -18,6 +18,7 @@ object Versions {
     val crashlytics = "2.10.1"
     val fabric = "1.31.2"
     val firebase = "17.2.1"
+    val flipper = "0.91.1"
     val fragment = "1.2.0-rc01"
     val googleServices = "4.3.2"
     val gradleAndroid = "3.5.1"
@@ -30,12 +31,12 @@ object Versions {
     val material = "1.1.0-alpha08"
     val mockitoKotlin = "2.2.0"
     val recyclerView = "1.0.0"
-    val retrofit = "2.6.2"
-    val retrofitLogging = "4.2.2"
+    val retrofit = "2.9.0"
+    val retrofitLogging = "4.9.1"
     val rxJava = "2.2.14"
     val sqlDelight = "1.2.0"
     val savedState = "1.0.0"
-    val stetho = "1.5.1"
+    val soLoader = "0.10.1"
     val threeTen = "1.2.1"
     val threeTenJava = "1.3.1"
     val timber = "5.0.0-SNAPSHOT"
@@ -76,7 +77,9 @@ object Kotlin {
 object Tools {
     val crashlytics = "com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}"
     val firebase = "com.google.firebase:firebase-core:${Versions.firebase}"
-    val stetho = "com.facebook.stetho:stetho:${Versions.stetho}"
+    val soLoader = "com.facebook.soloader:soloader:${Versions.soLoader}"
+    val flipper = "com.facebook.flipper:flipper:${Versions.flipper}"
+    val flipperNetwork = "com.facebook.flipper:flipper-network-plugin:${Versions.flipper}"
 }
 
 object Libraries {

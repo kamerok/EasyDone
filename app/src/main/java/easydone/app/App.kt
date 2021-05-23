@@ -3,10 +3,10 @@ package easydone.app
 import android.app.Application
 import android.util.Log
 import com.crashlytics.android.Crashlytics
-import com.facebook.stetho.Stetho
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.kamer.builder.StartFlow
 import com.kamer.easydone.BuildConfig
+import okhttp3.Interceptor
 import timber.log.LogcatTree
 import timber.log.Timber
 import timber.log.Tree
@@ -16,14 +16,15 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        var debugInterceptor: Interceptor? = null
         if (BuildConfig.DEBUG) {
-            Stetho.initializeWithDefaults(this)
+            debugInterceptor = FlipperInitializer.init(this)
             Timber.plant(LogcatTree())
         } else {
             Timber.plant(CrashReportingTree())
         }
         AndroidThreeTen.init(this)
-        StartFlow.initDependencies(this)
+        StartFlow.initDependencies(this, debugInterceptor)
     }
 
     private class CrashReportingTree : Tree() {

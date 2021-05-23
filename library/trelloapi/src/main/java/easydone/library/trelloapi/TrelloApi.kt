@@ -3,6 +3,7 @@ package easydone.library.trelloapi
 import easydone.library.trelloapi.model.Card
 import easydone.library.trelloapi.model.NestedBoard
 import easydone.library.trelloapi.model.NestedBoards
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -53,7 +54,7 @@ interface TrelloApi {
     companion object {
         const val API_KEY = "98c9ac26156a960889eb42586aa1bcd7"
 
-        fun build(): TrelloApi = Retrofit.Builder()
+        fun build(debugInterceptor: Interceptor?): TrelloApi = Retrofit.Builder()
             .baseUrl("https://trello.com/1/")
             .client(
                 OkHttpClient.Builder()
@@ -62,6 +63,9 @@ interface TrelloApi {
                             level = HttpLoggingInterceptor.Level.BODY
                         }
                     )
+                    .apply {
+                        if (debugInterceptor != null) addInterceptor(debugInterceptor)
+                    }
                     .build()
             )
             .addConverterFactory(GsonConverterFactory.create())

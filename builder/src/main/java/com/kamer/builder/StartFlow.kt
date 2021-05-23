@@ -40,6 +40,7 @@ import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Board
 import kotlinx.coroutines.flow.Flow
+import okhttp3.Interceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
@@ -87,13 +88,13 @@ object StartFlow {
         GlobalContext.get().koin.get<Synchronizer>()
     }
 
-    fun initDependencies(application: Application) {
+    fun initDependencies(application: Application, debugInterceptor: Interceptor?) {
         val module = module {
             single { DomainRepository(get()) }
             single { Synchronizer(get(), get()) }
             single { AuthInfoHolder(SharedPrefsKeyValueStorage(get(), "prefs")) }
             single { Network(get(), get(), SharedPrefsKeyValueStorage(application, "id_mapping")) }
-            single { TrelloApi.build() }
+            single { TrelloApi.build(debugInterceptor) }
             single<MyDatabase> { DatabaseImpl(get()) }
             single { ActivityNavigator() }
             single { get<ActivityNavigator>() as Navigator }
