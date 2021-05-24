@@ -10,7 +10,6 @@ buildscript {
         }
     }
     dependencies {
-        classpath Plugins.fabric
         classpath Plugins.gradleAndroid
         classpath Plugins.gradleVersions
         classpath Plugins.kotlin

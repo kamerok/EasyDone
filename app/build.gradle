@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'io.fabric'
 
 android {
     defaultConfig {
@@ -43,7 +42,6 @@ dependencies {
     implementation Libraries.retrofit
     implementation Libraries.threeTen
     implementation Libraries.timber
-    implementation Tools.crashlytics
     implementation Tools.firebase
     debugImplementation Tools.flipper
     debugImplementation Tools.flipperNetwork

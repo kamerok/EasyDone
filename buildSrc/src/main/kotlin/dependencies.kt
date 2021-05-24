@@ -7,7 +7,6 @@ object Config {
 }
 
 object Versions {
-    val activity = "1.1.0"
     val adapterDelegates = "4.2.0"
     val appCompat = "1.1.0"
     val assertk = "0.19"
@@ -15,13 +14,11 @@ object Versions {
     val constraintLayout = "1.1.3"
     val core = "1.2.0-alpha02"
     val coroutines = "1.3.3"
-    val crashlytics = "2.10.1"
-    val fabric = "1.31.2"
     val firebase = "17.2.1"
     val flipper = "0.91.1"
     val fragment = "1.2.0-rc01"
     val googleServices = "4.3.2"
-    val gradleAndroid = "3.5.1"
+    val gradleAndroid = "4.2.1"
     val gradleVersions = "0.27.0"
     val junit = "4.12"
     val koin = "2.0.1"
@@ -34,7 +31,7 @@ object Versions {
     val retrofit = "2.9.0"
     val retrofitLogging = "4.9.1"
     val rxJava = "2.2.14"
-    val sqlDelight = "1.2.0"
+    val sqlDelight = "1.5.0"
     val savedState = "1.0.0"
     val soLoader = "0.10.1"
     val threeTen = "1.2.1"
@@ -44,7 +41,6 @@ object Versions {
 }
 
 object Plugins {
-    val fabric = "io.fabric.tools:gradle:${Versions.fabric}"
     val googleServices = "com.google.gms:google-services:${Versions.googleServices}"
     val gradleAndroid = "com.android.tools.build:gradle:${Versions.gradleAndroid}"
     val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:${Versions.gradleVersions}"
@@ -53,7 +49,6 @@ object Plugins {
 }
 
 object Android {
-    val activity = "androidx.activity:activity-ktx:${Versions.activity}"
     val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
     val browser = "androidx.browser:browser:${Versions.browser}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
@@ -75,7 +70,6 @@ object Kotlin {
 }
 
 object Tools {
-    val crashlytics = "com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}"
     val firebase = "com.google.firebase:firebase-core:${Versions.firebase}"
     val soLoader = "com.facebook.soloader:soloader:${Versions.soLoader}"
     val flipper = "com.facebook.flipper:flipper:${Versions.flipper}"

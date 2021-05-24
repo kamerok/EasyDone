@@ -41,7 +41,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
                     entry.key,
                     entry.value.first().entity_name,
                     entry.value.first().entity_id,
-                    entry.value.associate { it.field to it.field.getMapper().toValue(it.new_value) }
+                    entry.value.associate { it.field_ to it.field_.getMapper().toValue(it.new_value) }
                 )
             }
     }

@@ -4,13 +4,13 @@ import org.threeten.bp.LocalDate;
 
 CREATE TABLE task (
   id TEXT NOT NULL UNIQUE,
-  type TEXT as Task.Type NOT NULL,
+  type TEXT AS Task.Type NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
-  due_date TEXT as LocalDate DEFAULT NULL,
-  is_urgent INTEGER as Boolean NOT NULL DEFAULT 0,
-  is_important INTEGER as Boolean NOT NULL DEFAULT 0,
-  is_done INTEGER as Boolean NOT NULL DEFAULT 0
+  due_date TEXT AS LocalDate DEFAULT NULL,
+  is_urgent INTEGER AS Boolean NOT NULL DEFAULT 0,
+  is_important INTEGER AS Boolean NOT NULL DEFAULT 0,
+  is_done INTEGER AS Boolean NOT NULL DEFAULT 0
 );
 
 clear:
