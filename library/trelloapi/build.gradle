@@ -1,7 +1,6 @@
 apply plugin: 'kotlin'
 
 dependencies {
-    implementation Kotlin.stdlib
     implementation Libraries.retrofit
     implementation Libraries.retrofitConverterGson
     implementation Libraries.retrofitLogging

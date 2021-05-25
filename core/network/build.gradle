@@ -6,7 +6,6 @@ dependencies {
     implementation project(':library:keyvalue')
     implementation project(':library:trelloapi')
 
-    implementation Kotlin.stdlib
     implementation Kotlin.coroutinesCore
     implementation Libraries.threeTen
 }

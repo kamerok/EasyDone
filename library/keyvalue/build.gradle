@@ -1,5 +1,1 @@
 apply plugin: 'kotlin'
-
-dependencies {
-    implementation Kotlin.stdlib
-}

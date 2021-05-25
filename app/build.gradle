@@ -38,7 +38,6 @@ dependencies {
     implementation project(":core-ui:design")
 
     implementation Android.appCompat
-    implementation Kotlin.stdlib
     implementation Libraries.retrofit
     implementation Libraries.threeTen
     implementation Libraries.timber

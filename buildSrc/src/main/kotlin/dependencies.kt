@@ -22,7 +22,7 @@ object Versions {
     val gradleVersions = "0.27.0"
     val junit = "4.12"
     val koin = "2.0.1"
-    val kotlin = "1.3.50"
+    val kotlin = "1.5.10"
     val lifecycle = "2.2.0-alpha01"
     val markwon = "4.1.2"
     val material = "1.1.0-alpha08"
@@ -66,7 +66,6 @@ object Kotlin {
     val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     val coroutinesRx = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${Versions.coroutines}"
     val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
-    val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
 }
 
 object Tools {

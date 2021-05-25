@@ -13,5 +13,4 @@ dependencies {
     implementation Android.recyclerView
     implementation Kotlin.coroutinesAndorid
     implementation Kotlin.coroutinesCore
-    implementation Kotlin.stdlib
 }

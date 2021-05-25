@@ -13,5 +13,4 @@ dependencies {
     implementation Android.lifecycleRuntime
     implementation Kotlin.coroutinesAndorid
     implementation Kotlin.coroutinesCore
-    implementation Kotlin.stdlib
 }

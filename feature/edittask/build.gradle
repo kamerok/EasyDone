@@ -12,7 +12,6 @@ dependencies {
     implementation Android.recyclerView
     implementation Kotlin.coroutinesAndorid
     implementation Kotlin.coroutinesCore
-    implementation Kotlin.stdlib
     implementation Libraries.markwon
     implementation Libraries.markwonLinkify
     implementation Libraries.threeTen

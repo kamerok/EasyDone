@@ -10,5 +10,4 @@ dependencies {
     implementation Android.core
     implementation Android.fragment
     implementation Android.lifecycleRuntime
-    implementation Kotlin.stdlib
 }

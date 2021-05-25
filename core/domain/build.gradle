@@ -6,7 +6,6 @@ dependencies {
     implementation project(':core:network')
 
     implementation Kotlin.coroutinesCore
-    implementation Kotlin.stdlib
     implementation Libraries.threeTen
     implementation Libraries.timber
 
