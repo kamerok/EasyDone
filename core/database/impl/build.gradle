@@ -9,7 +9,7 @@ dependencies {
     implementation Kotlin.coroutinesRx
     implementation Libraries.rxJava
     implementation Libraries.sqlDelightAndroid
-    implementation Libraries.sqlDelightRxJava
+    implementation Libraries.sqlDelightCoroutines
     implementation Libraries.threeTen
 
     testImplementation Tests.junit

@@ -2,19 +2,16 @@ package easydone.core.database
 
 import android.app.Application
 import com.squareup.sqldelight.EnumColumnAdapter
-import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.runtime.rx.asObservable
+import com.squareup.sqldelight.runtime.coroutines.asFlow
 import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.rx2.openSubscription
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import easydone.core.database.Task as DbTask
@@ -41,20 +38,25 @@ class DatabaseImpl(application: Application) : MyDatabase {
                     entry.key,
                     entry.value.first().entity_name,
                     entry.value.first().entity_id,
-                    entry.value.associate { it.field_ to it.field_.getMapper().toValue(it.new_value) }
+                    entry.value.associate {
+                        it.field_ to it.field_.getMapper().toValue(it.new_value)
+                    }
                 )
             }
     }
 
     override fun observeChangesCount(): Flow<Long> =
-        changesQueries.selectChangesCount().asFlowExecuteAsOne()
+        changesQueries.selectChangesCount().asFlow().map { it.executeAsOne() }
 
     override suspend fun deleteChange(id: Long) = withContext(Dispatchers.IO) {
         changesQueries.deleteChange(id)
     }
 
     override fun getTasksStream(type: Task.Type): Flow<List<Task>> =
-        taskQueries.selectByType(type).asFlow().map { dbTasks -> dbTasks.map { it.toTask() } }
+        taskQueries.selectByType(type)
+            .asFlow()
+            .map { it.executeAsList() }
+            .map { dbTasks -> dbTasks.map { it.toTask() } }
 
     override fun getTasks(type: Task.Type): List<Task> =
         taskQueries.selectByType(type).executeAsList().map { it.toTask() }
@@ -164,10 +166,5 @@ class DatabaseImpl(application: Application) : MyDatabase {
     }
 }
 
-fun DbTask.toTask() = Task(id, type, title, description, due_date, Markers(is_urgent, is_important), is_done)
-
-fun <T : Any> Query<T>.asFlow() = asObservable().openSubscription().consumeAsFlow()
-    .map { it.executeAsList() }
-
-fun <T : Any> Query<T>.asFlowExecuteAsOne() = asObservable().openSubscription().consumeAsFlow()
-    .map { it.executeAsOne() }
+fun DbTask.toTask() =
+    Task(id, type, title, description, due_date, Markers(is_urgent, is_important), is_done)
