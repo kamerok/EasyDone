@@ -66,6 +66,8 @@ class HomeFragment(
                 }
                 (v.layoutParams as? ViewGroup.MarginLayoutParams)
                     ?.updateMargins(bottom = originalMargin + insets.systemWindowInsetBottom)
+                //the only way to update margin after keyboard was hidden
+                v.post { v.requestLayout() }
                 return insets
             }
         })
