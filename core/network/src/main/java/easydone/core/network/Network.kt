@@ -16,6 +16,7 @@ import java.util.UUID
 
 class Network(
     private val api: TrelloApi,
+    private val apiKey: String,
     private val authInfoHolder: AuthInfoHolder,
     private val idMappings: KeyValueStorage
 ) {
@@ -25,7 +26,7 @@ class Network(
     suspend fun getAllTasks(): List<Task> = withContext(Dispatchers.IO) {
         val boardId = authInfoHolder.getBoardId()!!
         val token = authInfoHolder.getToken()!!
-        val board = api.boardData(boardId, TrelloApi.API_KEY, token)
+        val board = api.boardData(boardId, apiKey, token)
         if (authInfoHolder.getInboxListId().isNullOrEmpty()) {
             authInfoHolder.putInboxListId(board.lists.first().id)
         }
@@ -77,7 +78,7 @@ class Network(
                 val serverId: String = idMappings.getString(delta.id)!!
                 api.editCard(
                     serverId,
-                    TrelloApi.API_KEY,
+                    apiKey,
                     authInfoHolder.getToken()!!,
                     name = delta.title,
                     desc = delta.description,
@@ -95,7 +96,7 @@ class Network(
                     listId = getListId(delta.type!!),
                     name = delta.title!!,
                     desc = delta.description,
-                    apiKey = TrelloApi.API_KEY,
+                    apiKey = apiKey,
                     token = authInfoHolder.getToken()!!,
                     idLabels = labels
                 )

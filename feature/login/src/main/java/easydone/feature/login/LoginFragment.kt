@@ -24,6 +24,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private lateinit var listener: (String, List<Board>) -> Unit
     private lateinit var api: TrelloApi
+    private lateinit var apiKey: String
     private lateinit var tokenProvider: TokenProvider
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,7 +33,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 .setShowTitle(true)
                 .build()
 
-            val uri = Uri.parse(URL)
+            val uri = Uri.parse("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${apiKey}&callback_method=fragment&return_url=easydone://auth")
             try {
                 customTabsIntent.launchUrl(requireContext(), uri)
             } catch (e: ActivityNotFoundException) {
@@ -57,7 +58,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private fun processToken(token: String) {
         lifecycleScope.launch {
             try {
-                val nestedBoards = api.boards(TrelloApi.API_KEY, token)
+                val nestedBoards = api.boards(apiKey, token)
                 successLogin(token, nestedBoards.boards)
             } catch (e: Exception) {
                 Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
@@ -72,16 +73,15 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     data class Dependencies(
         val loginListener: (String, List<Board>) -> Unit,
         val api: TrelloApi,
+        val apiKey: String,
         val tokenProvider: TokenProvider
     )
 
     companion object {
-        private const val URL =
-            "https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${TrelloApi.API_KEY}&callback_method=fragment&return_url=easydone://auth"
-
         fun create(dependencies: Dependencies): Fragment = LoginFragment().apply {
             listener = dependencies.loginListener
             api = dependencies.api
+            apiKey = dependencies.apiKey
             tokenProvider = dependencies.tokenProvider
         }
     }

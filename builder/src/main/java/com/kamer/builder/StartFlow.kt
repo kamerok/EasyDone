@@ -88,12 +88,23 @@ object StartFlow {
         GlobalContext.get().koin.get<Synchronizer>()
     }
 
-    fun initDependencies(application: Application, debugInterceptor: Interceptor?) {
+    fun initDependencies(
+        application: Application,
+        trelloApiKey: String,
+        debugInterceptor: Interceptor?
+    ) {
         val module = module {
             single { DomainRepository(get()) }
             single { Synchronizer(get(), get()) }
             single { AuthInfoHolder(SharedPrefsKeyValueStorage(get(), "prefs")) }
-            single { Network(get(), get(), SharedPrefsKeyValueStorage(application, "id_mapping")) }
+            single {
+                Network(
+                    api = get(),
+                    apiKey = trelloApiKey,
+                    authInfoHolder = get(),
+                    idMappings = SharedPrefsKeyValueStorage(application, "id_mapping")
+                )
+            }
             single { TrelloApi.build(debugInterceptor) }
             single<MyDatabase> { DatabaseImpl(get()) }
             single { ActivityNavigator() }
@@ -186,9 +197,10 @@ object StartFlow {
                             localNavigator.openScreen(
                                 LoginFragment.create(
                                     LoginFragment.Dependencies(
-                                        loginListener,
-                                        get(),
-                                        get()
+                                        loginListener = loginListener,
+                                        api = get(),
+                                        apiKey = trelloApiKey,
+                                        tokenProvider = get()
                                     )
                                 )
                             )

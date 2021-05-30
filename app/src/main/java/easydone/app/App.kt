@@ -19,6 +19,6 @@ class App : Application() {
             Timber.plant(LogcatTree())
         }
         AndroidThreeTen.init(this)
-        StartFlow.initDependencies(this, debugInterceptor)
+        StartFlow.initDependencies(this, BuildConfig.TRELLO_API_KEY, debugInterceptor)
     }
 }

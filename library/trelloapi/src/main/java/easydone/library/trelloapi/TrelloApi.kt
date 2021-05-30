@@ -52,8 +52,6 @@ interface TrelloApi {
     ): Card
 
     companion object {
-        const val API_KEY = "98c9ac26156a960889eb42586aa1bcd7"
-
         fun build(debugInterceptor: Interceptor?): TrelloApi = Retrofit.Builder()
             .baseUrl("https://trello.com/1/")
             .client(

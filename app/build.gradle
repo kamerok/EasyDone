@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+apply from: rootProject.file('gradle/apply-credential-properties.gradle')
+
 android {
     defaultConfig {
         applicationId "com.kamer.easydone"
@@ -26,6 +28,10 @@ android {
         debug {
             ext.alwaysUpdateBuildId = false
             signingConfig = signingConfigs.debugConfig
+        }
+        buildTypes.each {
+            //intended to be publicly accessible
+            it.buildConfigField 'String', 'TRELLO_API_KEY', '\"98c9ac26156a960889eb42586aa1bcd7\"'
         }
     }
 }
