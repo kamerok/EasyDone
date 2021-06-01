@@ -1,7 +1,7 @@
 **Disclaimer:** *Code and design of this project are far from perfect. It's just something to simplify routine tasks.* 
 
 # EasyDone
-![Quick Add](demo/quick_add.png)![Home Dark](demo/home_dark.png)![Home Light](demo/home_light.png)
+![Quick Add](demo/quick_add.png) ![Home Dark](demo/home_dark.png) ![Home Light](demo/home_light.png)
 
 # License
 
