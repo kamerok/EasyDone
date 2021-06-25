@@ -64,10 +64,10 @@ object StartFlow {
                                 handle: SavedStateHandle
                             ): T =
                                 FeedViewModel(
-                                    GlobalContext.get().koin.get(),
+                                    GlobalContext.get().get(),
                                     object : FeedNavigator {
                                         override fun navigateToTask(id: String) {
-                                            GlobalContext.get().koin.get<DeepLinkNavigator>()
+                                            GlobalContext.get().get<DeepLinkNavigator>()
                                                 .execute(NavigationCommand.EditTask(id))
                                         }
                                     }
@@ -82,10 +82,10 @@ object StartFlow {
     }
 
     fun startCreate() {
-        GlobalContext.get().koin.get<Navigator>().openScreen(QuickCreateTaskFragment::class.java)
+        GlobalContext.get().get<Navigator>().openScreen(QuickCreateTaskFragment::class.java)
 
         //to start syncing
-        GlobalContext.get().koin.get<Synchronizer>()
+        GlobalContext.get().get<Synchronizer>()
     }
 
     fun initDependencies(
@@ -233,8 +233,8 @@ object StartFlow {
     }
 
     private fun startInitialFlow() {
-        val authInfoHolder: AuthInfoHolder = GlobalContext.get().koin.get()
-        val navigator: Navigator = GlobalContext.get().koin.get()
+        val authInfoHolder: AuthInfoHolder = GlobalContext.get().get()
+        val navigator: Navigator = GlobalContext.get().get()
         navigator.clearStack()
         if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
             startMainFlow(navigator)

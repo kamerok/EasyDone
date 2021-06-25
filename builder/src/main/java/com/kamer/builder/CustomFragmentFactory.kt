@@ -16,12 +16,12 @@ object CustomFragmentFactory : FragmentFactory() {
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment =
         Features.registries.values.find { it.featureClass.name == className }?.create()
             ?: when (className) {
-                HomeFragment::class.java.name -> GlobalContext.get().koin.get<HomeFragment>()
-                EditTaskFragment::class.java.name -> GlobalContext.get().koin.get<EditTaskFragment>()
-                QuickCreateTaskFragment::class.java.name -> GlobalContext.get().koin.get<QuickCreateTaskFragment>()
-                CreateTaskFragment::class.java.name -> GlobalContext.get().koin.get<CreateTaskFragment>()
-                SettingsFragment::class.java.name -> GlobalContext.get().koin.get<SettingsFragment>()
-                SetupFragment::class.java.name -> GlobalContext.get().koin.get<SetupFragment>()
+                HomeFragment::class.java.name -> GlobalContext.get().get<HomeFragment>()
+                EditTaskFragment::class.java.name -> GlobalContext.get().get<EditTaskFragment>()
+                QuickCreateTaskFragment::class.java.name -> GlobalContext.get().get<QuickCreateTaskFragment>()
+                CreateTaskFragment::class.java.name -> GlobalContext.get().get<CreateTaskFragment>()
+                SettingsFragment::class.java.name -> GlobalContext.get().get<SettingsFragment>()
+                SetupFragment::class.java.name -> GlobalContext.get().get<SetupFragment>()
                 else -> super.instantiate(classLoader, className)
             }
 
