@@ -7,6 +7,7 @@ dependencies {
     implementation project(':core:domain')
     implementation project(':core:utils')
     implementation project(':core-ui:design')
+    implementation project(':feature:feed')
 
     implementation Android.appCompat
     implementation Android.constraintLayout

@@ -2,11 +2,6 @@ package com.kamer.builder
 
 import android.app.Application
 import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import easydone.core.database.DatabaseImpl
 import easydone.core.database.MyDatabase
 import easydone.core.domain.DomainRepository
@@ -17,9 +12,6 @@ import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
-import easydone.feature.feed.FeedFragment
-import easydone.feature.feed.FeedNavigator
-import easydone.feature.feed.FeedViewModel
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
@@ -72,20 +64,11 @@ object StartFlow {
             single { ActivityNavigator() }
             single { get<ActivityNavigator>() as Navigator }
             single { DeepLinkResolver() }
-            single {
-                object : DeepLinkNavigator {
-                    override fun execute(command: NavigationCommand) {
-                        when (command) {
-                            is NavigationCommand.EditTask -> startViewTask(command.id, get())
-                        }
-                    }
-                } as DeepLinkNavigator
-            }
         }
         val fragmentModule = module {
             factory {
                 HomeFragment(
-                    FeedFragment::class.java,
+                    get(),
                     get(),
                     object : HomeNavigator {
                         override fun navigateToCreate() {
@@ -95,30 +78,12 @@ object StartFlow {
                         override fun navigateToSettings() {
                             startSettings(get())
                         }
+
+                        override fun navigateToTask(id: String) {
+                            startViewTask(id, get())
+                        }
                     }
                 )
-            }
-            factory {
-                FeedFragment { fragment ->
-                    ViewModelProvider(
-                        fragment,
-                        object : AbstractSavedStateViewModelFactory(fragment, null) {
-                            override fun <T : ViewModel?> create(
-                                key: String,
-                                modelClass: Class<T>,
-                                handle: SavedStateHandle
-                            ): T =
-                                FeedViewModel(
-                                    GlobalContext.get().get(),
-                                    object : FeedNavigator {
-                                        override fun navigateToTask(id: String) {
-                                            GlobalContext.get().get<DeepLinkNavigator>()
-                                                .execute(NavigationCommand.EditTask(id))
-                                        }
-                                    }
-                                ) as T
-                        }).get()
-                }
             }
             factory {
                 EditTaskFragment(

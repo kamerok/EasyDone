@@ -14,9 +14,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.kamer.home.R
+import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
 import easydone.core.utils.logErrors
 import easydone.coreui.design.setupToolbar
+import easydone.feature.feed.FeedFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -24,8 +26,8 @@ import kotlinx.coroutines.flow.onEach
 
 
 class HomeFragment(
-    private val contentFragmentClass: Class<out Fragment>,
     private val synchronizer: Synchronizer,
+    private val domainRepository: DomainRepository,
     private val navigator: HomeNavigator
 ) : Fragment(R.layout.fragment_home) {
 
@@ -33,6 +35,11 @@ class HomeFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //TODO: Think of scalable solution. This will scale badly because man in the middle (HomeFragment) has to know and proxy dependencies and navigation of it's child (FeedFragment)
+        childFragmentManager.fragmentFactory = CustomFragmentFactory(domainRepository) { id ->
+            navigator.navigateToTask(id)
+        }
 
         synchronizer.initiateSync()
     }
@@ -44,7 +51,7 @@ class HomeFragment(
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
         if (savedInstanceState == null) {
             childFragmentManager.commit {
-                replace(R.id.container, contentFragmentClass, null)
+                replace(R.id.container, FeedFragment::class.java, null)
             }
         }
 

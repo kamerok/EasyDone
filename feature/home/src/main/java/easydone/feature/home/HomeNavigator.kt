@@ -7,4 +7,6 @@ interface HomeNavigator {
 
     fun navigateToSettings()
 
+    fun navigateToTask(id: String)
+
 }
