@@ -49,34 +49,6 @@ import org.koin.dsl.module
 
 object StartFlow {
 
-    init {
-        Features.registries[Feature.FEED] = object : FeatureRegistry {
-            override val featureClass: Class<out Fragment> = FeedFragment::class.java
-
-            override fun create(): Fragment =
-                FeedFragment { fragment ->
-                    ViewModelProvider(
-                        fragment,
-                        object : AbstractSavedStateViewModelFactory(fragment, null) {
-                            override fun <T : ViewModel?> create(
-                                key: String,
-                                modelClass: Class<T>,
-                                handle: SavedStateHandle
-                            ): T =
-                                FeedViewModel(
-                                    GlobalContext.get().get(),
-                                    object : FeedNavigator {
-                                        override fun navigateToTask(id: String) {
-                                            GlobalContext.get().get<DeepLinkNavigator>()
-                                                .execute(NavigationCommand.EditTask(id))
-                                        }
-                                    }
-                                ) as T
-                        }).get()
-                }
-        }
-    }
-
     fun start() {
         startInitialFlow()
     }
@@ -129,7 +101,7 @@ object StartFlow {
         val fragmentModule = module {
             factory {
                 HomeFragment(
-                    Features.registries[Feature.FEED]!!.featureClass,
+                    FeedFragment::class.java,
                     get(),
                     object : HomeNavigator {
                         override fun navigateToCreate() {
@@ -141,6 +113,28 @@ object StartFlow {
                         }
                     }
                 )
+            }
+            factory {
+                FeedFragment { fragment ->
+                    ViewModelProvider(
+                        fragment,
+                        object : AbstractSavedStateViewModelFactory(fragment, null) {
+                            override fun <T : ViewModel?> create(
+                                key: String,
+                                modelClass: Class<T>,
+                                handle: SavedStateHandle
+                            ): T =
+                                FeedViewModel(
+                                    GlobalContext.get().get(),
+                                    object : FeedNavigator {
+                                        override fun navigateToTask(id: String) {
+                                            GlobalContext.get().get<DeepLinkNavigator>()
+                                                .execute(NavigationCommand.EditTask(id))
+                                        }
+                                    }
+                                ) as T
+                        }).get()
+                }
             }
             factory {
                 EditTaskFragment(
