@@ -7,16 +7,31 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.kamer.setupflow.R
 import easydone.core.network.AuthInfoHolder
+import easydone.feature.login.LoginFragment
+import easydone.feature.login.TokenProvider
+import easydone.feature.selectboard.BoardUiModel
+import easydone.feature.selectboard.SelectBoardFragment
+import easydone.library.navigation.FragmentManagerNavigator
+import easydone.library.navigation.Navigator
+import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Board
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
 class SetupFragment(
     private val authInfoHolder: AuthInfoHolder,
-    private val navigator: SetupFlowNavigator
+    private val trelloApi: TrelloApi,
+    private val trelloApiKey: String,
+    private val tokenFlow: Flow<String>,
+    private val onFinishSetup: () -> Unit
 ) : Fragment(R.layout.fragment_setup) {
+
+    private val localNavigator: Navigator by lazy {
+        FragmentManagerNavigator(childFragmentManager, R.id.container)
+    }
 
     private var isLogin = true
 
@@ -44,19 +59,37 @@ class SetupFragment(
 
     private fun startLogin() {
         isLogin = true
-        navigator.navigateToLogin { token, boards ->
-            startSelectBoard(token, boards)
-        }
+        localNavigator.openScreen(
+            LoginFragment.create(
+                LoginFragment.Dependencies(
+                    loginListener = { token, boards ->
+                        startSelectBoard(token, boards)
+                    },
+                    api = trelloApi,
+                    apiKey = trelloApiKey,
+                    tokenProvider = object : TokenProvider {
+                        override fun observeToken(): Flow<String> = tokenFlow
+                    }
+                )
+            )
+        )
     }
 
     private fun startSelectBoard(token: String, boards: List<Board>) {
         isLogin = false
-        navigator.navigateToSelectBoard(boards) { boardId ->
-            lifecycleScope.launch {
-                saveData(token, boardId)
-                navigator.onFinishSetup()
-            }
-        }
+        localNavigator.openScreen(
+            SelectBoardFragment.create(
+                SelectBoardFragment.Dependencies(
+                    boards = boards.map { BoardUiModel(it.id, it.name) },
+                    listener = { boardId ->
+                        lifecycleScope.launch {
+                            saveData(token, boardId)
+                            onFinishSetup()
+                        }
+                    }
+                )
+            )
+        )
     }
 
     private suspend fun saveData(token: String, boardId: String) = withContext(Dispatchers.IO) {

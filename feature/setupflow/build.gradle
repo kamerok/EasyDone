@@ -4,7 +4,10 @@ apply plugin: 'kotlin-android-extensions'
 
 dependencies {
     implementation project(':core:network')
+    implementation project(':library:navigation')
     implementation project(':library:trelloapi')
+    implementation project(':feature:login')
+    implementation project(':feature:selectboard')
 
     implementation Android.appCompat
     implementation Android.core

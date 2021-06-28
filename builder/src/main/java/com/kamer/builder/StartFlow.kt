@@ -2,13 +2,11 @@ package com.kamer.builder
 
 import android.app.Application
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
-import com.kamer.setupflow.R
 import easydone.core.database.DatabaseImpl
 import easydone.core.database.MyDatabase
 import easydone.core.domain.DomainRepository
@@ -24,22 +22,14 @@ import easydone.feature.feed.FeedNavigator
 import easydone.feature.feed.FeedViewModel
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
-import easydone.feature.login.LoginFragment
-import easydone.feature.login.TokenProvider
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
-import easydone.feature.selectboard.BoardUiModel
-import easydone.feature.selectboard.SelectBoardFragment
 import easydone.feature.settings.SettingsFragment
 import easydone.feature.settings.SettingsNavigator
-import easydone.feature.setupflow.SetupFlowNavigator
 import easydone.feature.setupflow.SetupFragment
 import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
-import easydone.library.navigation.FragmentManagerNavigator
 import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
-import easydone.library.trelloapi.model.Board
-import kotlinx.coroutines.flow.Flow
 import okhttp3.Interceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
@@ -82,12 +72,6 @@ object StartFlow {
             single { ActivityNavigator() }
             single { get<ActivityNavigator>() as Navigator }
             single { DeepLinkResolver() }
-            single {
-                object : TokenProvider {
-                    override fun observeToken(): Flow<String> =
-                        get<DeepLinkResolver>().observeToken()
-                } as TokenProvider
-            }
             single {
                 object : DeepLinkNavigator {
                     override fun execute(command: NavigationCommand) {
@@ -177,47 +161,12 @@ object StartFlow {
                 )
             }
             factory {
-                var fragment: SetupFragment? = null
-                val localNavigator: Navigator by lazy {
-                    FragmentManagerNavigator(
-                        fragment!!.childFragmentManager,
-                        R.id.container
-                    )
-                }
-                fragment = SetupFragment(
+                SetupFragment(
                     get(),
-                    object : SetupFlowNavigator {
-                        override fun navigateToLogin(loginListener: (String, List<Board>) -> Unit) {
-                            localNavigator.openScreen(
-                                LoginFragment.create(
-                                    LoginFragment.Dependencies(
-                                        loginListener = loginListener,
-                                        api = get(),
-                                        apiKey = trelloApiKey,
-                                        tokenProvider = get()
-                                    )
-                                )
-                            )
-                        }
-
-                        override fun navigateToSelectBoard(
-                            boards: List<Board>,
-                            listener: (String) -> Unit
-                        ) {
-                            localNavigator.openScreen(
-                                SelectBoardFragment.create(
-                                    SelectBoardFragment.Dependencies(
-                                        boards = boards.map { BoardUiModel(it.id, it.name) },
-                                        listener = listener
-                                    )
-                                )
-                            )
-                        }
-
-                        override fun onFinishSetup() = startMainFlow(get())
-                    }
-                )
-                fragment
+                    get(),
+                    trelloApiKey,
+                    get<DeepLinkResolver>().observeToken()
+                ) { startMainFlow(get()) }
             }
         }
         startKoin {
