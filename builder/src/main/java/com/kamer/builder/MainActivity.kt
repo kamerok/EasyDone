@@ -1,4 +1,4 @@
-package easydone.activity
+package com.kamer.builder
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +13,7 @@ import com.kamer.builder.StartFlow
 import org.koin.android.ext.android.inject
 
 
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity(R.layout.activity_container) {
 
     private val navigator: ActivityNavigator by inject()
     private val deepLinkResolver: DeepLinkResolver by inject()

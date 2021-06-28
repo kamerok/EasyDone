@@ -1,16 +1,12 @@
-package easydone.activity
+package com.kamer.builder
 
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import com.kamer.builder.ActivityHolder
-import com.kamer.builder.ActivityNavigator
-import com.kamer.builder.CustomFragmentFactory
-import com.kamer.builder.StartFlow
 import org.koin.android.ext.android.inject
 
 
-class TransparentActivity : AppCompatActivity(R.layout.activity_transparent) {
+class TransparentActivity : AppCompatActivity(R.layout.activity_container) {
 
     private val navigator: ActivityNavigator by inject()
 
