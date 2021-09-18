@@ -18,7 +18,7 @@ object Versions {
     val flipper = "0.91.1"
     val fragment = "1.2.0-rc01"
     val googleServices = "4.3.2"
-    val gradleAndroid = "4.2.1"
+    val gradleAndroid = "7.0.2"
     val gradleVersions = "0.39.0"
     val junit = "4.12"
     val koin = "2.2.3"
