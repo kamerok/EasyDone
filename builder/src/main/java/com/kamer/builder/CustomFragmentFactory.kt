@@ -15,13 +15,14 @@ object CustomFragmentFactory : FragmentFactory() {
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment =
         when (className) {
-                HomeFragment::class.java.name -> GlobalContext.get().get<HomeFragment>()
-                EditTaskFragment::class.java.name -> GlobalContext.get().get<EditTaskFragment>()
-                QuickCreateTaskFragment::class.java.name -> GlobalContext.get().get<QuickCreateTaskFragment>()
-                CreateTaskFragment::class.java.name -> GlobalContext.get().get<CreateTaskFragment>()
-                SettingsFragment::class.java.name -> GlobalContext.get().get<SettingsFragment>()
-                SetupFragment::class.java.name -> GlobalContext.get().get<SetupFragment>()
-                else -> super.instantiate(classLoader, className)
-            }
+            HomeFragment::class.java.name -> GlobalContext.get().get<HomeFragment>()
+            EditTaskFragment::class.java.name -> GlobalContext.get().get<EditTaskFragment>()
+            QuickCreateTaskFragment::class.java.name -> GlobalContext.get()
+                .get<QuickCreateTaskFragment>()
+            CreateTaskFragment::class.java.name -> GlobalContext.get().get<CreateTaskFragment>()
+            SettingsFragment::class.java.name -> GlobalContext.get().get<SettingsFragment>()
+            SetupFragment::class.java.name -> GlobalContext.get().get<SetupFragment>()
+            else -> super.instantiate(classLoader, className)
+        }
 
 }

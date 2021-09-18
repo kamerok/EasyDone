@@ -34,12 +34,12 @@ class HomeFragment(
     private var syncView: SyncView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         //TODO: Think of scalable solution. This will scale badly because man in the middle (HomeFragment) has to know and proxy dependencies and navigation of it's child (FeedFragment)
         childFragmentManager.fragmentFactory = CustomFragmentFactory(domainRepository) { id ->
             navigator.navigateToTask(id)
         }
+
+        super.onCreate(savedInstanceState)
 
         synchronizer.initiateSync()
     }
