@@ -42,6 +42,12 @@ class HomeFragment(
         super.onCreate(savedInstanceState)
 
         synchronizer.initiateSync()
+
+        if (savedInstanceState == null) {
+            childFragmentManager.commit {
+                replace(R.id.container, FeedFragment::class.java, null)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,11 +55,6 @@ class HomeFragment(
         setupToolbar()
         subscribeOnSyncState()
         addTaskView.setOnClickListener { navigator.navigateToCreate() }
-        if (savedInstanceState == null) {
-            childFragmentManager.commit {
-                replace(R.id.container, FeedFragment::class.java, null)
-            }
-        }
 
         view.setOnApplyWindowInsetsListener { v, insets ->
             v.updatePadding(top = insets.systemWindowInsetTop)
