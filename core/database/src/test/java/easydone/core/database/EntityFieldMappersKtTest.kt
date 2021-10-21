@@ -5,7 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import easydone.core.domain.model.Task
 import org.junit.Test
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 class EntityFieldMappersKtTest {
 

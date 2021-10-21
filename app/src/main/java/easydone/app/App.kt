@@ -1,7 +1,6 @@
 package easydone.app
 
 import android.app.Application
-import com.jakewharton.threetenabp.AndroidThreeTen
 import com.kamer.builder.StartFlow
 import com.kamer.easydone.BuildConfig
 import okhttp3.Interceptor
@@ -18,7 +17,6 @@ class App : Application() {
             debugInterceptor = FlipperInitializer.init(this)
             Timber.plant(LogcatTree())
         }
-        AndroidThreeTen.init(this)
         StartFlow.initDependencies(this, BuildConfig.TRELLO_API_KEY, debugInterceptor)
     }
 }

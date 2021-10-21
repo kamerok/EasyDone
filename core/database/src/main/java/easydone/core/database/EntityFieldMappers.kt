@@ -3,7 +3,7 @@ package easydone.core.database
 import easydone.core.domain.database.EntityField
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 fun EntityField.getMapper(): Mapper = when (this) {
     EntityField.TYPE -> TypeMapper

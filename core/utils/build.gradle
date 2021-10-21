@@ -3,6 +3,5 @@ apply plugin: 'kotlin'
 
 dependencies {
     implementation Kotlin.coroutinesCore
-    implementation Libraries.threeTen
     implementation Libraries.timber
 }

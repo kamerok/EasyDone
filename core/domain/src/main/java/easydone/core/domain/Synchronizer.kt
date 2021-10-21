@@ -22,9 +22,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.threeten.bp.LocalDate
 import timber.log.Timber
 import timber.log.error
+import java.time.LocalDate
 
 
 class Synchronizer(

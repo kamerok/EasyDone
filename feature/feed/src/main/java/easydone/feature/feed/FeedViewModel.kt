@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import org.threeten.bp.LocalDate
-import org.threeten.bp.Period
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 
 class FeedViewModel(

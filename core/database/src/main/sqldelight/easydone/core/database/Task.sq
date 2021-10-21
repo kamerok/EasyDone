@@ -1,5 +1,5 @@
 import easydone.core.domain.model.Task;
-import org.threeten.bp.LocalDate;
+import java.time.LocalDate;
 
 
 CREATE TABLE task (

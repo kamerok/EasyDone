@@ -2,7 +2,7 @@ package easydone.core.domain
 
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 
 data class TaskDelta(

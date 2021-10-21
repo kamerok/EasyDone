@@ -1,6 +1,6 @@
 package easydone.core.domain.model
 
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 
 data class Task(

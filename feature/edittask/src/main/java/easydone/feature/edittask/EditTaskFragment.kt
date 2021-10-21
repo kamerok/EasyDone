@@ -18,7 +18,7 @@ import io.noties.markwon.linkify.LinkifyPlugin
 import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.coroutines.launch
 import org.commonmark.node.SoftLineBreak
-import org.threeten.bp.LocalDate
+import java.time.LocalDate
 
 
 class EditTaskFragment(

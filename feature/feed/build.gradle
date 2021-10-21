@@ -23,6 +23,5 @@ dependencies {
     implementation Libraries.adapterDepelegates
     implementation Libraries.adapterDepelegatesDsl
     implementation Libraries.koin
-    implementation Libraries.threeTen
     implementation Libraries.timber
 }

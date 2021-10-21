@@ -10,6 +10,10 @@ android {
         versionName "1.0"
     }
 
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+    }
+
     signingConfigs {
         debugConfig {
             storeFile = file('../keystore/debug.keystore')
@@ -37,12 +41,13 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring Android.desugar
+
     implementation project(":builder")
     implementation project(":core-ui:design")
 
     implementation Android.appCompat
     implementation Libraries.retrofit
-    implementation Libraries.threeTen
     implementation Libraries.timber
     implementation Tools.firebase
     debugImplementation Tools.flipper

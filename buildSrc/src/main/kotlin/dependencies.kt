@@ -14,6 +14,7 @@ object Versions {
     val constraintLayout = "1.1.3"
     val core = "1.2.0-alpha02"
     val coroutines = "1.5.0"
+    val desugar = "1.1.5"
     val firebase = "17.2.1"
     val flipper = "0.116.0"
     val fragment = "1.2.0-rc01"
@@ -34,8 +35,6 @@ object Versions {
     val sqlDelight = "1.5.0"
     val savedState = "1.0.0"
     val soLoader = "0.10.1"
-    val threeTen = "1.2.1"
-    val threeTenJava = "1.3.1"
     val timber = "5.0.0-SNAPSHOT"
     val viewModel = "2.2.0"
 }
@@ -53,6 +52,7 @@ object Android {
     val browser = "androidx.browser:browser:${Versions.browser}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
     val core = "androidx.core:core-ktx:${Versions.core}"
+    val desugar = "com.android.tools:desugar_jdk_libs:${Versions.desugar}"
     val fragment = "androidx.fragment:fragment-ktx:${Versions.fragment}"
     val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
     val material = "com.google.android.material:material:${Versions.material}"
@@ -87,8 +87,6 @@ object Libraries {
     val rxJava = "io.reactivex.rxjava2:rxjava:${Versions.rxJava}"
     val sqlDelightAndroid = "com.squareup.sqldelight:android-driver:${Versions.sqlDelight}"
     val sqlDelightCoroutines = "com.squareup.sqldelight:coroutines-extensions-jvm:${Versions.sqlDelight}"
-    val threeTen = "com.jakewharton.threetenabp:threetenabp:${Versions.threeTen}"
-    val threeTenJava = "org.threeten:threetenbp:${Versions.threeTenJava}"
     val timberAndroid = "com.jakewharton.timber:timber-android:${Versions.timber}"
     val timberJdk = "com.jakewharton.timber:timber-jdk:${Versions.timber}"
     val timber = arrayOf(timberAndroid, timberJdk)
