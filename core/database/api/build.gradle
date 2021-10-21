@@ -1,7 +1,0 @@
-apply plugin: 'kotlin'
-
-dependencies {
-    api project(':core:model')
-
-    implementation Kotlin.coroutinesCore
-}

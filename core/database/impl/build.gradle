@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.squareup.sqldelight'
 
 dependencies {
-    implementation project(':core:database:api')
+    implementation project(':core:domain')
 
     implementation Kotlin.coroutinesCore
     implementation Kotlin.coroutinesRx

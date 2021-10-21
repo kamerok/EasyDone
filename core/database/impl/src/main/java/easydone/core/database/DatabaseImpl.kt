@@ -5,6 +5,10 @@ import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
+import easydone.core.domain.database.ChangeEntry
+import easydone.core.domain.database.EntityField
+import easydone.core.domain.database.EntityName
+import easydone.core.domain.database.MyDatabase
 import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.core.model.TaskTemplate

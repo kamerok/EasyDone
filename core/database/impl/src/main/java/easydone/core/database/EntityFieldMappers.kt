@@ -1,5 +1,6 @@
 package easydone.core.database
 
+import easydone.core.domain.database.EntityField
 import easydone.core.model.Markers
 import easydone.core.model.Task
 import org.threeten.bp.LocalDate

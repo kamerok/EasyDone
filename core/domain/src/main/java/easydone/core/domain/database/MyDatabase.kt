@@ -1,4 +1,4 @@
-package easydone.core.database
+package easydone.core.domain.database
 
 import easydone.core.model.Task
 import easydone.core.model.TaskTemplate

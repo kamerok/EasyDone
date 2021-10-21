@@ -1,5 +1,5 @@
-import easydone.core.database.EntityName;
-import easydone.core.database.EntityField;
+import easydone.core.domain.database.EntityName;
+import easydone.core.domain.database.EntityField;
 
 CREATE TABLE change (
   id INTEGER PRIMARY KEY,

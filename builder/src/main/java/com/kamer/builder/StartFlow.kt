@@ -3,9 +3,9 @@ package com.kamer.builder
 import android.app.Application
 import android.os.Bundle
 import easydone.core.database.DatabaseImpl
-import easydone.core.database.MyDatabase
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
+import easydone.core.domain.database.MyDatabase
 import easydone.core.network.AuthInfoHolder
 import easydone.core.network.Network
 import easydone.feature.createtask.CreateTaskFragment
