@@ -12,11 +12,11 @@ interface LocalDataSource {
 
     fun observeChangesCount(): Flow<Long>
 
-    suspend fun deleteChange(id: Long)
+    fun getTasks(type: Task.Type): List<Task>
+
+    fun getTasksWithDate(): List<Task>
 
     fun observeTasks(type: Task.Type): Flow<List<Task>>
-
-    fun getTasks(type: Task.Type): List<Task>
 
     suspend fun getTask(id: String): Task
 
@@ -26,9 +26,9 @@ interface LocalDataSource {
 
     fun putData(tasks: List<Task>)
 
-    fun clear()
+    suspend fun deleteChange(id: Long)
 
-    fun getTasksWithDate(): List<Task>
+    fun clear()
 
     suspend fun transaction(body: LocalDataSource.() -> Unit)
 
