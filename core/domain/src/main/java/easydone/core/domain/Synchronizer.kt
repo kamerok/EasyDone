@@ -47,11 +47,7 @@ class Synchronizer(
     private suspend fun sync() {
         stateChannel.send(true)
         try {
-            val changes = localDataSource.getChanges()
-            for (change in changes) {
-                remoteDataSource.syncTaskDelta(change)
-                localDataSource.deleteChange(change.id)
-            }
+            uploadChanges()
             val networkTasks = remoteDataSource.getAllTasks()
             localDataSource.transaction {
                 clear()
@@ -78,6 +74,13 @@ class Synchronizer(
             Timber.error(e) { "sync error" }
         } finally {
             stateChannel.send(false)
+        }
+    }
+
+    private suspend fun uploadChanges() {
+        localDataSource.getChanges().forEach { change ->
+            remoteDataSource.syncTaskDelta(change)
+            localDataSource.deleteChange(change.id)
         }
     }
 }
