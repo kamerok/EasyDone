@@ -8,10 +8,10 @@ import easydone.core.domain.database.EntityField.IS_DONE
 import easydone.core.domain.database.EntityField.MARKERS
 import easydone.core.domain.database.EntityField.TITLE
 import easydone.core.domain.database.EntityField.TYPE
-import easydone.core.model.Markers
-import easydone.core.model.Task
-import easydone.core.model.Task.Type.INBOX
-import easydone.core.model.Task.Type.WAITING
+import easydone.core.domain.model.Markers
+import easydone.core.domain.model.Task
+import easydone.core.domain.model.Task.Type.INBOX
+import easydone.core.domain.model.Task.Type.WAITING
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BroadcastChannel

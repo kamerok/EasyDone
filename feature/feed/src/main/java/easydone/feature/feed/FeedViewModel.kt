@@ -3,7 +3,7 @@ package easydone.feature.feed
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import easydone.core.domain.DomainRepository
-import easydone.core.model.Task
+import easydone.core.domain.model.Task
 import easydone.core.utils.logErrors
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel

@@ -1,8 +1,8 @@
 package easydone.core.domain
 
 import easydone.core.domain.database.Database
-import easydone.core.model.Task
-import easydone.core.model.TaskTemplate
+import easydone.core.domain.model.Task
+import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.flow.Flow
 
 

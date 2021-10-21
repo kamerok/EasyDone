@@ -1,8 +1,6 @@
 apply plugin: 'kotlin'
 
 dependencies {
-    api project(':core:model')
-
     implementation Kotlin.coroutinesCore
     implementation Libraries.threeTen
     implementation Libraries.timber

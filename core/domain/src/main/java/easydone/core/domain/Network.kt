@@ -1,6 +1,6 @@
 package easydone.core.domain
 
-import easydone.core.model.Task
+import easydone.core.domain.model.Task
 
 interface Network {
     suspend fun getAllTasks(): List<Task>

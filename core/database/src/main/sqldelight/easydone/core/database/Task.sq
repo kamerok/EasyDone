@@ -1,4 +1,4 @@
-import easydone.core.model.Task;
+import easydone.core.domain.model.Task;
 import org.threeten.bp.LocalDate;
 
 

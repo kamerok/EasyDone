@@ -10,7 +10,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
-import easydone.core.model.Task
+import easydone.core.domain.model.Task
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonVisitor

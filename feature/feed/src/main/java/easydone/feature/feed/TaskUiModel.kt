@@ -1,6 +1,6 @@
 package easydone.feature.feed
 
-import easydone.core.model.Task
+import easydone.core.domain.model.Task
 
 
 internal data class TaskUiModel(

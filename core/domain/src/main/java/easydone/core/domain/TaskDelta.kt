@@ -1,7 +1,7 @@
 package easydone.core.domain
 
-import easydone.core.model.Markers
-import easydone.core.model.Task
+import easydone.core.domain.model.Markers
+import easydone.core.domain.model.Task
 import org.threeten.bp.LocalDate
 
 

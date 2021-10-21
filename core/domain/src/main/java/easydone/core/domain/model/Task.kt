@@ -1,4 +1,4 @@
-package easydone.core.model
+package easydone.core.domain.model
 
 import org.threeten.bp.LocalDate
 

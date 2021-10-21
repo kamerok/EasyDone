@@ -8,9 +8,9 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import easydone.core.domain.database.ChangeEntry
 import easydone.core.domain.database.EntityField
 import easydone.core.domain.database.EntityName
-import easydone.core.model.Markers
-import easydone.core.model.Task
-import easydone.core.model.TaskTemplate
+import easydone.core.domain.model.Markers
+import easydone.core.domain.model.Task
+import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

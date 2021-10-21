@@ -3,7 +3,7 @@ package easydone.core.database
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
-import easydone.core.model.Task
+import easydone.core.domain.model.Task
 import org.junit.Test
 import org.threeten.bp.LocalDate
 
