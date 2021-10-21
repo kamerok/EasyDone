@@ -28,7 +28,7 @@ import java.time.LocalDate
 
 
 class Synchronizer(
-    private val network: Network,
+    private val remoteDataSource: RemoteDataSource,
     private val database: Database
 ) {
 
@@ -59,10 +59,10 @@ class Synchronizer(
         try {
             val changes = database.getChanges()
             for (change in changes) {
-                network.syncTaskDelta(change.toDelta())
+                remoteDataSource.syncTaskDelta(change.toDelta())
                 database.deleteChange(change.changeId)
             }
-            val networkTasks = network.getAllTasks()
+            val networkTasks = remoteDataSource.getAllTasks()
             database.transaction {
                 clear()
                 putData(networkTasks)

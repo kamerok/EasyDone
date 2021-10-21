@@ -1,6 +1,6 @@
 package easydone.core.network
 
-import easydone.core.domain.Network
+import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.TaskDelta
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
@@ -16,12 +16,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-class NetworkImpl(
+class TrelloRemoteDataSource(
     private val api: TrelloApi,
     private val apiKey: String,
     private val authInfoHolder: AuthInfoHolder,
     private val idMappings: KeyValueStorage
-) : Network {
+) : RemoteDataSource {
 
     private val syncMutex = Mutex(false)
 

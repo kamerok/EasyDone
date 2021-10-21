@@ -4,11 +4,11 @@ import android.app.Application
 import android.os.Bundle
 import easydone.core.database.DatabaseImpl
 import easydone.core.domain.DomainRepository
-import easydone.core.domain.Network
+import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.Synchronizer
 import easydone.core.domain.database.Database
 import easydone.core.network.AuthInfoHolder
-import easydone.core.network.NetworkImpl
+import easydone.core.network.TrelloRemoteDataSource
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
@@ -52,8 +52,8 @@ object StartFlow {
             single { DomainRepository(get()) }
             single { Synchronizer(get(), get()) }
             single { AuthInfoHolder(SharedPrefsKeyValueStorage(get(), "prefs")) }
-            single<Network> {
-                NetworkImpl(
+            single<RemoteDataSource> {
+                TrelloRemoteDataSource(
                     api = get(),
                     apiKey = trelloApiKey,
                     authInfoHolder = get(),
