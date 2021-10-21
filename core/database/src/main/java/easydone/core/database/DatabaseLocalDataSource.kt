@@ -49,18 +49,11 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
     override fun observeChangesCount(): Flow<Long> =
         changesQueries.selectChangesCount().asFlow().map { it.executeAsOne() }
 
-    override suspend fun deleteChange(id: Long) = withContext(Dispatchers.IO) {
-        changesQueries.deleteChange(id)
-    }
-
     override fun observeTasks(type: Task.Type): Flow<List<Task>> =
         taskQueries.selectByType(type)
             .asFlow()
             .map { it.executeAsList() }
             .map { dbTasks -> dbTasks.map { it.toTask() } }
-
-    override fun getTasks(type: Task.Type): List<Task> =
-        taskQueries.selectByType(type).executeAsList().map { it.toTask() }
 
     override suspend fun getTask(id: String): Task = withContext(Dispatchers.IO) {
         taskQueries.selectById(id).executeAsOne().toTask()
@@ -91,7 +84,37 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
         }
     }
 
-    override fun updateTask(task: Task) {
+    override suspend fun updateTask(task: Task) = transaction { updateTaskAndWriteDelta(task) }
+
+    override suspend fun refreshData(tasks: List<Task>, updatedTasks: List<Task>) {
+        transaction {
+            taskQueries.clear()
+            tasks.forEach { insertTask(it) }
+            updatedTasks.forEach { updateTaskAndWriteDelta(it) }
+        }
+    }
+
+    override suspend fun deleteChange(id: Long) = withContext(Dispatchers.IO) {
+        changesQueries.deleteChange(id)
+    }
+
+    private suspend fun transaction(body: LocalDataSource.() -> Unit) =
+        withContext(Dispatchers.IO) {
+            database.transaction { body() }
+        }
+
+    private fun insertTask(task: Task) = taskQueries.insert(
+        id = task.id,
+        type = task.type,
+        title = task.title,
+        description = task.description,
+        due_date = task.dueDate,
+        is_urgent = task.markers.isUrgent,
+        is_important = task.markers.isImportant,
+        is_done = task.isDone
+    )
+
+    private fun updateTaskAndWriteDelta(task: Task) {
         val id = task.id
         val oldTask = taskQueries.selectById(id).executeAsOne().toTask()
         taskQueries.update(
@@ -143,37 +166,6 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
             }
         }
     }
-
-    override fun putData(tasks: List<Task>) = tasks.forEach {
-        taskQueries.insert(
-            id = it.id,
-            type = it.type,
-            title = it.title,
-            description = it.description,
-            due_date = it.dueDate,
-            is_urgent = it.markers.isUrgent,
-            is_important = it.markers.isImportant,
-            is_done = it.isDone
-        )
-    }
-
-    override suspend fun refreshData(tasks: List<Task>, updatedTasks: List<Task>) {
-        transaction {
-            taskQueries.clear()
-            putData(tasks)
-            updatedTasks.forEach { updateTask(it) }
-        }
-    }
-
-    override fun clear() = taskQueries.clear()
-
-    override fun getTasksWithDate(): List<Task> =
-        taskQueries.selectWithDate().executeAsList().map { it.toTask() }
-
-    override suspend fun transaction(body: LocalDataSource.() -> Unit) =
-        withContext(Dispatchers.IO) {
-            database.transaction { body() }
-        }
 
     private fun ChangeEntry.toDelta() = TaskDelta(
         id = changeId,

@@ -13,41 +13,35 @@ class DomainRepository(private val localDataSource: LocalDataSource) {
 
     suspend fun saveTask(task: Task) {
         require(task.title.isNotEmpty()) { "title should not be empty" }
-        localDataSource.transaction { updateTask(task) }
+        localDataSource.updateTask(task)
     }
 
     suspend fun archiveTask(id: String) {
         val task = localDataSource.getTask(id)
-        localDataSource.transaction { updateTask(task.copy(isDone = true)) }
+        localDataSource.updateTask(task.copy(isDone = true))
     }
 
     suspend fun moveTask(id: String) {
         val task = localDataSource.getTask(id)
-        localDataSource.transaction {
-            updateTask(
-                task.copy(
-                    type = if (task.type == Task.Type.INBOX) Task.Type.TO_DO else Task.Type.INBOX
-                )
+        localDataSource.updateTask(
+            task.copy(
+                type = if (task.type == Task.Type.INBOX) Task.Type.TO_DO else Task.Type.INBOX
             )
-        }
+        )
     }
 
     suspend fun switchUrgent(taskId: String) {
         val task = localDataSource.getTask(taskId)
-        localDataSource.transaction {
-            updateTask(
-                task.copy(markers = task.markers.copy(isUrgent = !task.markers.isUrgent))
-            )
-        }
+        localDataSource.updateTask(
+            task.copy(markers = task.markers.copy(isUrgent = !task.markers.isUrgent))
+        )
     }
 
     suspend fun switchImportant(taskId: String) {
         val task = localDataSource.getTask(taskId)
-        localDataSource.transaction {
-            updateTask(
-                task.copy(markers = task.markers.copy(isImportant = !task.markers.isImportant))
-            )
-        }
+        localDataSource.updateTask(
+            task.copy(markers = task.markers.copy(isImportant = !task.markers.isImportant))
+        )
     }
 
     suspend fun createTask(

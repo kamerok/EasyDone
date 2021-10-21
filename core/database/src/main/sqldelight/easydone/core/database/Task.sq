@@ -27,15 +27,6 @@ SELECT *
 FROM task
 WHERE type = ? AND is_done = 0;
 
-selectWithDate:
-SELECT *
-FROM task
-WHERE due_date != '' AND is_done = 0;
-
-selectAll:
-SELECT *
-FROM task;
-
 insert:
 INSERT INTO task(id, type, title, description, due_date, is_urgent, is_important, is_done)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
