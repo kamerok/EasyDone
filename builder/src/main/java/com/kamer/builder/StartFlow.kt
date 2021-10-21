@@ -8,6 +8,7 @@ import easydone.core.domain.Synchronizer
 import easydone.core.domain.database.Database
 import easydone.core.network.AuthInfoHolder
 import easydone.core.network.Network
+import easydone.core.network.NetworkImpl
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
@@ -51,8 +52,8 @@ object StartFlow {
             single { DomainRepository(get()) }
             single { Synchronizer(get(), get()) }
             single { AuthInfoHolder(SharedPrefsKeyValueStorage(get(), "prefs")) }
-            single {
-                Network(
+            single<Network> {
+                NetworkImpl(
                     api = get(),
                     apiKey = trelloApiKey,
                     authInfoHolder = get(),
@@ -62,7 +63,7 @@ object StartFlow {
             single { TrelloApi.build(debugInterceptor) }
             single<Database> { DatabaseImpl(get()) }
             single { ActivityNavigator() }
-            single { get<ActivityNavigator>() as Navigator }
+            single<Navigator> { get<ActivityNavigator>() }
             single { DeepLinkResolver() }
         }
         val fragmentModule = module {

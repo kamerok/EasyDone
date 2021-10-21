@@ -1,13 +1,13 @@
 package easydone.core.domain
 
 import easydone.core.domain.database.ChangeEntry
+import easydone.core.domain.database.Database
 import easydone.core.domain.database.EntityField.DESCRIPTION
 import easydone.core.domain.database.EntityField.DUE_DATE
 import easydone.core.domain.database.EntityField.IS_DONE
 import easydone.core.domain.database.EntityField.MARKERS
 import easydone.core.domain.database.EntityField.TITLE
 import easydone.core.domain.database.EntityField.TYPE
-import easydone.core.domain.database.Database
 import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.core.model.Task.Type.INBOX
