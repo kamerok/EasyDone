@@ -38,42 +38,44 @@ class Synchronizer(
     fun initiateSync() {
         val currentJob = syncJob
         if (currentJob == null || !currentJob.isActive) {
-            syncJob = GlobalScope.launch { sync() }.also {
+            syncJob = GlobalScope.launch {
+                stateChannel.send(true)
+                try {
+                    sync()
+                } catch (e: Exception) {
+                    Timber.error(e) { "sync error" }
+                } finally {
+                    stateChannel.send(false)
+                }
+            }.also {
                 it.invokeOnCompletion { syncJob = null }
             }
         }
     }
 
     private suspend fun sync() {
-        stateChannel.send(true)
-        try {
-            uploadChanges()
-            val networkTasks = remoteDataSource.getAllTasks()
-            localDataSource.transaction {
-                clear()
-                putData(networkTasks)
-                val tasksWithDate = getTasksWithDate()
-                tasksWithDate.forEach { task ->
-                    when {
-                        !task.dueDate!!.isAfter(LocalDate.now()) -> runBlocking {
-                            updateTask(task.copy(dueDate = null, type = INBOX))
-                        }
-                        task.dueDate!!.isAfter(LocalDate.now()) -> runBlocking {
-                            updateTask(task.copy(type = WAITING))
-                        }
+        uploadChanges()
+        val networkTasks = remoteDataSource.getAllTasks()
+        localDataSource.transaction {
+            clear()
+            putData(networkTasks)
+            val tasksWithDate = getTasksWithDate()
+            tasksWithDate.forEach { task ->
+                when {
+                    !task.dueDate!!.isAfter(LocalDate.now()) -> runBlocking {
+                        updateTask(task.copy(dueDate = null, type = INBOX))
+                    }
+                    task.dueDate!!.isAfter(LocalDate.now()) -> runBlocking {
+                        updateTask(task.copy(type = WAITING))
                     }
                 }
-                getTasks(WAITING).forEach { task ->
-                    if (task.dueDate == null) {
-                        updateTask(task.copy(type = INBOX))
-                    }
-                }
-
             }
-        } catch (e: Exception) {
-            Timber.error(e) { "sync error" }
-        } finally {
-            stateChannel.send(false)
+            getTasks(WAITING).forEach { task ->
+                if (task.dueDate == null) {
+                    updateTask(task.copy(type = INBOX))
+                }
+            }
+
         }
     }
 
