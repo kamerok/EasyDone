@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 
 dependencies {
-    implementation project(':core:database:impl')
+    implementation project(':core:database')
     implementation project(':core:domain')
     implementation project(':core:network')
 

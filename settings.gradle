@@ -5,7 +5,7 @@ include ':builder'
 
 include ':core-ui:design'
 include ':core-ui:utils'
-include ':core:database:impl'
+include ':core:database'
 include ':core:domain'
 include ':core:model'
 include ':core:network'
