@@ -58,7 +58,7 @@ insertUpdateDelta:
 INSERT INTO delta(change_id, field, old_value, new_value)
 VALUES (?, ?, ?, ?);
 
-updateDelta:
+updateDeltaValue:
 UPDATE delta
 SET new_value = ?
 WHERE change_id = ? AND field = ?;

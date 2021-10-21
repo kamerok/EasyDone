@@ -6,8 +6,6 @@ dependencies {
     implementation project(':core:domain')
 
     implementation Kotlin.coroutinesCore
-    implementation Kotlin.coroutinesRx
-    implementation Libraries.rxJava
     implementation Libraries.sqlDelightAndroid
     implementation Libraries.sqlDelightCoroutines
 

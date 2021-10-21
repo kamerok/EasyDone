@@ -31,8 +31,7 @@ object Versions {
     val recyclerView = "1.0.0"
     val retrofit = "2.9.0"
     val retrofitLogging = "4.9.1"
-    val rxJava = "2.2.14"
-    val sqlDelight = "1.5.0"
+    val sqlDelight = "1.5.2"
     val savedState = "1.0.0"
     val soLoader = "0.10.1"
     val timber = "5.0.0-SNAPSHOT"
@@ -64,7 +63,6 @@ object Android {
 object Kotlin {
     val coroutinesAndorid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
     val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
-    val coroutinesRx = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${Versions.coroutines}"
     val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
 }
 
@@ -84,7 +82,6 @@ object Libraries {
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     val retrofitConverterGson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
     val retrofitLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.retrofitLogging}"
-    val rxJava = "io.reactivex.rxjava2:rxjava:${Versions.rxJava}"
     val sqlDelightAndroid = "com.squareup.sqldelight:android-driver:${Versions.sqlDelight}"
     val sqlDelightCoroutines = "com.squareup.sqldelight:coroutines-extensions-jvm:${Versions.sqlDelight}"
     val timberAndroid = "com.jakewharton.timber:timber-android:${Versions.timber}"

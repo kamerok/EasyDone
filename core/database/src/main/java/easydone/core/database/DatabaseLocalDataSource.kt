@@ -128,7 +128,7 @@ class DatabaseLocalDataSource(application: Application) : LocalDataSource {
                     insertUpdateDelta(changeId, field, previousValue, newValue)
                 } else {
                     if (newValue != oldDelta.old_value) {
-                        updateDelta(newValue, changeId, field)
+                        updateDeltaValue(newValue, changeId, field)
                     } else {
                         deleteDelta(changeId, field)
                     }
