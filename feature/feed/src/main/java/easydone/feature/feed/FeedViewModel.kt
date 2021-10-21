@@ -29,8 +29,9 @@ class FeedViewModel(
         combine(
             getInboxItems(),
             getTodoItems(),
-            getWaitingItems()
-        ) { inboxItems, todoItems, waitingItems -> inboxItems + todoItems + waitingItems }
+            getWaitingItems(),
+            getMaybeItems()
+        ) { inboxItems, todoItems, waitingItems, maybeItems -> inboxItems + todoItems + waitingItems + maybeItems }
             .onEach { stateChannel.offer(it) }
             .logErrors()
             .launchIn(viewModelScope)
@@ -47,6 +48,9 @@ class FeedViewModel(
 
     private fun getTodoItems() = repository.getTasks(Task.Type.TO_DO)
         .map { tasks -> listOf(FeedHeader("TODO")) + tasks.sortAndMap() }
+
+    private fun getMaybeItems() = repository.getTasks(Task.Type.MAYBE)
+        .map { tasks -> listOf(FeedHeader("MAYBE")) + tasks.sortAndMap() }
 
     private fun List<Task>.sortAndMap() = this
         .sortedWith(compareBy(

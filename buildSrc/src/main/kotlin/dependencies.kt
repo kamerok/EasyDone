@@ -15,7 +15,7 @@ object Versions {
     val core = "1.2.0-alpha02"
     val coroutines = "1.5.0"
     val firebase = "17.2.1"
-    val flipper = "0.91.1"
+    val flipper = "0.116.0"
     val fragment = "1.2.0-rc01"
     val googleServices = "4.3.2"
     val gradleAndroid = "7.0.2"

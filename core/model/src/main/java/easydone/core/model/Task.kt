@@ -14,7 +14,7 @@ data class Task(
 ) {
 
     enum class Type {
-        INBOX, TO_DO, WAITING
+        INBOX, TO_DO, WAITING, MAYBE
     }
 
 }

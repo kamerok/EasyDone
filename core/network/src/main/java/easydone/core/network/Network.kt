@@ -5,6 +5,7 @@ import easydone.core.model.Task
 import easydone.library.keyvalue.KeyValueStorage
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Card
+import easydone.library.trelloapi.model.NestedBoard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -27,26 +28,13 @@ class Network(
         val boardId = authInfoHolder.getBoardId()!!
         val token = authInfoHolder.getToken()!!
         val board = api.boardData(boardId, apiKey, token)
-        if (authInfoHolder.getInboxListId().isNullOrEmpty()) {
-            authInfoHolder.putInboxListId(board.lists.first().id)
-        }
-        if (authInfoHolder.getTodoListId().isNullOrEmpty()) {
-            authInfoHolder.putTodoListId(board.lists[1].id)
-        }
-        if (authInfoHolder.getWaitingListId().isNullOrEmpty()) {
-            authInfoHolder.putWaitingListId(board.lists[2].id)
-        }
-        if (authInfoHolder.getUrgentLabelId().isNullOrEmpty()) {
-            authInfoHolder.putUrgentLabelId(board.labels.find { it.name == "Urgent" }!!.id)
-        }
-        if (authInfoHolder.getImportantLabelId().isNullOrEmpty()) {
-            authInfoHolder.putImportantLabelId(board.labels.find { it.name == "Important" }!!.id)
-        }
+        rememberDataAnchors(board)
         return@withContext board.cards
             .filter {
                 it.idList == authInfoHolder.getTodoListId() ||
                         it.idList == authInfoHolder.getInboxListId() ||
-                        it.idList == authInfoHolder.getWaitingListId()
+                        it.idList == authInfoHolder.getWaitingListId() ||
+                        it.idList == authInfoHolder.getMaybeListId()
             }
             .map { card ->
                 val localId = idMappings.getString(card.id, UUID.randomUUID().toString())
@@ -58,12 +46,34 @@ class Network(
                 val type = when (card.idList) {
                     authInfoHolder.getInboxListId() -> Task.Type.INBOX
                     authInfoHolder.getWaitingListId() -> Task.Type.WAITING
+                    authInfoHolder.getMaybeListId() -> Task.Type.MAYBE
                     else -> Task.Type.TO_DO
                 }
                 val isUrgent = card.idLabels.contains(authInfoHolder.getUrgentLabelId()!!)
                 val isImportant = card.idLabels.contains(authInfoHolder.getImportantLabelId()!!)
                 card.toTask(localId, type, isUrgent, isImportant)
             }
+    }
+
+    private fun rememberDataAnchors(board: NestedBoard) {
+        if (authInfoHolder.getInboxListId().isNullOrEmpty()) {
+            authInfoHolder.putInboxListId(board.lists.first().id)
+        }
+        if (authInfoHolder.getTodoListId().isNullOrEmpty()) {
+            authInfoHolder.putTodoListId(board.lists[1].id)
+        }
+        if (authInfoHolder.getWaitingListId().isNullOrEmpty()) {
+            authInfoHolder.putWaitingListId(board.lists[2].id)
+        }
+        if (authInfoHolder.getMaybeListId().isNullOrEmpty()) {
+            authInfoHolder.putMaybeListId(board.lists[3].id)
+        }
+        if (authInfoHolder.getUrgentLabelId().isNullOrEmpty()) {
+            authInfoHolder.putUrgentLabelId(board.labels.find { it.name == "Urgent" }!!.id)
+        }
+        if (authInfoHolder.getImportantLabelId().isNullOrEmpty()) {
+            authInfoHolder.putImportantLabelId(board.labels.find { it.name == "Important" }!!.id)
+        }
     }
 
     suspend fun syncTaskDelta(delta: TaskDelta) = withContext(Dispatchers.IO) {
@@ -111,6 +121,7 @@ class Network(
             Task.Type.INBOX -> authInfoHolder.getInboxListId()!!
             Task.Type.TO_DO -> authInfoHolder.getTodoListId()!!
             Task.Type.WAITING -> authInfoHolder.getWaitingListId()!!
+            Task.Type.MAYBE -> authInfoHolder.getMaybeListId()!!
         }
     }
 

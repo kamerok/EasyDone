@@ -3,13 +3,11 @@ package easydone.core.domain
 import easydone.core.database.MyDatabase
 import easydone.core.model.Task
 import easydone.core.model.TaskTemplate
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 
 class DomainRepository(private val database: MyDatabase) {
 
-    @ExperimentalCoroutinesApi
     fun getTasks(type: Task.Type): Flow<List<Task>> = database.getTasksStream(type)
 
     suspend fun getTask(id: String): Task = database.getTask(id)
