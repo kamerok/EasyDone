@@ -1,5 +1,7 @@
 package easydone.core.network
 
+import easydone.core.domain.Network
+import easydone.core.domain.TaskDelta
 import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.library.keyvalue.KeyValueStorage

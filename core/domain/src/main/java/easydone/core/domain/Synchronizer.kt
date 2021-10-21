@@ -12,8 +12,6 @@ import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.core.model.Task.Type.INBOX
 import easydone.core.model.Task.Type.WAITING
-import easydone.core.network.Network
-import easydone.core.network.TaskDelta
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BroadcastChannel

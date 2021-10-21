@@ -1,4 +1,4 @@
-package easydone.core.network
+package easydone.core.domain
 
 import easydone.core.model.Markers
 import easydone.core.model.Task

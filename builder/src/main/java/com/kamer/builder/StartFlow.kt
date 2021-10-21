@@ -4,10 +4,10 @@ import android.app.Application
 import android.os.Bundle
 import easydone.core.database.DatabaseImpl
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.Network
 import easydone.core.domain.Synchronizer
 import easydone.core.domain.database.Database
 import easydone.core.network.AuthInfoHolder
-import easydone.core.network.Network
 import easydone.core.network.NetworkImpl
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
