@@ -1,6 +1,5 @@
 package easydone.core.domain
 
-import easydone.core.domain.database.LocalDataSource
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.flow.Flow
@@ -8,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 class DomainRepository(private val localDataSource: LocalDataSource) {
 
-    fun getTasks(type: Task.Type): Flow<List<Task>> = localDataSource.getTasksStream(type)
+    fun getTasks(type: Task.Type): Flow<List<Task>> = localDataSource.observeTasks(type)
 
     suspend fun getTask(id: String): Task = localDataSource.getTask(id)
 

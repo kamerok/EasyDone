@@ -1,6 +1,6 @@
 package easydone.core.database
 
-import easydone.core.domain.database.EntityField
+import easydone.core.database.model.EntityField
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
 import java.time.LocalDate

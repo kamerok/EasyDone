@@ -1,15 +1,5 @@
 package easydone.core.domain
 
-import easydone.core.domain.database.ChangeEntry
-import easydone.core.domain.database.EntityField.DESCRIPTION
-import easydone.core.domain.database.EntityField.DUE_DATE
-import easydone.core.domain.database.EntityField.IS_DONE
-import easydone.core.domain.database.EntityField.MARKERS
-import easydone.core.domain.database.EntityField.TITLE
-import easydone.core.domain.database.EntityField.TYPE
-import easydone.core.domain.database.LocalDataSource
-import easydone.core.domain.model.Markers
-import easydone.core.domain.model.Task
 import easydone.core.domain.model.Task.Type.INBOX
 import easydone.core.domain.model.Task.Type.WAITING
 import kotlinx.coroutines.GlobalScope
@@ -59,8 +49,8 @@ class Synchronizer(
         try {
             val changes = localDataSource.getChanges()
             for (change in changes) {
-                remoteDataSource.syncTaskDelta(change.toDelta())
-                localDataSource.deleteChange(change.changeId)
+                remoteDataSource.syncTaskDelta(change)
+                localDataSource.deleteChange(change.id)
             }
             val networkTasks = remoteDataSource.getAllTasks()
             localDataSource.transaction {
@@ -91,14 +81,3 @@ class Synchronizer(
         }
     }
 }
-
-private fun ChangeEntry.toDelta() = TaskDelta(
-    id = entityId,
-    type = fields[TYPE] as Task.Type?,
-    title = fields[TITLE] as String?,
-    description = fields[DESCRIPTION] as String?,
-    dueDate = fields[DUE_DATE] as LocalDate?,
-    dueDateChanged = fields.containsKey(DUE_DATE),
-    markers = fields[MARKERS] as Markers?,
-    isDone = fields[IS_DONE] as Boolean?
-)

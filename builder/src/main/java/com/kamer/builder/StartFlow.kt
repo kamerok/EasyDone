@@ -6,7 +6,7 @@ import easydone.core.database.DatabaseLocalDataSource
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.Synchronizer
-import easydone.core.domain.database.LocalDataSource
+import easydone.core.domain.LocalDataSource
 import easydone.core.network.AuthInfoHolder
 import easydone.core.network.TrelloRemoteDataSource
 import easydone.feature.createtask.CreateTaskFragment

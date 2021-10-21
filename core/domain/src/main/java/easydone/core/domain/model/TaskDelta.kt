@@ -1,12 +1,11 @@
-package easydone.core.domain
+package easydone.core.domain.model
 
-import easydone.core.domain.model.Markers
-import easydone.core.domain.model.Task
 import java.time.LocalDate
 
 
 data class TaskDelta(
-    val id: String,
+    val id: Long,
+    val taskId: String,
     val type: Task.Type?,
     val title: String?,
     val description: String?,

@@ -1,7 +1,7 @@
 package easydone.core.network
 
 import easydone.core.domain.RemoteDataSource
-import easydone.core.domain.TaskDelta
+import easydone.core.domain.model.TaskDelta
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
 import easydone.library.keyvalue.KeyValueStorage
@@ -65,8 +65,8 @@ class TrelloRemoteDataSource(
                         if (markers.isImportant) add(authInfoHolder.getImportantLabelId()!!)
                     }.joinToString(separator = ",")
                 }
-                if (idMappings.contains(delta.id)) {
-                    val serverId: String = idMappings.getString(delta.id)!!
+                if (idMappings.contains(delta.taskId)) {
+                    val serverId: String = idMappings.getString(delta.taskId)!!
                     api.editCard(
                         serverId,
                         apiKey,
@@ -91,8 +91,8 @@ class TrelloRemoteDataSource(
                         token = authInfoHolder.getToken()!!,
                         idLabels = labels
                     )
-                    idMappings.putString(delta.id, card.id)
-                    idMappings.putString(card.id, delta.id)
+                    idMappings.putString(delta.taskId, card.id)
+                    idMappings.putString(card.id, delta.taskId)
                 }
             }
         }

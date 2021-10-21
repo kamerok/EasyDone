@@ -1,19 +1,20 @@
-package easydone.core.domain.database
+package easydone.core.domain
 
 import easydone.core.domain.model.Task
+import easydone.core.domain.model.TaskDelta
 import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.flow.Flow
 
 
 interface LocalDataSource {
 
-    suspend fun getChanges(): List<ChangeEntry>
+    suspend fun getChanges(): List<TaskDelta>
 
     fun observeChangesCount(): Flow<Long>
 
     suspend fun deleteChange(id: Long)
 
-    fun getTasksStream(type: Task.Type): Flow<List<Task>>
+    fun observeTasks(type: Task.Type): Flow<List<Task>>
 
     fun getTasks(type: Task.Type): List<Task>
 

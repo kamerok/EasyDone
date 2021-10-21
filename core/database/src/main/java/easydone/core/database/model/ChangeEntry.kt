@@ -1,4 +1,4 @@
-package easydone.core.domain.database
+package easydone.core.database.model
 
 data class ChangeEntry(
     val changeId: Long,

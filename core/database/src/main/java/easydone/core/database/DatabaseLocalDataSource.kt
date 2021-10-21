@@ -5,17 +5,19 @@ import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
-import easydone.core.domain.database.ChangeEntry
-import easydone.core.domain.database.EntityField
-import easydone.core.domain.database.EntityName
-import easydone.core.domain.database.LocalDataSource
+import easydone.core.database.model.ChangeEntry
+import easydone.core.database.model.EntityField
+import easydone.core.database.model.EntityName
+import easydone.core.domain.LocalDataSource
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
+import easydone.core.domain.model.TaskDelta
 import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import java.util.UUID
 import easydone.core.database.Task as DbTask
 
@@ -32,7 +34,7 @@ class DatabaseLocalDataSource(application: Application) : LocalDataSource {
     private val taskQueries = database.taskQueries
     private val changesQueries = database.changesQueries
 
-    override suspend fun getChanges(): List<ChangeEntry> = withContext(Dispatchers.IO) {
+    override suspend fun getChanges(): List<TaskDelta> = withContext(Dispatchers.IO) {
         changesQueries.selectChanges().executeAsList()
             .groupBy { it.id }
             .map { entry ->
@@ -43,7 +45,7 @@ class DatabaseLocalDataSource(application: Application) : LocalDataSource {
                     entry.value.associate {
                         it.field_ to it.field_.getMapper().toValue(it.new_value)
                     }
-                )
+                ).toDelta()
             }
     }
 
@@ -54,7 +56,7 @@ class DatabaseLocalDataSource(application: Application) : LocalDataSource {
         changesQueries.deleteChange(id)
     }
 
-    override fun getTasksStream(type: Task.Type): Flow<List<Task>> =
+    override fun observeTasks(type: Task.Type): Flow<List<Task>> =
         taskQueries.selectByType(type)
             .asFlow()
             .map { it.executeAsList() }
@@ -163,10 +165,30 @@ class DatabaseLocalDataSource(application: Application) : LocalDataSource {
     override fun getTasksWithDate(): List<Task> =
         taskQueries.selectWithDate().executeAsList().map { it.toTask() }
 
-    override suspend fun transaction(body: LocalDataSource.() -> Unit) = withContext(Dispatchers.IO) {
-        database.transaction { body() }
-    }
-}
+    override suspend fun transaction(body: LocalDataSource.() -> Unit) =
+        withContext(Dispatchers.IO) {
+            database.transaction { body() }
+        }
 
-fun DbTask.toTask() =
-    Task(id, type, title, description, due_date, Markers(is_urgent, is_important), is_done)
+    private fun ChangeEntry.toDelta() = TaskDelta(
+        id = changeId,
+        taskId = entityId,
+        type = fields[EntityField.TYPE] as Task.Type?,
+        title = fields[EntityField.TITLE] as String?,
+        description = fields[EntityField.DESCRIPTION] as String?,
+        dueDate = fields[EntityField.DUE_DATE] as LocalDate?,
+        dueDateChanged = fields.containsKey(EntityField.DUE_DATE),
+        markers = fields[EntityField.MARKERS] as Markers?,
+        isDone = fields[EntityField.IS_DONE] as Boolean?
+    )
+
+    private fun DbTask.toTask() = Task(
+        id = id,
+        type = type,
+        title = title,
+        description = description,
+        dueDate = due_date,
+        markers = Markers(is_urgent, is_important),
+        isDone = is_done
+    )
+}
