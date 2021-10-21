@@ -5,7 +5,7 @@ import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.flow.Flow
 
 
-interface MyDatabase {
+interface Database {
 
     suspend fun getChanges(): List<ChangeEntry>
 
@@ -29,6 +29,6 @@ interface MyDatabase {
 
     fun getTasksWithDate(): List<Task>
 
-    suspend fun transaction(body: MyDatabase.() -> Unit)
+    suspend fun transaction(body: Database.() -> Unit)
 
 }

@@ -5,7 +5,7 @@ import android.os.Bundle
 import easydone.core.database.DatabaseImpl
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.Synchronizer
-import easydone.core.domain.database.MyDatabase
+import easydone.core.domain.database.Database
 import easydone.core.network.AuthInfoHolder
 import easydone.core.network.Network
 import easydone.feature.createtask.CreateTaskFragment
@@ -60,7 +60,7 @@ object StartFlow {
                 )
             }
             single { TrelloApi.build(debugInterceptor) }
-            single<MyDatabase> { DatabaseImpl(get()) }
+            single<Database> { DatabaseImpl(get()) }
             single { ActivityNavigator() }
             single { get<ActivityNavigator>() as Navigator }
             single { DeepLinkResolver() }

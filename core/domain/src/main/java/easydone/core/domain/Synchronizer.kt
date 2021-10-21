@@ -7,7 +7,7 @@ import easydone.core.domain.database.EntityField.IS_DONE
 import easydone.core.domain.database.EntityField.MARKERS
 import easydone.core.domain.database.EntityField.TITLE
 import easydone.core.domain.database.EntityField.TYPE
-import easydone.core.domain.database.MyDatabase
+import easydone.core.domain.database.Database
 import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.core.model.Task.Type.INBOX
@@ -31,7 +31,7 @@ import timber.log.error
 
 class Synchronizer(
     private val network: Network,
-    private val database: MyDatabase
+    private val database: Database
 ) {
 
     private val stateChannel: BroadcastChannel<Boolean> = ConflatedBroadcastChannel(false)

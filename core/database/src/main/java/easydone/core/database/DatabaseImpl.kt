@@ -8,21 +8,19 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import easydone.core.domain.database.ChangeEntry
 import easydone.core.domain.database.EntityField
 import easydone.core.domain.database.EntityName
-import easydone.core.domain.database.MyDatabase
 import easydone.core.model.Markers
 import easydone.core.model.Task
 import easydone.core.model.TaskTemplate
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import easydone.core.database.Task as DbTask
+import easydone.core.domain.database.Database as DomainDatabase
 
 
-@ExperimentalCoroutinesApi
-class DatabaseImpl(application: Application) : MyDatabase {
+class DatabaseImpl(application: Application) : DomainDatabase {
 
     private val driver: SqlDriver = AndroidSqliteDriver(Database.Schema, application, "database.db")
     private val database: Database = Database(
@@ -165,7 +163,7 @@ class DatabaseImpl(application: Application) : MyDatabase {
     override fun getTasksWithDate(): List<Task> =
         taskQueries.selectWithDate().executeAsList().map { it.toTask() }
 
-    override suspend fun transaction(body: MyDatabase.() -> Unit) = withContext(Dispatchers.IO) {
+    override suspend fun transaction(body: DomainDatabase.() -> Unit) = withContext(Dispatchers.IO) {
         database.transaction { body() }
     }
 }
