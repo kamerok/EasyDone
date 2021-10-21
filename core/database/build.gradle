@@ -1,12 +1,16 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+apply plugin: 'kotlin'
 apply plugin: 'com.squareup.sqldelight'
+
+sqldelight {
+    Database {
+        packageName = "easydone.core.database"
+    }
+}
 
 dependencies {
     implementation project(':core:domain')
 
     implementation Kotlin.coroutinesCore
-    implementation Libraries.sqlDelightAndroid
     implementation Libraries.sqlDelightCoroutines
 
     testImplementation Tests.junit

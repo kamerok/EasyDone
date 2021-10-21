@@ -25,4 +25,5 @@ dependencies {
     implementation Android.savedState
     implementation Libraries.koin
     implementation Libraries.retrofit
+    implementation Libraries.sqlDelightAndroid
 }

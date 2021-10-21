@@ -1,8 +1,6 @@
 package easydone.core.database
 
-import android.app.Application
 import com.squareup.sqldelight.EnumColumnAdapter
-import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import easydone.core.database.model.ChangeEntry
@@ -22,9 +20,8 @@ import java.util.UUID
 import easydone.core.database.Task as DbTask
 
 
-class DatabaseLocalDataSource(application: Application) : LocalDataSource {
+class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
 
-    private val driver: SqlDriver = AndroidSqliteDriver(Database.Schema, application, "database.db")
     private val database: Database = Database(
         driver,
         Change.Adapter(EnumColumnAdapter()),

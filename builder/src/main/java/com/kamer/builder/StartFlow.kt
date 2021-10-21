@@ -2,11 +2,13 @@ package com.kamer.builder
 
 import android.app.Application
 import android.os.Bundle
+import com.squareup.sqldelight.android.AndroidSqliteDriver
+import easydone.core.database.Database
 import easydone.core.database.DatabaseLocalDataSource
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.LocalDataSource
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.Synchronizer
-import easydone.core.domain.LocalDataSource
 import easydone.core.network.AuthInfoHolder
 import easydone.core.network.TrelloRemoteDataSource
 import easydone.feature.createtask.CreateTaskFragment
@@ -61,7 +63,11 @@ object StartFlow {
                 )
             }
             single { TrelloApi.build(debugInterceptor) }
-            single<LocalDataSource> { DatabaseLocalDataSource(get()) }
+            single<LocalDataSource> {
+                DatabaseLocalDataSource(
+                    AndroidSqliteDriver(Database.Schema, application, "database.db")
+                )
+            }
             single { ActivityNavigator() }
             single<Navigator> { get<ActivityNavigator>() }
             single { DeepLinkResolver() }
