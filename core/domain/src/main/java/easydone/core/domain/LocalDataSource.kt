@@ -26,6 +26,8 @@ interface LocalDataSource {
 
     fun putData(tasks: List<Task>)
 
+    suspend fun refreshData(tasks: List<Task>, updatedTasks: List<Task>)
+
     suspend fun deleteChange(id: Long)
 
     fun clear()

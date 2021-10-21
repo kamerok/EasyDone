@@ -4,7 +4,6 @@ dependencies {
     implementation Kotlin.coroutinesCore
     implementation Libraries.timber
 
-    testImplementation Kotlin.coroutinesTest
     testImplementation Tests.junit
-    testImplementation Tests.mockitoKotlin
+    testImplementation Tests.assertk
 }

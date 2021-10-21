@@ -1,5 +1,6 @@
 package easydone.core.domain
 
+import easydone.core.domain.model.Task
 import easydone.core.domain.model.Task.Type.INBOX
 import easydone.core.domain.model.Task.Type.WAITING
 import kotlinx.coroutines.GlobalScope
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import timber.log.error
 import java.time.LocalDate
@@ -55,28 +55,7 @@ class Synchronizer(
 
     private suspend fun sync() {
         uploadChanges()
-        val networkTasks = remoteDataSource.getAllTasks()
-        localDataSource.transaction {
-            clear()
-            putData(networkTasks)
-            val tasksWithDate = getTasksWithDate()
-            tasksWithDate.forEach { task ->
-                when {
-                    !task.dueDate!!.isAfter(LocalDate.now()) -> runBlocking {
-                        updateTask(task.copy(dueDate = null, type = INBOX))
-                    }
-                    task.dueDate!!.isAfter(LocalDate.now()) -> runBlocking {
-                        updateTask(task.copy(type = WAITING))
-                    }
-                }
-            }
-            getTasks(WAITING).forEach { task ->
-                if (task.dueDate == null) {
-                    updateTask(task.copy(type = INBOX))
-                }
-            }
-
-        }
+        refreshLocalData()
     }
 
     private suspend fun uploadChanges() {
@@ -84,5 +63,32 @@ class Synchronizer(
             remoteDataSource.syncTaskDelta(change)
             localDataSource.deleteChange(change.id)
         }
+    }
+
+    private suspend fun refreshLocalData() {
+        val remoteTasks = remoteDataSource.getAllTasks()
+        val updatedTasks = updateWaitingTasks(remoteTasks, LocalDate.now())
+        localDataSource.refreshData(remoteTasks, updatedTasks)
+    }
+
+    companion object {
+        fun updateWaitingTasks(tasks: List<Task>, today: LocalDate): List<Task> =
+            tasks.mapNotNull { task ->
+                if (task.dueDate != null) {
+                    when {
+                        task.dueDate.isAfter(today) && task.type != WAITING -> task.copy(type = WAITING)
+                        task.type == WAITING && task.dueDate.isBefore(today) ->
+                            task.copy(type = INBOX, dueDate = null)
+                        task.dueDate.isBefore(today) -> task.copy(dueDate = null)
+                        else -> null
+                    }
+                } else {
+                    if (task.type == WAITING) {
+                        task.copy(type = INBOX)
+                    } else {
+                        null
+                    }
+                }
+            }
     }
 }

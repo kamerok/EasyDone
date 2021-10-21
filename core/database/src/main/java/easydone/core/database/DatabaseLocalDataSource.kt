@@ -157,6 +157,14 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
         )
     }
 
+    override suspend fun refreshData(tasks: List<Task>, updatedTasks: List<Task>) {
+        transaction {
+            taskQueries.clear()
+            putData(tasks)
+            updatedTasks.forEach { updateTask(it) }
+        }
+    }
+
     override fun clear() = taskQueries.clear()
 
     override fun getTasksWithDate(): List<Task> =
