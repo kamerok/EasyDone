@@ -1,13 +1,13 @@
 package easydone.core.domain
 
 import easydone.core.domain.database.ChangeEntry
-import easydone.core.domain.database.Database
 import easydone.core.domain.database.EntityField.DESCRIPTION
 import easydone.core.domain.database.EntityField.DUE_DATE
 import easydone.core.domain.database.EntityField.IS_DONE
 import easydone.core.domain.database.EntityField.MARKERS
 import easydone.core.domain.database.EntityField.TITLE
 import easydone.core.domain.database.EntityField.TYPE
+import easydone.core.domain.database.LocalDataSource
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.Task.Type.INBOX
@@ -29,21 +29,21 @@ import java.time.LocalDate
 
 class Synchronizer(
     private val remoteDataSource: RemoteDataSource,
-    private val database: Database
+    private val localDataSource: LocalDataSource
 ) {
 
     private val stateChannel: BroadcastChannel<Boolean> = ConflatedBroadcastChannel(false)
     private var syncJob: Job? = null
 
     init {
-        database.observeChangesCount()
+        localDataSource.observeChangesCount()
             .onEach { if (it > 0L) initiateSync() }
             .launchIn(GlobalScope)
     }
 
     fun isSyncing(): Flow<Boolean> = stateChannel.openSubscription().consumeAsFlow()
 
-    fun observeChanges(): Flow<Long> = database.observeChangesCount()
+    fun observeChanges(): Flow<Long> = localDataSource.observeChangesCount()
 
     fun initiateSync() {
         val currentJob = syncJob
@@ -57,13 +57,13 @@ class Synchronizer(
     private suspend fun sync() {
         stateChannel.send(true)
         try {
-            val changes = database.getChanges()
+            val changes = localDataSource.getChanges()
             for (change in changes) {
                 remoteDataSource.syncTaskDelta(change.toDelta())
-                database.deleteChange(change.changeId)
+                localDataSource.deleteChange(change.changeId)
             }
             val networkTasks = remoteDataSource.getAllTasks()
-            database.transaction {
+            localDataSource.transaction {
                 clear()
                 putData(networkTasks)
                 val tasksWithDate = getTasksWithDate()

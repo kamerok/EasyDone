@@ -1,30 +1,30 @@
 package easydone.core.domain
 
-import easydone.core.domain.database.Database
+import easydone.core.domain.database.LocalDataSource
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.flow.Flow
 
 
-class DomainRepository(private val database: Database) {
+class DomainRepository(private val localDataSource: LocalDataSource) {
 
-    fun getTasks(type: Task.Type): Flow<List<Task>> = database.getTasksStream(type)
+    fun getTasks(type: Task.Type): Flow<List<Task>> = localDataSource.getTasksStream(type)
 
-    suspend fun getTask(id: String): Task = database.getTask(id)
+    suspend fun getTask(id: String): Task = localDataSource.getTask(id)
 
     suspend fun saveTask(task: Task) {
         require(task.title.isNotEmpty()) { "title should not be empty" }
-        database.transaction { updateTask(task) }
+        localDataSource.transaction { updateTask(task) }
     }
 
     suspend fun archiveTask(id: String) {
-        val task = database.getTask(id)
-        database.transaction { updateTask(task.copy(isDone = true)) }
+        val task = localDataSource.getTask(id)
+        localDataSource.transaction { updateTask(task.copy(isDone = true)) }
     }
 
     suspend fun moveTask(id: String) {
-        val task = database.getTask(id)
-        database.transaction {
+        val task = localDataSource.getTask(id)
+        localDataSource.transaction {
             updateTask(
                 task.copy(
                     type = if (task.type == Task.Type.INBOX) Task.Type.TO_DO else Task.Type.INBOX
@@ -34,8 +34,8 @@ class DomainRepository(private val database: Database) {
     }
 
     suspend fun switchUrgent(taskId: String) {
-        val task = database.getTask(taskId)
-        database.transaction {
+        val task = localDataSource.getTask(taskId)
+        localDataSource.transaction {
             updateTask(
                 task.copy(markers = task.markers.copy(isUrgent = !task.markers.isUrgent))
             )
@@ -43,8 +43,8 @@ class DomainRepository(private val database: Database) {
     }
 
     suspend fun switchImportant(taskId: String) {
-        val task = database.getTask(taskId)
-        database.transaction {
+        val task = localDataSource.getTask(taskId)
+        localDataSource.transaction {
             updateTask(
                 task.copy(markers = task.markers.copy(isImportant = !task.markers.isImportant))
             )
@@ -59,7 +59,7 @@ class DomainRepository(private val database: Database) {
         isImportant: Boolean
     ) {
         if (title.isEmpty()) throw IllegalArgumentException("title should not be empty")
-        database.createTask(
+        localDataSource.createTask(
             TaskTemplate(
                 type = if (skipInbox) Task.Type.TO_DO else Task.Type.INBOX,
                 title = title,
