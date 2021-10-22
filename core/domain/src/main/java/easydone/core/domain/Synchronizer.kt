@@ -3,6 +3,7 @@ package easydone.core.domain
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.Task.Type.INBOX
 import easydone.core.domain.model.Task.Type.WAITING
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,8 @@ import java.time.LocalDate
 
 class Synchronizer(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
+    private val scope: CoroutineScope = GlobalScope
 ) {
 
     private val syncProgressState = MutableStateFlow(false)
@@ -26,7 +28,7 @@ class Synchronizer(
     init {
         localDataSource.observeChangesCount()
             .onEach { if (it > 0L) initiateSync() }
-            .launchIn(GlobalScope)
+            .launchIn(scope)
     }
 
     fun isSyncing(): Flow<Boolean> = syncProgressState
@@ -36,20 +38,23 @@ class Synchronizer(
     fun initiateSync() {
         val currentJob = syncJob
         if (currentJob == null || !currentJob.isActive) {
-            syncJob = GlobalScope.launch {
-                syncProgressState.value = true
-                try {
-                    sync()
-                } catch (e: Exception) {
-                    Timber.error(e) { "sync error" }
-                } finally {
-                    syncProgressState.value = false
+                syncJob = syncWithProgress().also {
+                    it.invokeOnCompletion { syncJob = null }
                 }
-            }.also {
-                it.invokeOnCompletion { syncJob = null }
+            }
+    }
+
+    private fun syncWithProgress(): Job =
+        scope.launch {
+            syncProgressState.value = true
+            try {
+                sync()
+            } catch (e: Exception) {
+                Timber.error(e) { "sync error" }
+            } finally {
+                syncProgressState.value = false
             }
         }
-    }
 
     private suspend fun sync() {
         uploadChanges()
