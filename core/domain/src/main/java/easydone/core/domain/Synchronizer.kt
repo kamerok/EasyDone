@@ -5,10 +5,8 @@ import easydone.core.domain.model.Task.Type.INBOX
 import easydone.core.domain.model.Task.Type.WAITING
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -22,7 +20,7 @@ class Synchronizer(
     private val localDataSource: LocalDataSource
 ) {
 
-    private val stateChannel: BroadcastChannel<Boolean> = ConflatedBroadcastChannel(false)
+    private val syncProgressState = MutableStateFlow(false)
     private var syncJob: Job? = null
 
     init {
@@ -31,7 +29,7 @@ class Synchronizer(
             .launchIn(GlobalScope)
     }
 
-    fun isSyncing(): Flow<Boolean> = stateChannel.openSubscription().consumeAsFlow()
+    fun isSyncing(): Flow<Boolean> = syncProgressState
 
     fun observeChanges(): Flow<Long> = localDataSource.observeChangesCount()
 
@@ -39,13 +37,13 @@ class Synchronizer(
         val currentJob = syncJob
         if (currentJob == null || !currentJob.isActive) {
             syncJob = GlobalScope.launch {
-                stateChannel.send(true)
+                syncProgressState.value = true
                 try {
                     sync()
                 } catch (e: Exception) {
                     Timber.error(e) { "sync error" }
                 } finally {
-                    stateChannel.send(false)
+                    syncProgressState.value = false
                 }
             }.also {
                 it.invokeOnCompletion { syncJob = null }
