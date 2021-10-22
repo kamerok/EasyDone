@@ -38,23 +38,22 @@ class Synchronizer(
     fun initiateSync() {
         val currentJob = syncJob
         if (currentJob == null || !currentJob.isActive) {
-                syncJob = syncWithProgress().also {
-                    it.invokeOnCompletion { syncJob = null }
-                }
-            }
-    }
-
-    private fun syncWithProgress(): Job =
-        scope.launch {
-            syncProgressState.value = true
-            try {
-                sync()
-            } catch (e: Exception) {
-                Timber.error(e) { "sync error" }
-            } finally {
-                syncProgressState.value = false
+            syncJob = syncWithProgress().also {
+                it.invokeOnCompletion { syncJob = null }
             }
         }
+    }
+
+    private fun syncWithProgress(): Job = scope.launch {
+        syncProgressState.value = true
+        try {
+            sync()
+        } catch (e: Exception) {
+            Timber.error(e) { "sync error" }
+        } finally {
+            syncProgressState.value = false
+        }
+    }
 
     private suspend fun sync() {
         uploadChanges()

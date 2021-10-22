@@ -1,17 +1,21 @@
 package easydone.core.domain
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskDelta
 import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Ignore
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -53,6 +57,28 @@ class SynchronizerTest {
         assertThat(synchronizer.isSyncing().first()).isFalse()
     }
 
+    @Test
+    @Ignore("This is an attempt to test that only one sync happened." +
+            "runBlockingTest won't work because of the eager launch execution: lambda called in the middle of the first sync but no active job was remembered." +
+            "Current approach don't work because execution not determined and second sync run after assert")
+    fun `Single invocation on restart`() = runBlocking {
+        val remoteDataSource = ImmediateRemoteDataSource()
+        val synchronizer = Synchronizer(remoteDataSource, ImmediateLocalDataSource, this)
+        var secondInvocationHappened = false
+        var invocationCount = 0
+
+        remoteDataSource.afterCall = {
+            invocationCount++
+            if (!secondInvocationHappened) {
+                secondInvocationHappened = true
+                synchronizer.initiateSync()
+            }
+        }
+        async { synchronizer.initiateSync() }.await()
+
+        assertThat(invocationCount).isEqualTo(1)
+    }
+
     object ErrorRemoteDataSource : RemoteDataSource {
         override suspend fun getAllTasks(): List<Task> {
             throw Exception("sample error")
@@ -66,9 +92,7 @@ class SynchronizerTest {
     class ImmediateRemoteDataSource(var afterCall: () -> Unit = {}) : RemoteDataSource {
         override suspend fun getAllTasks(): List<Task> = emptyList<Task>().also { afterCall() }
 
-        override suspend fun syncTaskDelta(delta: TaskDelta) {
-            afterCall()
-        }
+        override suspend fun syncTaskDelta(delta: TaskDelta) {}
     }
 
     object ImmediateLocalDataSource : LocalDataSource {
