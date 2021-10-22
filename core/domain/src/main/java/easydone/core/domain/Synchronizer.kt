@@ -72,7 +72,7 @@ class Synchronizer(
     }
 
     companion object {
-        fun updateWaitingTasks(tasks: List<Task>, today: LocalDate): List<Task> =
+        internal fun updateWaitingTasks(tasks: List<Task>, today: LocalDate): List<Task> =
             tasks.mapNotNull { task ->
                 if (task.dueDate != null) {
                     when {
