@@ -15,7 +15,7 @@ import org.junit.Test
 import java.time.LocalDate
 import java.util.UUID
 
-class SynchronizerTest {
+class SynchronizerUtilTest {
 
     private val today = LocalDate.of(2020, 1, 10)
     private val yesterday = today.minusDays(1)
