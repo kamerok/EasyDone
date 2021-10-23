@@ -8,14 +8,11 @@ import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskDelta
 import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Ignore
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -30,13 +27,13 @@ class SynchronizerTest {
 
     @Test
     fun `True progress on executing`() = runBlockingTest {
-        val remoteDataSource = ImmediateRemoteDataSource()
+        val remoteDataSource = ImmediateRemoteDataSource(pauseExecution = true)
         val synchronizer = Synchronizer(remoteDataSource, ImmediateLocalDataSource, this)
 
-        remoteDataSource.afterCall = {
-            launch { assertThat(synchronizer.isSyncing().first()).isTrue() }
-        }
         synchronizer.initiateSync()
+
+        assertThat(synchronizer.isSyncing().first()).isTrue()
+        remoteDataSource.completeWaitingCoroutines()
     }
 
     @Test
@@ -58,25 +55,15 @@ class SynchronizerTest {
     }
 
     @Test
-    @Ignore("This is an attempt to test that only one sync happened." +
-            "runBlockingTest won't work because of the eager launch execution: lambda called in the middle of the first sync but no active job was remembered." +
-            "Current approach don't work because execution not determined and second sync run after assert")
-    fun `Single invocation on restart`() = runBlocking {
-        val remoteDataSource = ImmediateRemoteDataSource()
+    fun `Single invocation on restart`() = runBlockingTest {
+        val remoteDataSource = ImmediateRemoteDataSource(pauseExecution = true)
         val synchronizer = Synchronizer(remoteDataSource, ImmediateLocalDataSource, this)
-        var secondInvocationHappened = false
-        var invocationCount = 0
 
-        remoteDataSource.afterCall = {
-            invocationCount++
-            if (!secondInvocationHappened) {
-                secondInvocationHappened = true
-                synchronizer.initiateSync()
-            }
-        }
-        async { synchronizer.initiateSync() }.await()
+        synchronizer.initiateSync()
+        synchronizer.initiateSync()
 
-        assertThat(invocationCount).isEqualTo(1)
+        assertThat(remoteDataSource.invokeCount).isEqualTo(1)
+        remoteDataSource.completeWaitingCoroutines()
     }
 
     object ErrorRemoteDataSource : RemoteDataSource {
@@ -89,8 +76,22 @@ class SynchronizerTest {
         }
     }
 
-    class ImmediateRemoteDataSource(var afterCall: () -> Unit = {}) : RemoteDataSource {
-        override suspend fun getAllTasks(): List<Task> = emptyList<Task>().also { afterCall() }
+    class ImmediateRemoteDataSource(
+        private val pauseExecution: Boolean = false
+    ) : RemoteDataSource {
+        var invokeCount: Int = 0
+            private set
+        private val waiter = Waiter()
+
+        fun completeWaitingCoroutines() = waiter.notify()
+
+        override suspend fun getAllTasks(): List<Task> {
+            invokeCount++
+            if (pauseExecution) {
+                waiter.wait()
+            }
+            return emptyList()
+        }
 
         override suspend fun syncTaskDelta(delta: TaskDelta) {}
     }
@@ -112,6 +113,18 @@ class SynchronizerTest {
         override suspend fun refreshData(tasks: List<Task>, updatedTasks: List<Task>) {}
 
         override suspend fun deleteChange(id: Long) {}
+    }
+
+    @JvmInline
+    value class Waiter(private val channel: Channel<Unit> = Channel(0)) {
+
+        suspend fun wait() {
+            channel.receive()
+        }
+
+        fun notify() {
+            channel.trySend(Unit)
+        }
     }
 
 }
