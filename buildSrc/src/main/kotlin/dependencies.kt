@@ -1,9 +1,9 @@
 @file:Suppress("MayBeConstant")
 
 object Config {
-    val compileSdk = 28
+    val compileSdk = 31
     val minSdk = 28
-    val targetSdk = 28
+    val targetSdk = 31
 }
 
 object Versions {
@@ -31,9 +31,10 @@ object Versions {
     val recyclerView = "1.0.0"
     val retrofit = "2.9.0"
     val retrofitLogging = "4.9.1"
-    val sqlDelight = "1.5.2"
     val savedState = "1.0.0"
     val soLoader = "0.10.1"
+    val splash = "1.0.0-alpha01"
+    val sqlDelight = "1.5.2"
     val timber = "5.0.0-SNAPSHOT"
     val viewModel = "2.2.0"
 }
@@ -57,6 +58,7 @@ object Android {
     val material = "com.google.android.material:material:${Versions.material}"
     val recyclerView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"
     val savedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:${Versions.savedState}"
+    val splash = "androidx.core:core-splashscreen:${Versions.splash}"
     val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.viewModel}"
 }
 

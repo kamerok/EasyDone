@@ -23,6 +23,7 @@ dependencies {
     implementation Android.appCompat
     implementation Android.fragment
     implementation Android.savedState
+    implementation Android.splash
     implementation Libraries.koin
     implementation Libraries.retrofit
     implementation Libraries.sqlDelightAndroid

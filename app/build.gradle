@@ -47,6 +47,7 @@ dependencies {
     implementation project(":core-ui:design")
 
     implementation Android.appCompat
+    implementation Android.splash
     implementation Libraries.retrofit
     implementation Libraries.timber
     implementation Tools.firebase
