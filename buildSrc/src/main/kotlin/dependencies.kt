@@ -33,7 +33,7 @@ object Versions {
     val retrofitLogging = "4.9.1"
     val savedState = "1.0.0"
     val soLoader = "0.10.1"
-    val splash = "1.0.0-alpha01"
+    val splash = "1.0.0-alpha02"
     val sqlDelight = "1.5.2"
     val timber = "5.0.0-SNAPSHOT"
     val viewModel = "2.2.0"

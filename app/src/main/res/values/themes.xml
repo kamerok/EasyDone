@@ -3,7 +3,7 @@
     <style name="AppSplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_animated_splash</item>
-        <item name="windowSplashScreenAnimationDuration">500</item>
+        <item name="windowSplashScreenAnimationDuration">350</item>
         <item name="postSplashScreenTheme">@style/AppTheme</item>
 
         <item name="android:statusBarColor">@android:color/transparent</item>
