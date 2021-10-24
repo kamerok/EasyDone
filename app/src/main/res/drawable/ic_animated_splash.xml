@@ -12,19 +12,19 @@
                 android:name="background"
                 android:pivotX="32"
                 android:pivotY="32"
-                android:scaleX="0"
-                android:scaleY="0">
+                android:scaleX="0.75"
+                android:scaleY="0.75">
                 <path
                     android:name="path_2"
                     android:pathData="M 32 0 C 23.516 0 15.371 3.374 9.373 9.373 C 3.374 15.371 0 23.516 0 32 C 0 40.484 3.374 48.629 9.373 54.627 C 15.371 60.626 23.516 64 32 64 C 40.484 64 48.629 60.626 54.627 54.627 C 60.626 48.629 64 40.484 64 32 C 64 23.516 60.626 15.371 54.627 9.373 C 48.629 3.374 40.484 0 32 0 Z"
-                    android:fillColor="#cecece"/>
+                    android:fillColor="#1aaeaeae"/>
             </group>
             <group
                 android:name="foreground"
                 android:pivotX="32"
                 android:pivotY="32"
-                android:scaleX="0"
-                android:scaleY="0">
+                android:scaleX="0.5"
+                android:scaleY="0.5">
                 <path
                     android:name="path"
                     android:pathData="M 32 0 C 23.516 0 15.371 3.374 9.373 9.373 C 3.374 15.371 0 23.516 0 32 C 0 40.484 3.374 48.629 9.373 54.627 C 15.371 60.626 23.516 64 32 64 C 40.484 64 48.629 60.626 54.627 54.627 C 60.626 48.629 64 40.484 64 32 C 64 23.516 60.626 15.371 54.627 9.373 C 48.629 3.374 40.484 0 32 0 Z"
@@ -44,14 +44,14 @@
                 <objectAnimator
                     android:propertyName="scaleX"
                     android:duration="300"
-                    android:valueFrom="0"
+                    android:valueFrom="0.5"
                     android:valueTo="1"
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/linear_out_slow_in"/>
                 <objectAnimator
                     android:propertyName="scaleY"
                     android:duration="300"
-                    android:valueFrom="0"
+                    android:valueFrom="0.5"
                     android:valueTo="1"
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/linear_out_slow_in"/>
@@ -65,16 +65,16 @@
                     android:propertyName="scaleX"
                     android:startOffset="250"
                     android:duration="250"
-                    android:valueFrom="0"
-                    android:valueTo="1"
+                    android:valueFrom="0.5"
+                    android:valueTo="0.75"
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/linear_out_slow_in"/>
                 <objectAnimator
                     android:propertyName="scaleY"
                     android:startOffset="250"
                     android:duration="250"
-                    android:valueFrom="0"
-                    android:valueTo="1"
+                    android:valueFrom="0.5"
+                    android:valueTo="0.75"
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/linear_out_slow_in"/>
             </set>
