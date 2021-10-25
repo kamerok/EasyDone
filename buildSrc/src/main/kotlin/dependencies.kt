@@ -12,7 +12,7 @@ object Versions {
     val assertk = "0.19"
     val browser = "1.0.0"
     val constraintLayout = "1.1.3"
-    val core = "1.2.0-alpha02"
+    val core = "1.6.0"
     val coroutines = "1.5.2"
     val desugar = "1.1.5"
     val firebase = "17.2.1"

@@ -8,6 +8,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import org.koin.android.ext.android.inject
 
 
@@ -18,24 +20,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.fragmentFactory = CustomFragmentFactory
-        var flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        if (resources.getBoolean(R.bool.light_system_bars)) {
-            flags = flags or
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        }
-        window.decorView.systemUiVisibility = flags
 
-        installSplashScreen().setOnExitAnimationListener { splashScreenView ->
-            ObjectAnimator.ofFloat(splashScreenView.view, View.ALPHA, 1f, 0f)
-                .apply {
-                    duration = 500L
-                    doOnEnd { splashScreenView.remove() }
-                }
-                .start()
-        }
+        setupSplashScreen()
+        hideSystemUI()
 
         super.onCreate(savedInstanceState)
         window.setBackgroundDrawableResource(R.color.background)
@@ -55,5 +42,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    private fun setupSplashScreen() {
+        installSplashScreen().setOnExitAnimationListener { splashScreenView ->
+            ObjectAnimator.ofFloat(splashScreenView.view, View.ALPHA, 1f, 0f)
+                .apply {
+                    duration = 500L
+                    doOnEnd { splashScreenView.remove() }
+                }
+                .start()
+        }
+    }
+
+    private fun hideSystemUI() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, findViewById(android.R.id.content)).let { controller ->
+            val isLightSystemBars = resources.getBoolean(R.bool.light_system_bars)
+            controller.isAppearanceLightStatusBars = isLightSystemBars
+            controller.isAppearanceLightNavigationBars = isLightSystemBars
+        }
     }
 }
