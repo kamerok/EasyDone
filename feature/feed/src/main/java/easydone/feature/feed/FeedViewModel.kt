@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import java.time.LocalDate
+import java.time.Period.between
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit.DAYS
 
 
 class FeedViewModel(
@@ -79,8 +79,17 @@ class FeedViewModel(
                             .sortedBy { it.dueDate }
                             .groupBy { it.dueDate }
                             .map { (date, items) ->
-                                val days = DAYS.between(LocalDate.now(), date!!)
-                                val title = "${date.format(DATE_FORMAT)} ($days left)"
+                                val period = between(LocalDate.now(), date!!)
+                                val title = buildString {
+                                    append("${date.format(DATE_FORMAT)} (")
+                                    if (period.years > 0) {
+                                        append("${period.years}y ")
+                                    }
+                                    if (period.months > 0 || period.years > 0) {
+                                        append("${period.months}m ")
+                                    }
+                                    append("${period.days}d left)")
+                                }
                                 listOf(FeedHeader(title)) + items.map { it.toUi() }
                             }
                             .flatten()
