@@ -7,33 +7,25 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import easydone.library.keyvalue.KeyValueStorage
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 
 
 class DataStoreKeyValueStorage(private val dataStore: DataStore<Preferences>) : KeyValueStorage {
 
-    override fun putString(key: String, value: String) {
-        runBlocking {
-            dataStore.edit { it[stringPreferencesKey(key)] = value }
-        }
+    override suspend fun putString(key: String, value: String) {
+        dataStore.edit { it[stringPreferencesKey(key)] = value }
     }
 
-    override fun getString(key: String): String? = runBlocking {
+    override suspend fun getString(key: String): String? =
         dataStore.data.map { it[stringPreferencesKey(key)] }.first()
-    }
 
-    override fun getString(key: String, default: String): String = runBlocking {
+    override suspend fun getString(key: String, default: String): String =
         dataStore.data.map { it[stringPreferencesKey(key)] ?: default }.first()
-    }
 
-    override fun contains(key: String): Boolean = runBlocking {
+    override suspend fun contains(key: String): Boolean =
         dataStore.data.map { it.contains(stringPreferencesKey(key)) }.first()
-    }
 
-    override fun clear() {
-        runBlocking {
-            dataStore.edit { it.clear() }
-        }
+    override suspend fun clear() {
+        dataStore.edit { it.clear() }
     }
 
 }

@@ -5,39 +5,39 @@ import easydone.library.keyvalue.KeyValueStorage
 
 class AuthInfoHolder(private val storage: KeyValueStorage) {
 
-    fun getToken(): String? = storage.getString(TOKEN)
+    suspend fun getToken(): String? = storage.getString(TOKEN)
 
-    fun putToken(token: String) = storage.putString(TOKEN, token)
+    suspend fun putToken(token: String) = storage.putString(TOKEN, token)
 
-    fun getBoardId(): String? = storage.getString(BOARD_ID)
+    suspend fun getBoardId(): String? = storage.getString(BOARD_ID)
 
-    fun putBoardId(id: String) = storage.putString(BOARD_ID, id)
+    suspend fun putBoardId(id: String) = storage.putString(BOARD_ID, id)
 
-    fun getInboxListId(): String? = storage.getString(INBOX_LIST_ID)
+    suspend fun getInboxListId(): String? = storage.getString(INBOX_LIST_ID)
 
-    fun putInboxListId(id: String) = storage.putString(INBOX_LIST_ID, id)
+    suspend fun putInboxListId(id: String) = storage.putString(INBOX_LIST_ID, id)
 
-    fun getTodoListId(): String? = storage.getString(TO_DO_LIST_ID)
+    suspend fun getTodoListId(): String? = storage.getString(TO_DO_LIST_ID)
 
-    fun putTodoListId(id: String) = storage.putString(TO_DO_LIST_ID, id)
+    suspend fun putTodoListId(id: String) = storage.putString(TO_DO_LIST_ID, id)
 
-    fun getWaitingListId(): String? = storage.getString(WAITING_LIST_ID)
+    suspend fun getWaitingListId(): String? = storage.getString(WAITING_LIST_ID)
 
-    fun putWaitingListId(id: String) = storage.putString(WAITING_LIST_ID, id)
+    suspend fun putWaitingListId(id: String) = storage.putString(WAITING_LIST_ID, id)
 
-    fun getMaybeListId(): String? = storage.getString(MAYBE_LIST_ID)
+    suspend fun getMaybeListId(): String? = storage.getString(MAYBE_LIST_ID)
 
-    fun putMaybeListId(id: String) = storage.putString(MAYBE_LIST_ID, id)
+    suspend fun putMaybeListId(id: String) = storage.putString(MAYBE_LIST_ID, id)
 
-    fun getUrgentLabelId(): String? = storage.getString(URGENT_LABEL_ID)
+    suspend fun getUrgentLabelId(): String? = storage.getString(URGENT_LABEL_ID)
 
-    fun putUrgentLabelId(id: String) = storage.putString(URGENT_LABEL_ID, id)
+    suspend fun putUrgentLabelId(id: String) = storage.putString(URGENT_LABEL_ID, id)
 
-    fun getImportantLabelId(): String? = storage.getString(IMPORTANT_LABEL_ID)
+    suspend fun getImportantLabelId(): String? = storage.getString(IMPORTANT_LABEL_ID)
 
-    fun putImportantLabelId(id: String) = storage.putString(IMPORTANT_LABEL_ID, id)
+    suspend fun putImportantLabelId(id: String) = storage.putString(IMPORTANT_LABEL_ID, id)
 
-    fun clear() = storage.clear()
+    suspend fun clear() = storage.clear()
 
     companion object {
         private const val TOKEN = "token"

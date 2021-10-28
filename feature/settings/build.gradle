@@ -10,4 +10,5 @@ dependencies {
     implementation Android.appCompat
     implementation Android.constraintLayout
     implementation Android.core
+    implementation Android.lifecycleRuntime
 }

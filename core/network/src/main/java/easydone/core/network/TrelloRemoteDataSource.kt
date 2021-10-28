@@ -1,9 +1,9 @@
 package easydone.core.network
 
 import easydone.core.domain.RemoteDataSource
-import easydone.core.domain.model.TaskDelta
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
+import easydone.core.domain.model.TaskDelta
 import easydone.library.keyvalue.KeyValueStorage
 import easydone.library.trelloapi.TrelloApi
 import easydone.library.trelloapi.model.Card
@@ -98,7 +98,7 @@ class TrelloRemoteDataSource(
         }
     }
 
-    private fun rememberDataAnchors(board: NestedBoard) {
+    private suspend fun rememberDataAnchors(board: NestedBoard) {
         if (authInfoHolder.getInboxListId().isNullOrEmpty()) {
             authInfoHolder.putInboxListId(board.lists.first().id)
         }
@@ -119,7 +119,7 @@ class TrelloRemoteDataSource(
         }
     }
 
-    private fun getListId(type: Task.Type): String {
+    private suspend fun getListId(type: Task.Type): String {
         return when (type) {
             Task.Type.INBOX -> authInfoHolder.getInboxListId()!!
             Task.Type.TO_DO -> authInfoHolder.getTodoListId()!!

@@ -30,6 +30,7 @@ import easydone.feature.setupflow.SetupFragment
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
@@ -48,7 +49,7 @@ val Context.mappingsDataStore: DataStore<Preferences> by preferencesDataStore(
 object StartFlow {
 
     fun start() {
-        startInitialFlow()
+        runBlocking { startInitialFlow() }
     }
 
     fun startCreate() {
@@ -142,7 +143,7 @@ object StartFlow {
                     get(),
                     object : SettingsNavigator {
                         override fun navigateToSetup() {
-                            startInitialFlow()
+                            runBlocking { startInitialFlow() }
                         }
                     }
                 )
@@ -162,7 +163,7 @@ object StartFlow {
         }
     }
 
-    private fun startInitialFlow() {
+    private suspend fun startInitialFlow() {
         val authInfoHolder: AuthInfoHolder = GlobalContext.get().get()
         val navigator: Navigator = GlobalContext.get().get()
         navigator.clearStack()

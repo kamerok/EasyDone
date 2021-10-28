@@ -3,14 +3,14 @@ package easydone.library.keyvalue
 
 interface KeyValueStorage {
 
-    fun putString(key: String, value: String)
+    suspend fun putString(key: String, value: String)
 
-    fun getString(key: String): String?
+    suspend fun getString(key: String): String?
 
-    fun getString(key: String, default: String): String
+    suspend fun getString(key: String, default: String): String
 
-    fun contains(key: String): Boolean
+    suspend fun contains(key: String): Boolean
 
-    fun clear()
+    suspend fun clear()
 
 }
