@@ -21,6 +21,6 @@ include ':feature:settings'
 include ':feature:setupflow'
 
 include ':library:keyvalue'
-include ':library:keyvalue:sharedprefs'
+include ':library:keyvalue:impl'
 include ':library:navigation'
 include ':library:trelloapi'

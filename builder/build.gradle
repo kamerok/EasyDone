@@ -15,7 +15,7 @@ dependencies {
     implementation project(':feature:setupflow')
 
     implementation project(':library:keyvalue')
-    implementation project(':library:keyvalue:sharedprefs')
+    implementation project(':library:keyvalue:impl')
     implementation project(':library:navigation')
     implementation project(':library:trelloapi')
 
