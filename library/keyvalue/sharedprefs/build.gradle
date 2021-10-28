@@ -6,4 +6,5 @@ dependencies {
     implementation project(':library:keyvalue')
 
     implementation Android.core
+    implementation Android.dataStorePrefs
 }

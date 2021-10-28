@@ -1,7 +1,12 @@
 package com.kamer.builder
 
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.SharedPreferencesMigration
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import easydone.core.database.Database
 import easydone.core.database.DatabaseLocalDataSource
@@ -22,7 +27,7 @@ import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
 import easydone.feature.settings.SettingsFragment
 import easydone.feature.settings.SettingsNavigator
 import easydone.feature.setupflow.SetupFragment
-import easydone.library.keyvalue.sharedprefs.SharedPrefsKeyValueStorage
+import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
 import okhttp3.Interceptor
@@ -31,6 +36,14 @@ import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
+val Context.prefsDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "prefs",
+    produceMigrations = { context -> listOf(SharedPreferencesMigration(context, "prefs")) }
+)
+val Context.mappingsDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "id_mapping",
+    produceMigrations = { context -> listOf(SharedPreferencesMigration(context, "id_mapping")) }
+)
 
 object StartFlow {
 
@@ -53,13 +66,15 @@ object StartFlow {
         val module = module {
             single { DomainRepository(get()) }
             single { Synchronizer(get(), get()) }
-            single { AuthInfoHolder(SharedPrefsKeyValueStorage(get(), "prefs")) }
+            single {
+                AuthInfoHolder(DataStoreKeyValueStorage(get<Application>().prefsDataStore))
+            }
             single<RemoteDataSource> {
                 TrelloRemoteDataSource(
                     api = get(),
                     apiKey = trelloApiKey,
                     authInfoHolder = get(),
-                    idMappings = SharedPrefsKeyValueStorage(application, "id_mapping")
+                    idMappings = DataStoreKeyValueStorage(get<Application>().mappingsDataStore)
                 )
             }
             single { TrelloApi.build(debugInterceptor) }
