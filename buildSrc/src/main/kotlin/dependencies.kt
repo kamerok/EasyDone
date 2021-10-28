@@ -17,7 +17,7 @@ object Versions {
     val desugar = "1.1.5"
     val firebase = "17.2.1"
     val flipper = "0.116.0"
-    val fragment = "1.2.0-rc01"
+    val fragment = "1.3.6"
     val googleServices = "4.3.2"
     val gradleAndroid = "7.0.2"
     val gradleVersions = "0.39.0"
