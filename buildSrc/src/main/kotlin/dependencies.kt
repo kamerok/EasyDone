@@ -24,7 +24,7 @@ object Versions {
     val junit = "4.12"
     val koin = "2.2.3"
     val kotlin = "1.5.10"
-    val lifecycle = "2.2.0-alpha01"
+    val lifecycle = "2.4.0"
     val markwon = "4.1.2"
     val material = "1.1.0-alpha08"
     val mockitoKotlin = "2.2.0"
