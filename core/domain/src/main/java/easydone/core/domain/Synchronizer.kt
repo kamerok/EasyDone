@@ -79,9 +79,9 @@ class Synchronizer(
                 if (task.dueDate != null) {
                     when {
                         task.dueDate.isAfter(today) && task.type != WAITING -> task.copy(type = WAITING)
-                        task.type == WAITING && task.dueDate.isBefore(today) ->
+                        task.type == WAITING && !task.dueDate.isAfter(today) ->
                             task.copy(type = INBOX, dueDate = null)
-                        task.dueDate.isBefore(today) -> task.copy(dueDate = null)
+                        !task.dueDate.isAfter(today) -> task.copy(dueDate = null)
                         else -> null
                     }
                 } else {
