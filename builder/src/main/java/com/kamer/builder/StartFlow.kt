@@ -2,7 +2,6 @@ package com.kamer.builder
 
 import android.app.Application
 import android.content.Context
-import android.os.Bundle
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
@@ -19,7 +18,6 @@ import easydone.core.network.TrelloRemoteDataSource
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
-import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
@@ -109,14 +107,7 @@ object StartFlow {
                 )
             }
             factory {
-                EditTaskFragment(
-                    get(),
-                    object : EditTaskNavigator {
-                        override fun closeScreen() {
-                            get<Navigator>().popScreen()
-                        }
-                    }
-                )
+                EditTaskFragment(get())
             }
             factory {
                 QuickCreateTaskFragment(
@@ -184,7 +175,7 @@ object StartFlow {
         navigator.openScreen(
             EditTaskFragment::class.java,
             true,
-            Bundle().apply { putString(EditTaskFragment.TASK_ID, id) }
+            EditTaskFragment.createArgs(id)
         )
 
     private fun startCreateTask(navigator: Navigator) =

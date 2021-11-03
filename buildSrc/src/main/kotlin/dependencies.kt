@@ -7,10 +7,12 @@ object Config {
 }
 
 object Versions {
+    val accompanist = "0.21.0-beta"
     val adapterDelegates = "4.2.0"
     val appCompat = "1.1.0"
     val assertk = "0.19"
     val browser = "1.0.0"
+    val compose = "1.0.4"
     val constraintLayout = "1.1.3"
     val core = "1.6.0"
     val coroutines = "1.5.2"
@@ -24,7 +26,7 @@ object Versions {
     val gradleVersions = "0.39.0"
     val junit = "4.12"
     val koin = "2.2.3"
-    val kotlin = "1.5.10"
+    val kotlin = "1.5.31"
     val lifecycle = "2.4.0"
     val markwon = "4.1.2"
     val material = "1.1.0-alpha08"
@@ -49,8 +51,16 @@ object Plugins {
 }
 
 object Android {
+    val accompanistInsets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
+    val accompanistInsetsUi = "com.google.accompanist:accompanist-insets-ui:${Versions.accompanist}"
     val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
     val browser = "androidx.browser:browser:${Versions.browser}"
+    val compose = "androidx.compose.ui:ui:${Versions.compose}"
+    val composeAnimation = "androidx.compose.animation:animation:${Versions.compose}"
+    val composeFoundation = "androidx.compose.foundation:foundation:${Versions.compose}"
+    val composeMaterial = "androidx.compose.material:material:${Versions.compose}"
+    val composeMaterialIcons = "androidx.compose.material:material-icons-core:${Versions.compose}"
+    val composeTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
     val core = "androidx.core:core-ktx:${Versions.core}"
     val dataStorePrefs = "androidx.datastore:datastore-preferences:${Versions.dataStore}"

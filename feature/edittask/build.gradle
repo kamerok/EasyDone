@@ -1,18 +1,24 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+
+android {
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Versions.compose
+    }
+}
 
 dependencies {
     implementation project(':core:domain')
 
     implementation Android.appCompat
+    implementation Android.accompanistInsets
+    implementation Android.accompanistInsetsUi
+    implementation Android.composeMaterial
+    implementation Android.composeTooling
     implementation Android.constraintLayout
     implementation Android.core
-    implementation Android.lifecycleRuntime
-    implementation Android.recyclerView
-    implementation Kotlin.coroutinesAndorid
-    implementation Kotlin.coroutinesCore
-    implementation Libraries.markwon
-    implementation Libraries.markwonLinkify
-
 }
