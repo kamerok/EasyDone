@@ -8,11 +8,12 @@ object Config {
 
 object Versions {
     val accompanist = "0.21.0-beta"
+    val activityCompose = "1.3.1"
     val adapterDelegates = "4.2.0"
     val appCompat = "1.1.0"
     val assertk = "0.19"
     val browser = "1.0.0"
-    val compose = "1.0.4"
+    val compose = "1.0.5"
     val constraintLayout = "1.1.3"
     val core = "1.6.0"
     val coroutines = "1.5.2"
@@ -51,8 +52,10 @@ object Plugins {
 }
 
 object Android {
+    val accompanistAppCompat = "com.google.accompanist:accompanist-appcompat-theme:${Versions.accompanist}"
     val accompanistInsets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
     val accompanistInsetsUi = "com.google.accompanist:accompanist-insets-ui:${Versions.accompanist}"
+    val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
     val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
     val browser = "androidx.browser:browser:${Versions.browser}"
     val compose = "androidx.compose.ui:ui:${Versions.compose}"

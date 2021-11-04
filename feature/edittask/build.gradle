@@ -14,11 +14,12 @@ android {
 dependencies {
     implementation project(':core:domain')
 
-    implementation Android.appCompat
+    implementation Android.accompanistAppCompat
     implementation Android.accompanistInsets
     implementation Android.accompanistInsetsUi
+    implementation Android.activityCompose
+    implementation Android.appCompat
     implementation Android.composeMaterial
     implementation Android.composeTooling
-    implementation Android.constraintLayout
     implementation Android.core
 }
