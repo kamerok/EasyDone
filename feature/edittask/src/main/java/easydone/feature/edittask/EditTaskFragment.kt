@@ -4,24 +4,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
 import easydone.core.domain.DomainRepository
@@ -39,19 +47,7 @@ class EditTaskFragment(
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setContent {
-            AppCompatTheme {
-                ProvideWindowInsets {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .systemBarsPadding()
-                    ) {
-                        ScreenContent(
-                            onBack = { requireActivity().onBackPressedDispatcher.onBackPressed() }
-                        )
-                    }
-                }
-            }
+            EditTaskScreen()
         }
     }
 
@@ -61,6 +57,28 @@ class EditTaskFragment(
         fun createArgs(taskId: String): Bundle = bundleOf(TASK_ID to taskId)
     }
 
+}
+
+@Composable
+private fun EditTaskScreen() {
+    MaterialTheme(
+        colors = MaterialTheme.colors.copy(
+
+        )
+    ) {
+        ProvideWindowInsets {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding()
+            ) {
+                val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+                ScreenContent(
+                    onBack = { dispatcher?.onBackPressed() }
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -78,7 +96,24 @@ private fun ScreenContent(
                 }
             },
         )
-        Text(text = "Hello world")
+        Box(modifier = Modifier.padding(16.dp)) {
+            var title by remember { mutableStateOf("") }
+            var desctiption by remember { mutableStateOf("") }
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text(text = "Title") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = desctiption,
+                    onValueChange = { desctiption = it },
+                    label = { Text(text = "Description") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     }
 }
 
@@ -86,9 +121,9 @@ private fun ScreenContent(
     name = "Screen",
     widthDp = 393,
     heightDp = 851,
-    showBackground = true
+    showBackground = true,
 )
 @Composable
 private fun ContentPreview() {
-    ScreenContent()
+    EditTaskScreen()
 }
