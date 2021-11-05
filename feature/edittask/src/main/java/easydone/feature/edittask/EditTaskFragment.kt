@@ -5,27 +5,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
@@ -61,13 +68,22 @@ class EditTaskFragment(
 
 @Composable
 private fun EditTaskScreen() {
+    val primary = Color(0xFF5073F0)
     MaterialTheme(
-        colors = MaterialTheme.colors.copy(
-
-        )
+        colors = if (isSystemInDarkTheme()) {
+            darkColors(
+                background = Color(0xFF2D3134),
+                primary = primary
+            )
+        } else {
+            lightColors(
+                primary = primary
+            )
+        }
     ) {
         ProvideWindowInsets {
-            Box(
+            Surface(
+                color = MaterialTheme.colors.background,
                 modifier = Modifier
                     .fillMaxSize()
                     .systemBarsPadding()
@@ -88,7 +104,7 @@ private fun ScreenContent(
     Column {
         TopAppBar(
             elevation = 0.dp,
-            backgroundColor = MaterialTheme.colors.primary,
+            backgroundColor = MaterialTheme.colors.background,
             title = { Text(text = "Edit task") },
             navigationIcon = {
                 IconButton(onClick = onBack) {
@@ -98,17 +114,21 @@ private fun ScreenContent(
         )
         Box(modifier = Modifier.padding(16.dp)) {
             var title by remember { mutableStateOf("") }
-            var desctiption by remember { mutableStateOf("") }
+            var description by remember { mutableStateOf("") }
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
                     value = title,
                     onValueChange = { title = it },
                     label = { Text(text = "Title") },
-                    modifier = Modifier.fillMaxWidth()
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
                 )
                 OutlinedTextField(
-                    value = desctiption,
-                    onValueChange = { desctiption = it },
+                    value = description,
+                    onValueChange = { description = it },
                     label = { Text(text = "Description") },
                     modifier = Modifier.fillMaxWidth()
                 )
