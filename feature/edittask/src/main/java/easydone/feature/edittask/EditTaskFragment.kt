@@ -44,7 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.systemBarsPadding
+import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.accompanist.insets.statusBarsPadding
 import easydone.core.domain.DomainRepository
 
 
@@ -93,7 +94,8 @@ private fun EditTaskScreen() {
                 color = MaterialTheme.colors.background,
                 modifier = Modifier
                     .fillMaxSize()
-                    .systemBarsPadding()
+                    .statusBarsPadding()
+                    .navigationBarsWithImePadding()
             ) {
                 val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
                 ScreenContent(
