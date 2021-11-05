@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +30,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -130,6 +133,10 @@ private fun ScreenContent(
                     var title by remember { mutableStateOf("") }
                     var description by remember { mutableStateOf("") }
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Row(Modifier.clickable { /*TODO*/ }) {
+                            Text(text = "INBOX")
+                            Icon(Icons.Default.ArrowDropDown, "")
+                        }
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
                             value = title,
