@@ -7,12 +7,16 @@ import android.view.ViewGroup
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -73,7 +77,8 @@ private fun EditTaskScreen() {
         colors = if (isSystemInDarkTheme()) {
             darkColors(
                 background = Color(0xFF2D3134),
-                primary = primary
+                primary = primary,
+                onPrimary = Color.White
             )
         } else {
             lightColors(
@@ -112,26 +117,45 @@ private fun ScreenContent(
                 }
             },
         )
-        Box(modifier = Modifier.padding(16.dp)) {
-            var title by remember { mutableStateOf("") }
-            var description by remember { mutableStateOf("") }
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text(text = "Title") },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .height(maxHeight)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp)
+            ) {
+                var title by remember { mutableStateOf("") }
+                var description by remember { mutableStateOf("") }
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = title,
+                        onValueChange = { title = it },
+                        label = { Text(text = "Title") },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next
+                        )
                     )
-                )
-                OutlinedTextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text(text = "Description") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        label = { Text(text = "Description") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(text = "Save")
+                }
             }
         }
     }
@@ -141,7 +165,7 @@ private fun ScreenContent(
     name = "Screen",
     widthDp = 393,
     heightDp = 851,
-    showBackground = true,
+    showBackground = true
 )
 @Composable
 private fun ContentPreview() {
