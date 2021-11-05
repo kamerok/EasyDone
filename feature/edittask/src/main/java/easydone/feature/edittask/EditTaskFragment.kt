@@ -125,9 +125,7 @@ private fun ScreenContent(
             },
         )
         OppositeVerticalLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize(),
             topContent = {
                 Column {
                     var title by remember { mutableStateOf("") }
@@ -172,6 +170,7 @@ private fun ScreenContent(
 private fun OppositeVerticalLayout(
     modifier: Modifier = Modifier,
     minSpaceBetween: Dp = 16.dp,
+    padding: Dp = 16.dp,
     topContent: @Composable () -> Unit,
     bottomContent: @Composable () -> Unit
 ) {
@@ -183,6 +182,7 @@ private fun OppositeVerticalLayout(
             modifier = Modifier
                 .height(maxHeight)
                 .verticalScroll(rememberScrollState())
+                .padding(padding)
         ) {
             topContent()
             Spacer(modifier = Modifier.height(minSpaceBetween))
