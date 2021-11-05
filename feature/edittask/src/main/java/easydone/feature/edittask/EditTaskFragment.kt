@@ -9,6 +9,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -117,46 +119,65 @@ private fun ScreenContent(
                 }
             },
         )
-        BoxWithConstraints(
+        OppositeVerticalLayout(
             modifier = Modifier
                 .fillMaxSize()
-        ) {
-            Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .height(maxHeight)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
-            ) {
-                var title by remember { mutableStateOf("") }
-                var description by remember { mutableStateOf("") }
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = title,
-                        onValueChange = { title = it },
-                        label = { Text(text = "Title") },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next
+                .padding(16.dp),
+            topContent = {
+                Column {
+                    var title by remember { mutableStateOf("") }
+                    var description by remember { mutableStateOf("") }
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = title,
+                            onValueChange = { title = it },
+                            label = { Text(text = "Title") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next
+                            )
                         )
-                    )
-                    OutlinedTextField(
-                        value = description,
-                        onValueChange = { description = it },
-                        label = { Text(text = "Description") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                        OutlinedTextField(
+                            value = description,
+                            onValueChange = { description = it },
+                            label = { Text(text = "Description") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
+            },
+            bottomContent = {
                 Button(
                     onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "Save")
                 }
             }
+        )
+    }
+}
+
+@Composable
+private fun OppositeVerticalLayout(
+    modifier: Modifier = Modifier,
+    minSpaceBetween: Dp = 16.dp,
+    topContent: @Composable () -> Unit,
+    bottomContent: @Composable () -> Unit
+) {
+    BoxWithConstraints(
+        modifier = modifier
+    ) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .height(maxHeight)
+                .verticalScroll(rememberScrollState())
+        ) {
+            topContent()
+            Spacer(modifier = Modifier.height(minSpaceBetween))
+            bottomContent()
         }
     }
 }
