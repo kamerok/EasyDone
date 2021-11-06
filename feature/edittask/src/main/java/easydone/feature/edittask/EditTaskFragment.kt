@@ -8,7 +8,6 @@ import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -100,94 +98,82 @@ private fun EditTaskScreen() {
                     .statusBarsPadding()
                     .navigationBarsWithImePadding()
             ) {
-                val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-                ScreenContent(
-                    onBack = { dispatcher?.onBackPressed() }
-                )
+                ScreenContent()
             }
         }
     }
 }
 
 @Composable
-private fun ScreenContent(
-    onBack: () -> Unit = {}
-) {
+private fun ScreenContent() {
     Column {
-        TopAppBar(
-            elevation = 0.dp,
-            backgroundColor = MaterialTheme.colors.background,
-            title = { Text(text = "Edit task") },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(Icons.Default.ArrowBack, "")
-                }
-            },
-        )
-        OppositeVerticalLayout(
-            modifier = Modifier.fillMaxSize(),
-            topContent = {
-                Column {
-                    var title by remember { mutableStateOf("") }
-                    var description by remember { mutableStateOf("") }
-                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Row(Modifier.clickable { /*TODO*/ }) {
-                            Text(text = "INBOX")
-                            Icon(Icons.Default.ArrowDropDown, "")
-                        }
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = title,
-                            onValueChange = { title = it },
-                            label = { Text(text = "Title") },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Next
-                            )
-                        )
-                        OutlinedTextField(
-                            value = description,
-                            onValueChange = { description = it },
-                            label = { Text(text = "Description") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-            },
-            bottomContent = {
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Save")
-                }
-            }
-        )
+        AppBar()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Fields()
+            Spacer(modifier = Modifier.height(16.dp))
+            SaveButton()
+        }
     }
 }
 
 @Composable
-private fun OppositeVerticalLayout(
-    modifier: Modifier = Modifier,
-    minSpaceBetween: Dp = 16.dp,
-    padding: Dp = 16.dp,
-    topContent: @Composable () -> Unit,
-    bottomContent: @Composable () -> Unit
-) {
-    BoxWithConstraints(
-        modifier = modifier
-    ) {
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .height(maxHeight)
-                .verticalScroll(rememberScrollState())
-                .padding(padding)
-        ) {
-            topContent()
-            Spacer(modifier = Modifier.height(minSpaceBetween))
-            bottomContent()
+private fun AppBar() {
+    val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    TopAppBar(
+        elevation = 0.dp,
+        backgroundColor = MaterialTheme.colors.background,
+        title = { Text(text = "Edit task") },
+        navigationIcon = {
+            IconButton(onClick = { dispatcher?.onBackPressed() }) {
+                Icon(Icons.Default.ArrowBack, "")
+            }
+        },
+    )
+}
+
+@Composable
+private fun Fields() {
+    Column {
+        var title by remember { mutableStateOf("") }
+        var description by remember { mutableStateOf("") }
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Row(Modifier.clickable { /*TODO*/ }) {
+                Text(text = "INBOX")
+                Icon(Icons.Default.ArrowDropDown, "")
+            }
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = title,
+                onValueChange = { title = it },
+                label = { Text(text = "Title") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                )
+            )
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                label = { Text(text = "Description") },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
+    }
+}
+
+@Composable
+private fun SaveButton() {
+    Button(
+        onClick = { /*TODO*/ },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(text = "Save")
     }
 }
 
