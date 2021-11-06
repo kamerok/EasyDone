@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -43,7 +42,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.ImeAction
@@ -206,21 +204,20 @@ private fun Chip(
     val borderColor =
         if (MaterialTheme.colors.isLight) Color(0f, 0f, 0f, 0.12f) else Color(1f, 1f, 1f, 0.12f)
     val shape = RoundedCornerShape(CornerSize(100))
-    Row(
+    Surface(
+        color = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.background,
+        shape = shape,
+        border = if (isSelected) null else BorderStroke(1.dp, borderColor),
         modifier = modifier
-            .clip(shape)
-            .clickable(onClick = onClick)
-            .then(
-                if (isSelected) {
-                    Modifier.background(MaterialTheme.colors.primary)
-                } else {
-                    Modifier.border(1.dp, borderColor, shape)
-                }
-            )
-            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 16.dp)
     ) {
-        icon()
-        label()
+        Row(
+            Modifier
+                .clickable(onClick = onClick)
+                .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 16.dp)
+        ) {
+            icon()
+            label()
+        }
     }
 }
 
