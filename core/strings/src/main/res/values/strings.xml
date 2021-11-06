@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="urgent">Urgent</string>
+    <string name="important">Important</string>
 
+    <string name="edit_task_screen_title">Edit task</string>
+    <string name="edit_task_title">Title</string>
+    <string name="edit_task_description">Description</string>
+    <string name="edit_task_save">Save</string>
 
 </resources>

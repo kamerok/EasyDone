@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -134,7 +135,7 @@ private fun AppBar() {
     TopAppBar(
         elevation = 0.dp,
         backgroundColor = MaterialTheme.colors.background,
-        title = { Text(text = "Edit task") },
+        title = { Text(stringResource(R.string.edit_task_screen_title)) },
         navigationIcon = {
             IconButton(onClick = { dispatcher?.onBackPressed() }) {
                 Icon(Icons.Default.ArrowBack, "")
@@ -150,14 +151,14 @@ private fun Fields() {
         var description by remember { mutableStateOf("") }
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(Modifier.clickable { /*TODO*/ }) {
-                Text(text = "INBOX")
+                Text("")
                 Icon(Icons.Default.ArrowDropDown, "")
             }
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = title,
                 onValueChange = { title = it },
-                label = { Text(text = "Title") },
+                label = { Text(stringResource(R.string.edit_task_title)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
@@ -166,7 +167,7 @@ private fun Fields() {
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text(text = "Description") },
+                label = { Text(stringResource(R.string.edit_task_description)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -177,7 +178,7 @@ private fun Fields() {
                     icon = {
                         Icon(Icons.Default.Bolt, "", tint = Color(0xFFF3BE00) /*TODO: extract*/)
                     },
-                    label = { Text("Urgent") },
+                    label = { Text(stringResource(R.string.urgent)) },
                     onClick = { isUrgent = !isUrgent }
                 )
                 Chip(
@@ -185,7 +186,7 @@ private fun Fields() {
                     icon = {
                         Icon(Icons.Default.PriorityHigh, "", tint = Color(0xFFE14B4B)/*TODO*/)
                     },
-                    label = { Text("Important") },
+                    label = { Text(stringResource(R.string.important)) },
                     onClick = { isImportant = !isImportant }
                 )
             }
@@ -227,7 +228,7 @@ private fun SaveButton() {
         onClick = { /*TODO*/ },
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = "Save")
+        Text(stringResource(R.string.edit_task_save).uppercase())
     }
 }
 
