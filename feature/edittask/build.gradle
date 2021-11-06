@@ -23,4 +23,5 @@ dependencies {
     implementation Android.appCompat
     implementation Android.composeTooling
     implementation Android.core
+    implementation Android.fragment
 }

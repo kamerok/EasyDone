@@ -33,10 +33,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -45,6 +42,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -60,13 +60,20 @@ class EditTaskFragment(
 
     private val id: String by lazy { arguments?.getString(TASK_ID) ?: error("ID must be provided") }
 
+    private val viewModel: EditTaskViewModel by viewModels(factoryProducer = {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T =
+                EditTaskViewModel(id, repository) as T
+        }
+    })
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setContent {
-            EditTaskScreen()
+            EditTaskScreen(viewModel)
         }
     }
 
@@ -79,7 +86,7 @@ class EditTaskFragment(
 }
 
 @Composable
-private fun EditTaskScreen() {
+private fun EditTaskScreen(viewModel: EditTaskViewModel) {
     AppTheme {
         ProvideWindowInsets {
             Surface(
@@ -89,14 +96,31 @@ private fun EditTaskScreen() {
                     .statusBarsPadding()
                     .navigationBarsWithImePadding()
             ) {
-                ScreenContent()
+                val state = viewModel.state.collectAsState()
+                ScreenContent(
+                    state = state.value,
+                    onTypeClick = viewModel::onTypeClick,
+                    onTitleChange = viewModel::onTitleChange,
+                    onDescriptionChange = viewModel::onDescriptionChange,
+                    onUrgentClick = viewModel::onUrgentClick,
+                    onImportantClick = viewModel::onImportantClick,
+                    onSave = viewModel::onSave
+                )
             }
         }
     }
 }
 
 @Composable
-private fun ScreenContent() {
+private fun ScreenContent(
+    state: State,
+    onTypeClick: () -> Unit,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onUrgentClick: () -> Unit,
+    onImportantClick: () -> Unit,
+    onSave: () -> Unit
+) {
     Column {
         AppBar()
         Column(
@@ -106,9 +130,16 @@ private fun ScreenContent() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Fields()
+            Fields(
+                state = state,
+                onTypeClick = onTypeClick,
+                onTitleChange = onTitleChange,
+                onDescriptionChange = onDescriptionChange,
+                onUrgentClick = onUrgentClick,
+                onImportantClick = onImportantClick
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            SaveButton()
+            SaveButton(onSave)
         }
     }
 }
@@ -129,19 +160,24 @@ private fun AppBar() {
 }
 
 @Composable
-private fun Fields() {
+private fun Fields(
+    state: State,
+    onTypeClick: () -> Unit,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onUrgentClick: () -> Unit,
+    onImportantClick: () -> Unit
+) {
     Column {
-        var title by remember { mutableStateOf("") }
-        var description by remember { mutableStateOf("") }
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Row(Modifier.clickable { /*TODO*/ }) {
-                Text("")
+            Row(Modifier.clickable(onClick = onTypeClick)) {
+                Text(state.type)
                 Icon(Icons.Default.ArrowDropDown, "")
             }
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = title,
-                onValueChange = { title = it },
+                value = state.title,
+                onValueChange = onTitleChange,
                 label = { Text(stringResource(R.string.edit_task_title)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
@@ -149,25 +185,23 @@ private fun Fields() {
                 )
             )
             OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
+                value = state.description,
+                onValueChange = onDescriptionChange,
                 label = { Text(stringResource(R.string.edit_task_description)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                var isUrgent by remember { mutableStateOf(false) }
-                var isImportant by remember { mutableStateOf(false) }
                 Chip(
-                    isSelected = isUrgent,
+                    isSelected = state.isUrgent,
                     icon = { IconUrgent() },
                     label = { Text(stringResource(R.string.urgent)) },
-                    onClick = { isUrgent = !isUrgent }
+                    onClick = onUrgentClick
                 )
                 Chip(
-                    isSelected = isImportant,
+                    isSelected = state.isImportant,
                     icon = { IconImportant() },
                     label = { Text(stringResource(R.string.important)) },
-                    onClick = { isImportant = !isImportant }
+                    onClick = onImportantClick
                 )
             }
         }
@@ -203,9 +237,9 @@ private fun Chip(
 }
 
 @Composable
-private fun SaveButton() {
+private fun SaveButton(onClick: () -> Unit) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(stringResource(R.string.edit_task_save).uppercase())
@@ -220,5 +254,7 @@ private fun SaveButton() {
 )
 @Composable
 private fun ContentPreview() {
-    EditTaskScreen()
+    ScreenContent(
+        State("Type", "", "", false, false), {}, {}, {}, {}, {}, {}
+    )
 }
