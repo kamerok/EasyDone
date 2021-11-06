@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 
 
 private val primary = Color(0xFF5073F0)
-private val urgent = Color(0xFF5073F0)
+private val urgent = Color(0xFFF3BE00)
 private val important = Color(0xFFE14B4B)
 
 @Composable

@@ -1,9 +1,17 @@
 package easydone.feature.edittask
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import easydone.core.domain.DomainRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import easydone.core.domain.model.Task
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 
 internal class EditTaskViewModel(
@@ -11,7 +19,27 @@ internal class EditTaskViewModel(
     repository: DomainRepository
 ) : ViewModel() {
 
-    val state: StateFlow<State> = MutableStateFlow(State("", "", "", false, false))
+    val state: StateFlow<State> = flow { emit(repository.getTask(id)) }
+        .map { task ->
+            State(
+                type = task.type.format(task.dueDate),
+                title = task.title,
+                description = task.description,
+                isUrgent = task.markers.isUrgent,
+                isImportant = task.markers.isImportant
+            )
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = State(
+                type = Task.Type.INBOX.format(),
+                title = "",
+                description = "",
+                isUrgent = false,
+                isImportant = false
+            )
+        )
 
     fun onTypeClick() {}
     fun onTitleChange(title: String) {}
@@ -19,5 +47,25 @@ internal class EditTaskViewModel(
     fun onUrgentClick() {}
     fun onImportantClick() {}
     fun onSave() {}
+
+    //TODO: extract resources, reuse format logic
+    private fun Task.Type.format(date: LocalDate? = null) = when (this) {
+        Task.Type.INBOX -> "INBOX"
+        Task.Type.TO_DO -> "TO-DO"
+        Task.Type.WAITING -> "WAITING".plus(date?.let {
+            val period = Period.between(LocalDate.now(), it)
+            val periodString = buildString {
+                if (period.years > 0) {
+                    append("${period.years}y ")
+                }
+                if (period.months > 0 || period.years > 0) {
+                    append("${period.months}m ")
+                }
+                append("${period.days}d")
+            }
+            " until ${it.format(DateTimeFormatter.ofPattern("d MMM y"))} ($periodString)"
+        })
+        Task.Type.MAYBE -> "MAYBE"
+    }
 
 }
