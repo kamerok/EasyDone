@@ -8,6 +8,7 @@ include ':core-ui:utils'
 include ':core:database'
 include ':core:domain'
 include ':core:network'
+include ':core:strings'
 include ':core:utils'
 
 include ':feature:createtask'
