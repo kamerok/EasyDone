@@ -61,6 +61,7 @@ object Android {
     val compose = "androidx.compose.ui:ui:${Versions.compose}"
     val composeAnimation = "androidx.compose.animation:animation:${Versions.compose}"
     val composeFoundation = "androidx.compose.foundation:foundation:${Versions.compose}"
+    val composeIcons = "androidx.compose.material:material-icons-extended:${Versions.compose}"
     val composeMaterial = "androidx.compose.material:material:${Versions.compose}"
     val composeMaterialIcons = "androidx.compose.material:material-icons-core:${Versions.compose}"
     val composeTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"

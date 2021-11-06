@@ -19,6 +19,7 @@ dependencies {
     implementation Android.accompanistInsetsUi
     implementation Android.activityCompose
     implementation Android.appCompat
+    implementation Android.composeIcons
     implementation Android.composeMaterial
     implementation Android.composeTooling
     implementation Android.core
