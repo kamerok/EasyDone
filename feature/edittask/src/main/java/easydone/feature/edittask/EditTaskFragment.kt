@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -200,14 +201,13 @@ private fun Chip(
     label: @Composable () -> Unit,
     onClick: () -> Unit
 ) {
-    //todo: extract
-    val borderColor =
-        if (MaterialTheme.colors.isLight) Color(0f, 0f, 0f, 0.12f) else Color(1f, 1f, 1f, 0.12f)
-    val shape = RoundedCornerShape(CornerSize(100))
     Surface(
         color = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.background,
-        shape = shape,
-        border = if (isSelected) null else BorderStroke(1.dp, borderColor),
+        shape = RoundedCornerShape(CornerSize(100)),
+        border = if (isSelected) null else BorderStroke(
+            1.dp,
+            MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+        ),
         modifier = modifier
     ) {
         Row(
