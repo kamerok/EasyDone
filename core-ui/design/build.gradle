@@ -2,6 +2,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 dependencies {
+    api Android.composeMaterial
+
     implementation Android.appCompat
+    implementation Android.composeIcons
     implementation Android.material
 }
