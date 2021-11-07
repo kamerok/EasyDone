@@ -20,7 +20,8 @@ import java.time.format.DateTimeFormatter
 
 internal class EditTaskViewModel(
     private val id: String,
-    private val repository: DomainRepository
+    private val repository: DomainRepository,
+    private val navigator: EditTaskNavigator
 ) : ViewModel() {
 
     private val actionChannel: Channel<Action> = Channel(capacity = Channel.UNLIMITED)
@@ -91,11 +92,11 @@ internal class EditTaskViewModel(
         )
         is Action.Save -> {
             if (task == originalTask) {
-                //TODO: close
+                navigator.close()
             } else {
                 //TODO: check error
                 repository.saveTask(task)
-                //TODO: close
+                navigator.close()
             }
             task
         }

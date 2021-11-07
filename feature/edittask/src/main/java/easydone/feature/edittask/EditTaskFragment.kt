@@ -55,7 +55,8 @@ import easydone.coreui.design.IconUrgent
 
 
 class EditTaskFragment(
-    private val repository: DomainRepository
+    private val repository: DomainRepository,
+    private val navigator: EditTaskNavigator
 ) : Fragment() {
 
     private val id: String by lazy { arguments?.getString(TASK_ID) ?: error("ID must be provided") }
@@ -63,7 +64,7 @@ class EditTaskFragment(
     private val viewModel: EditTaskViewModel by viewModels(factoryProducer = {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-                EditTaskViewModel(id, repository) as T
+                EditTaskViewModel(id, repository, navigator) as T
         }
     })
 

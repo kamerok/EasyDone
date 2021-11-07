@@ -18,6 +18,7 @@ import easydone.core.network.TrelloRemoteDataSource
 import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
+import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
@@ -107,7 +108,14 @@ object StartFlow {
                 )
             }
             factory {
-                EditTaskFragment(get())
+                EditTaskFragment(
+                    get(),
+                    object : EditTaskNavigator {
+                        override fun close() {
+                            get<Navigator>().popScreen()
+                        }
+                    }
+                )
             }
             factory {
                 QuickCreateTaskFragment(
