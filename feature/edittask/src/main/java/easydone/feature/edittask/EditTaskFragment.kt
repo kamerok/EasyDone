@@ -175,16 +175,27 @@ private fun Fields(
                 Text(state.type)
                 Icon(Icons.Default.ArrowDropDown, "")
             }
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = state.title,
-                onValueChange = onTitleChange,
-                label = { Text(stringResource(R.string.edit_task_title)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next
+            Column {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.title,
+                    onValueChange = onTitleChange,
+                    isError = !state.titleError.isNullOrEmpty(),
+                    label = { Text(stringResource(R.string.edit_task_title)) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
                 )
-            )
+                if (!state.titleError.isNullOrEmpty()) {
+                    Text(
+                        text = state.titleError,
+                        color = MaterialTheme.colors.error,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
+            }
             OutlinedTextField(
                 value = state.description,
                 onValueChange = onDescriptionChange,
@@ -256,6 +267,6 @@ private fun SaveButton(onClick: () -> Unit) {
 @Composable
 private fun ContentPreview() {
     ScreenContent(
-        State("Type", "", "", false, false), {}, {}, {}, {}, {}, {}
+        State("Type", "", "", "", false, false), {}, {}, {}, {}, {}, {}
     )
 }

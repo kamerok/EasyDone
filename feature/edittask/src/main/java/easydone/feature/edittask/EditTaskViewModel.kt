@@ -35,6 +35,7 @@ internal class EditTaskViewModel(
                     State(
                         type = task.type.format(task.dueDate),
                         title = task.title,
+                        titleError = if (task.title.isBlank()) "Should not be empty" else null,
                         description = task.description,
                         isUrgent = task.markers.isUrgent,
                         isImportant = task.markers.isImportant
@@ -47,6 +48,7 @@ internal class EditTaskViewModel(
             initialValue = State(
                 type = Task.Type.INBOX.format(),
                 title = "",
+                titleError = "",
                 description = "",
                 isUrgent = false,
                 isImportant = false
@@ -77,6 +79,7 @@ internal class EditTaskViewModel(
         actionChannel.trySend(Action.Save)
     }
 
+    //TODO: refactor around state
     private suspend fun reduce(
         originalTask: Task,
         task: Task,
@@ -100,9 +103,10 @@ internal class EditTaskViewModel(
             if (task == originalTask) {
                 navigator.close()
             } else {
-                //TODO: check error
-                repository.saveTask(task)
-                navigator.close()
+                if (task.title.isNotBlank()) {
+                    repository.saveTask(task)
+                    navigator.close()
+                }
             }
             task
         }
