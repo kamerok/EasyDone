@@ -19,8 +19,8 @@ import java.time.format.DateTimeFormatter
 
 
 internal class EditTaskViewModel(
-    id: String,
-    repository: DomainRepository
+    private val id: String,
+    private val repository: DomainRepository
 ) : ViewModel() {
 
     private val actionChannel: Channel<Action> = Channel(capacity = Channel.UNLIMITED)
@@ -29,18 +29,7 @@ internal class EditTaskViewModel(
         .flatMapConcat { originalTask ->
             actionChannel
                 .consumeAsFlow()
-                .scan(originalTask) { task, action ->
-                    when (action) {
-                        is Action.TitleChange -> task.copy(title = action.title)
-                        is Action.DescriptionChange -> task.copy(description = action.description)
-                        is Action.UrgentClick -> task.copy(
-                            markers = task.markers.copy(isUrgent = !task.markers.isUrgent)
-                        )
-                        is Action.ImportantClick -> task.copy(
-                            markers = task.markers.copy(isImportant = !task.markers.isImportant)
-                        )
-                    }
-                }
+                .scan(originalTask) { task, action -> reduce(originalTask, task, action) }
                 .map { task ->
                     State(
                         type = task.type.format(task.dueDate),
@@ -84,7 +73,32 @@ internal class EditTaskViewModel(
     }
 
     fun onSave() {
-        //TODO
+        actionChannel.trySend(Action.Save)
+    }
+
+    private suspend fun reduce(
+        originalTask: Task,
+        task: Task,
+        action: Action
+    ) = when (action) {
+        is Action.TitleChange -> task.copy(title = action.title)
+        is Action.DescriptionChange -> task.copy(description = action.description)
+        is Action.UrgentClick -> task.copy(
+            markers = task.markers.copy(isUrgent = !task.markers.isUrgent)
+        )
+        is Action.ImportantClick -> task.copy(
+            markers = task.markers.copy(isImportant = !task.markers.isImportant)
+        )
+        is Action.Save -> {
+            if (task == originalTask) {
+                //TODO: close
+            } else {
+                //TODO: check error
+                repository.saveTask(task)
+                //TODO: close
+            }
+            task
+        }
     }
 
     //TODO: extract resources, reuse format logic
@@ -112,5 +126,6 @@ internal class EditTaskViewModel(
         data class DescriptionChange(val description: String) : Action()
         object UrgentClick : Action()
         object ImportantClick : Action()
+        object Save : Action()
     }
 }
