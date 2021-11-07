@@ -98,15 +98,18 @@ private fun EditTaskScreen(viewModel: EditTaskViewModel) {
                     .navigationBarsWithImePadding()
             ) {
                 val state = viewModel.state.collectAsState()
-                ScreenContent(
-                    state = state.value,
-                    onTypeClick = viewModel::onTypeClick,
-                    onTitleChange = viewModel::onTitleChange,
-                    onDescriptionChange = viewModel::onDescriptionChange,
-                    onUrgentClick = viewModel::onUrgentClick,
-                    onImportantClick = viewModel::onImportantClick,
-                    onSave = viewModel::onSave
-                )
+                val stateValue = state.value
+                if (stateValue is ContentState) {
+                    ScreenContent(
+                        state = stateValue,
+                        onTypeClick = viewModel::onTypeClick,
+                        onTitleChange = viewModel::onTitleChange,
+                        onDescriptionChange = viewModel::onDescriptionChange,
+                        onUrgentClick = viewModel::onUrgentClick,
+                        onImportantClick = viewModel::onImportantClick,
+                        onSave = viewModel::onSave
+                    )
+                }
             }
         }
     }
@@ -114,7 +117,7 @@ private fun EditTaskScreen(viewModel: EditTaskViewModel) {
 
 @Composable
 private fun ScreenContent(
-    state: State,
+    state: ContentState,
     onTypeClick: () -> Unit,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
@@ -162,7 +165,7 @@ private fun AppBar() {
 
 @Composable
 private fun Fields(
-    state: State,
+    state: ContentState,
     onTypeClick: () -> Unit,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
@@ -267,6 +270,12 @@ private fun SaveButton(onClick: () -> Unit) {
 @Composable
 private fun ContentPreview() {
     ScreenContent(
-        State("Type", "", "", "", false, false), {}, {}, {}, {}, {}, {}
+        state = ContentState("Type", "", "", "", isUrgent = false, isImportant = false),
+        onTypeClick = {},
+        onTitleChange = {},
+        onDescriptionChange = {},
+        onUrgentClick = {},
+        onImportantClick = {},
+        onSave = {}
     )
 }

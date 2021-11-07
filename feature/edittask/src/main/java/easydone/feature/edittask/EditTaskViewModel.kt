@@ -32,7 +32,7 @@ internal class EditTaskViewModel(
                 .consumeAsFlow()
                 .scan(originalTask) { task, action -> reduce(originalTask, task, action) }
                 .map { task ->
-                    State(
+                    ContentState(
                         type = task.type.format(task.dueDate),
                         title = task.title,
                         titleError = if (task.title.isBlank()) "Should not be empty" else null,
@@ -45,14 +45,7 @@ internal class EditTaskViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = State(
-                type = Task.Type.INBOX.format(),
-                title = "",
-                titleError = "",
-                description = "",
-                isUrgent = false,
-                isImportant = false
-            )
+            initialValue = IdleState
         )
 
     fun onTypeClick() {
