@@ -54,7 +54,7 @@ internal class EditTaskViewModel(
         )
 
     fun onTypeClick() {
-        //TODO
+        actionChannel.trySend(Action.TypeClick)
     }
 
     fun onTitleChange(title: String) {
@@ -82,6 +82,12 @@ internal class EditTaskViewModel(
         task: Task,
         action: Action
     ) = when (action) {
+        is Action.TypeClick -> {
+            navigator.selectType(task.type, task.dueDate)
+                ?.let { (type, date) ->
+                    task.copy(type = type, dueDate = date)
+                } ?: task
+        }
         is Action.TitleChange -> task.copy(title = action.title)
         is Action.DescriptionChange -> task.copy(description = action.description)
         is Action.UrgentClick -> task.copy(
@@ -123,6 +129,7 @@ internal class EditTaskViewModel(
     }
 
     private sealed class Action {
+        object TypeClick : Action()
         data class TitleChange(val title: String) : Action()
         data class DescriptionChange(val description: String) : Action()
         object UrgentClick : Action()

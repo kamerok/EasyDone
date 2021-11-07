@@ -1,6 +1,7 @@
 package com.kamer.builder
 
 import android.app.Application
+import android.app.DatePickerDialog
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
@@ -13,6 +14,7 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.LocalDataSource
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.Synchronizer
+import easydone.core.domain.model.Task
 import easydone.core.network.AuthInfoHolder
 import easydone.core.network.TrelloRemoteDataSource
 import easydone.feature.createtask.CreateTaskFragment
@@ -35,6 +37,10 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import java.time.LocalDate
+import java.time.ZoneOffset
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 val Context.prefsDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "prefs",
@@ -113,6 +119,45 @@ object StartFlow {
                     object : EditTaskNavigator {
                         override fun close() {
                             get<Navigator>().popScreen()
+                        }
+
+                        override suspend fun selectType(
+                            currentType: Task.Type?,
+                            date: LocalDate?
+                        ): Pair<Task.Type, LocalDate?>? = suspendCoroutine { cont ->
+                            //TODO: replace with proper view
+                            val nextType: Task.Type = when (currentType) {
+                                null -> Task.Type.INBOX
+                                Task.Type.INBOX -> Task.Type.TO_DO
+                                Task.Type.TO_DO -> Task.Type.WAITING
+                                Task.Type.WAITING -> Task.Type.MAYBE
+                                Task.Type.MAYBE -> Task.Type.INBOX
+                            }
+                            if (nextType == Task.Type.WAITING) {
+                                val initialDay = date ?: LocalDate.now().plusDays(1)
+                                DatePickerDialog(
+                                    ActivityHolder.getActivity(),
+                                    { _, year, month, dayOfMonth ->
+                                        val newDate = LocalDate.of(year, month + 1, dayOfMonth)
+                                        cont.resume(nextType to newDate)
+                                    },
+                                    initialDay.year,
+                                    initialDay.monthValue - 1,
+                                    initialDay.dayOfMonth
+                                )
+                                    .apply {
+                                        datePicker.minDate =
+                                            LocalDate.now().plusDays(1)
+                                                .atStartOfDay(ZoneOffset.UTC).toInstant()
+                                                .toEpochMilli()
+                                        setOnCancelListener {
+                                            cont.resume(null)
+                                        }
+                                    }
+                                    .show()
+                            } else {
+                                cont.resume(nextType to null)
+                            }
                         }
                     }
                 )
