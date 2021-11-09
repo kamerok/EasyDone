@@ -7,6 +7,7 @@ import easydone.core.domain.model.Task
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -20,7 +21,10 @@ internal class TaskDetailsViewModel(
     private val navigator: TaskDetailsNavigator
 ) : ViewModel() {
 
+    private var task: Task? = null
+
     val state: StateFlow<State> = repository.observeTask(id)
+        .onEach { task = it }
         .map { task ->
             State(
                 type = task.type.format(task.dueDate),
@@ -41,7 +45,15 @@ internal class TaskDetailsViewModel(
     }
 
     fun onMove() {
-        //TODO
+        task?.let { task ->
+            viewModelScope.launch {
+                val result = navigator.selectType(task.type, task.dueDate)
+                if (result != null) {
+                    repository.saveTask(task.copy(type = result.first, dueDate = result.second))
+                    navigator.close()
+                }
+            }
+        }
     }
 
     fun onArchive() {

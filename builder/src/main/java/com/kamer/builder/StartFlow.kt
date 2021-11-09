@@ -121,6 +121,11 @@ object StartFlow {
                     object : TaskDetailsNavigator {
                         private val navigator = get<Navigator>()
 
+                        override suspend fun selectType(
+                            currentType: Task.Type?,
+                            date: LocalDate?
+                        ): Pair<Task.Type, LocalDate?>? = selectTypeWorkaround(currentType, date)
+
                         override fun editTask(id: String) {
                             navigator.openScreen(
                                 fragmentClass = EditTaskFragment::class.java,
@@ -146,41 +151,7 @@ object StartFlow {
                         override suspend fun selectType(
                             currentType: Task.Type?,
                             date: LocalDate?
-                        ): Pair<Task.Type, LocalDate?>? = suspendCoroutine { cont ->
-                            //TODO: replace with proper view
-                            val nextType: Task.Type = when (currentType) {
-                                null -> Task.Type.INBOX
-                                Task.Type.INBOX -> Task.Type.TO_DO
-                                Task.Type.TO_DO -> Task.Type.WAITING
-                                Task.Type.WAITING -> Task.Type.MAYBE
-                                Task.Type.MAYBE -> Task.Type.INBOX
-                            }
-                            if (nextType == Task.Type.WAITING) {
-                                val initialDay = date ?: LocalDate.now().plusDays(1)
-                                DatePickerDialog(
-                                    ActivityHolder.getActivity(),
-                                    { _, year, month, dayOfMonth ->
-                                        val newDate = LocalDate.of(year, month + 1, dayOfMonth)
-                                        cont.resume(nextType to newDate)
-                                    },
-                                    initialDay.year,
-                                    initialDay.monthValue - 1,
-                                    initialDay.dayOfMonth
-                                )
-                                    .apply {
-                                        datePicker.minDate =
-                                            LocalDate.now().plusDays(1)
-                                                .atStartOfDay(ZoneOffset.UTC).toInstant()
-                                                .toEpochMilli()
-                                        setOnCancelListener {
-                                            cont.resume(null)
-                                        }
-                                    }
-                                    .show()
-                            } else {
-                                cont.resume(nextType to null)
-                            }
-                        }
+                        ): Pair<Task.Type, LocalDate?>? = selectTypeWorkaround(currentType, date)
                     }
                 )
             }
@@ -259,4 +230,42 @@ object StartFlow {
     private fun startSettings(navigator: Navigator) =
         navigator.openScreen(SettingsFragment::class.java, true)
 
+    private suspend fun selectTypeWorkaround(
+        currentType: Task.Type?,
+        date: LocalDate?
+    ): Pair<Task.Type, LocalDate?>? = suspendCoroutine { cont ->
+        //TODO: replace with proper view
+        val nextType: Task.Type = when (currentType) {
+            null -> Task.Type.INBOX
+            Task.Type.INBOX -> Task.Type.TO_DO
+            Task.Type.TO_DO -> Task.Type.WAITING
+            Task.Type.WAITING -> Task.Type.MAYBE
+            Task.Type.MAYBE -> Task.Type.INBOX
+        }
+        if (nextType == Task.Type.WAITING) {
+            val initialDay = date ?: LocalDate.now().plusDays(1)
+            DatePickerDialog(
+                ActivityHolder.getActivity(),
+                { _, year, month, dayOfMonth ->
+                    val newDate = LocalDate.of(year, month + 1, dayOfMonth)
+                    cont.resume(nextType to newDate)
+                },
+                initialDay.year,
+                initialDay.monthValue - 1,
+                initialDay.dayOfMonth
+            )
+                .apply {
+                    datePicker.minDate =
+                        LocalDate.now().plusDays(1)
+                            .atStartOfDay(ZoneOffset.UTC).toInstant()
+                            .toEpochMilli()
+                    setOnCancelListener {
+                        cont.resume(null)
+                    }
+                }
+                .show()
+        } else {
+            cont.resume(nextType to null)
+        }
+    }
 }
