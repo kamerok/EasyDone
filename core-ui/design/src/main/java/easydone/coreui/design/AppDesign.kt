@@ -31,6 +31,7 @@ fun AppTheme(content: @Composable () -> Unit) {
                 background = Color(0xFF2D3134),
                 primary = primary,
                 onPrimary = Color.White,
+                onError = Color.White,
                 surface = Color(0xFF434343)
             )
         } else {

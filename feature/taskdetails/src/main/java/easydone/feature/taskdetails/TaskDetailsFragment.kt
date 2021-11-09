@@ -8,10 +8,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -91,7 +98,17 @@ private fun EditTaskScreen(
             )
         },
         content = {
-            ScreenContent(viewModel.state.collectAsState().value)
+            ScreenContent(
+                topContent = {
+                    TaskContent(viewModel.state.collectAsState().value)
+                },
+                bottomContent = {
+                    BottomActions(
+                        onMove = viewModel::onMove,
+                        onArchive = viewModel::onArchive
+                    )
+                }
+            )
         }
     )
 }
@@ -121,7 +138,25 @@ private fun BasicLayout(
 }
 
 @Composable
-private fun ScreenContent(state: State) {
+private fun ScreenContent(
+    topContent: @Composable () -> Unit,
+    bottomContent: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        topContent()
+        Spacer(modifier = Modifier.height(16.dp))
+        bottomContent()
+    }
+}
+
+@Composable
+private fun TaskContent(state: State) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
@@ -145,8 +180,10 @@ private fun ScreenContent(state: State) {
                 style = MaterialTheme.typography.h5
             )
         }
-        //TODO: markdown
-        Text(state.description)
+        if (state.description.isNotEmpty()) {
+            //TODO: markdown
+            Text(state.description)
+        }
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             if (state.isUrgent) {
                 Chip(
@@ -183,6 +220,33 @@ private fun Chip(
     }
 }
 
+@Composable
+private fun BottomActions(
+    onMove: () -> Unit,
+    onArchive: () -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Button(
+            onClick = onMove,
+            modifier = Modifier.weight(1f, true)
+        ) {
+            Text(stringResource(R.string.task_details_action_move).uppercase())
+        }
+        Button(
+            onClick = onArchive,
+            colors = buttonColors(
+                backgroundColor = MaterialTheme.colors.error
+            ),
+            modifier = Modifier.weight(1f, true)
+        ) {
+            Text(stringResource(R.string.task_details_action_archive).uppercase())
+        }
+    }
+}
+
 @Preview(
     name = "Screen",
     widthDp = 393,
@@ -192,12 +256,17 @@ private fun Chip(
 @Composable
 private fun ContentPreview() {
     ScreenContent(
-        State(
-            type = "Type",
-            title = "Title",
-            description = "Desc",
-            isUrgent = true,
-            isImportant = true
-        )
+        topContent = {
+            TaskContent(
+                State(
+                    type = "Type",
+                    title = "Title",
+                    description = "Desc",
+                    isUrgent = true,
+                    isImportant = true
+                )
+            )
+        },
+        bottomContent = { BottomActions({}, {}) }
     )
 }
