@@ -43,6 +43,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import easydone.core.domain.DomainRepository
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
@@ -181,8 +182,7 @@ private fun TaskContent(state: State) {
             )
         }
         if (state.description.isNotEmpty()) {
-            //TODO: markdown
-            Text(state.description)
+            MarkdownText(markdown = state.description)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             if (state.isUrgent) {
