@@ -17,7 +17,6 @@ dependencies {
     implementation project(':core-ui:design')
 
     implementation Android.accompanistInsets
-    implementation Android.activityCompose
     implementation Android.appCompat
     implementation Android.composeTooling
     implementation Android.core

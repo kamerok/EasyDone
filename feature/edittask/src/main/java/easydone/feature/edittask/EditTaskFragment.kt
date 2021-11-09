@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,14 +22,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -50,6 +46,7 @@ import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
 import easydone.core.domain.DomainRepository
 import easydone.coreui.design.AppTheme
+import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.IconImportant
 import easydone.coreui.design.IconUrgent
 
@@ -126,7 +123,7 @@ private fun ScreenContent(
     onSave: () -> Unit
 ) {
     Column {
-        AppBar()
+        EasyDoneAppBar { Text(stringResource(R.string.edit_task_screen_title)) }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -146,21 +143,6 @@ private fun ScreenContent(
             SaveButton(onSave)
         }
     }
-}
-
-@Composable
-private fun AppBar() {
-    val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    TopAppBar(
-        elevation = 0.dp,
-        backgroundColor = MaterialTheme.colors.background,
-        title = { Text(stringResource(R.string.edit_task_screen_title)) },
-        navigationIcon = {
-            IconButton(onClick = { dispatcher?.onBackPressed() }) {
-                Icon(Icons.Default.ArrowBack, "")
-            }
-        },
-    )
 }
 
 @Composable

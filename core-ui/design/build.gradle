@@ -12,6 +12,7 @@ android {
 dependencies {
     api Android.composeMaterial
 
+    implementation Android.activityCompose
     implementation Android.appCompat
     implementation Android.composeIcons
     implementation Android.material

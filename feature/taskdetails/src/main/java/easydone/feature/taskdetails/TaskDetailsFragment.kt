@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Icon
@@ -12,22 +11,20 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
 import easydone.core.domain.DomainRepository
 import easydone.coreui.design.AppTheme
+import easydone.coreui.design.EasyDoneAppBar
 
 
 class TaskDetailsFragment(
@@ -61,7 +58,18 @@ private fun EditTaskScreen(
     navigator: TaskDetailsNavigator
 ) {
     BasicLayout(
-        toolbar = { AppBar(onEdit = { navigator.editTask(id) }) },
+        toolbar = {
+            EasyDoneAppBar(
+                title = {
+                    Text(stringResource(R.string.task_details_screen_title))
+                },
+                actions = {
+                    IconButton(onClick = { navigator.editTask(id) }) {
+                        Icon(Icons.Default.Edit, "")
+                    }
+                }
+            )
+        },
         content = {
             ScreenContent()
         }
@@ -93,28 +101,6 @@ private fun BasicLayout(
 @Composable
 private fun ScreenContent() {
 
-}
-
-@Composable
-private fun AppBar(
-    onEdit: () -> Unit
-) {
-    val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    TopAppBar(
-        elevation = 0.dp,
-        backgroundColor = MaterialTheme.colors.background,
-        title = { Text(stringResource(R.string.task_details_screen_title)) },
-        navigationIcon = {
-            IconButton(onClick = { dispatcher?.onBackPressed() }) {
-                Icon(Icons.Default.ArrowBack, "")
-            }
-        },
-        actions = {
-            IconButton(onClick = onEdit) {
-                Icon(Icons.Default.Edit, "")
-            }
-        },
-    )
 }
 
 @Preview(
