@@ -119,12 +119,18 @@ object StartFlow {
                 TaskDetailsFragment(
                     get(),
                     object : TaskDetailsNavigator {
+                        private val navigator = get<Navigator>()
+
                         override fun editTask(id: String) {
-                            get<Navigator>().openScreen(
+                            navigator.openScreen(
                                 fragmentClass = EditTaskFragment::class.java,
                                 addToBackStack = true,
                                 args = EditTaskFragment.createArgs(id)
                             )
+                        }
+
+                        override fun close() {
+                            navigator.popScreen()
                         }
                     }
                 )

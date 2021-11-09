@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -15,7 +16,7 @@ import java.time.format.DateTimeFormatter
 
 internal class TaskDetailsViewModel(
     private val id: String,
-    repository: DomainRepository,
+    private val repository: DomainRepository,
     private val navigator: TaskDetailsNavigator
 ) : ViewModel() {
 
@@ -37,6 +38,17 @@ internal class TaskDetailsViewModel(
 
     fun onEdit() {
         navigator.editTask(id)
+    }
+
+    fun onMove() {
+        //TODO
+    }
+
+    fun onArchive() {
+        viewModelScope.launch {
+            repository.archiveTask(id)
+            navigator.close()
+        }
     }
 
     //TODO: extract resources, reuse format logic

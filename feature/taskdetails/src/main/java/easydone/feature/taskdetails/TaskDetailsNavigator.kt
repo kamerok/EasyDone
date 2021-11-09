@@ -5,4 +5,6 @@ interface TaskDetailsNavigator {
 
     fun editTask(id: String)
 
+    fun close()
+
 }
