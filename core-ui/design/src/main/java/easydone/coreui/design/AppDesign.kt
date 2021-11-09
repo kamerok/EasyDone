@@ -30,10 +30,12 @@ fun AppTheme(content: @Composable () -> Unit) {
             darkColors(
                 background = Color(0xFF2D3134),
                 primary = primary,
-                onPrimary = Color.White
+                onPrimary = Color.White,
+                surface = Color(0xFF434343)
             )
         } else {
             lightColors(
+                background = Color(0xFFF3F3F3),
                 primary = primary
             )
         },

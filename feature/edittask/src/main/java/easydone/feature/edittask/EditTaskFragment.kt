@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -86,11 +87,13 @@ class EditTaskFragment(
 @Composable
 private fun EditTaskScreen(viewModel: EditTaskViewModel) {
     AppTheme {
-        ProvideWindowInsets {
+        ProvideWindowInsets(windowInsetsAnimationsEnabled = false) {
             Surface(
                 color = MaterialTheme.colors.background,
                 modifier = Modifier
                     .fillMaxSize()
+                    //to draw under paddings
+                    .background(MaterialTheme.colors.background)
                     .statusBarsPadding()
                     .navigationBarsWithImePadding()
             ) {

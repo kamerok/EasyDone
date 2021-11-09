@@ -4,21 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -29,6 +39,8 @@ import com.google.accompanist.insets.systemBarsPadding
 import easydone.core.domain.DomainRepository
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
+import easydone.coreui.design.IconImportant
+import easydone.coreui.design.IconUrgent
 
 
 class TaskDetailsFragment(
@@ -95,6 +107,8 @@ private fun BasicLayout(
                 color = MaterialTheme.colors.background,
                 modifier = Modifier
                     .fillMaxSize()
+                    //to draw under paddings
+                    .background(MaterialTheme.colors.background)
                     .systemBarsPadding()
             ) {
                 Column {
@@ -108,7 +122,65 @@ private fun BasicLayout(
 
 @Composable
 private fun ScreenContent(state: State) {
-    Text(state.toString())
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                top = 8.dp,
+                bottom = 16.dp,
+                start = 16.dp,
+                end = 16.dp
+            )
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = state.type,
+                    style = MaterialTheme.typography.caption,
+                )
+            }
+            Text(
+                text = state.title,
+                style = MaterialTheme.typography.h5
+            )
+        }
+        //TODO: markdown
+        Text(state.description)
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            if (state.isUrgent) {
+                Chip(
+                    icon = { IconUrgent() },
+                    label = { Text(stringResource(R.string.urgent)) }
+                )
+            }
+            if (state.isImportant) {
+                Chip(
+                    icon = { IconImportant() },
+                    label = { Text(stringResource(R.string.important)) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun Chip(
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit,
+    label: @Composable () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(CornerSize(100)),
+        modifier = modifier
+    ) {
+        Row(
+            Modifier.padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 16.dp)
+        ) {
+            icon()
+            label()
+        }
+    }
 }
 
 @Preview(
