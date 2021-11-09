@@ -103,6 +103,8 @@ class SynchronizerTest {
 
         override fun observeTasks(type: Task.Type): Flow<List<Task>> = flowOf()
 
+        override fun observeTask(id: String): Flow<Task> = flowOf()
+
         override suspend fun getTask(id: String): Task =
             throw Exception("not implemented")
 

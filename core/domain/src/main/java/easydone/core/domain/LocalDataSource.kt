@@ -14,6 +14,8 @@ interface LocalDataSource {
 
     fun observeTasks(type: Task.Type): Flow<List<Task>>
 
+    fun observeTask(id: String): Flow<Task>
+
     suspend fun getTask(id: String): Task
 
     suspend fun createTask(taskTemplate: TaskTemplate)

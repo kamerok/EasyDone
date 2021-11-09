@@ -121,7 +121,7 @@ internal class EditTaskViewModel(
                 append("${period.days}d")
             }
             " until ${it.format(DateTimeFormatter.ofPattern("d MMM y"))} ($periodString)"
-        })
+        } ?: "")
         Task.Type.MAYBE -> "MAYBE"
     }
 

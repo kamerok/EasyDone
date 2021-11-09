@@ -55,6 +55,11 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
             .map { it.executeAsList() }
             .map { dbTasks -> dbTasks.map { it.toTask() } }
 
+    override fun observeTask(id: String): Flow<Task> =
+        taskQueries.selectById(id)
+            .asFlow()
+            .map { it.executeAsOne().toTask() }
+
     override suspend fun getTask(id: String): Task = withContext(Dispatchers.IO) {
         taskQueries.selectById(id).executeAsOne().toTask()
     }

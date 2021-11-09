@@ -11,6 +11,8 @@ class DomainRepository(private val localDataSource: LocalDataSource) {
 
     suspend fun getTask(id: String): Task = localDataSource.getTask(id)
 
+    fun observeTask(id: String): Flow<Task> = localDataSource.observeTask(id)
+
     suspend fun saveTask(task: Task) {
         require(task.title.isNotEmpty()) { "title should not be empty" }
         localDataSource.updateTask(task)
@@ -19,29 +21,6 @@ class DomainRepository(private val localDataSource: LocalDataSource) {
     suspend fun archiveTask(id: String) {
         val task = localDataSource.getTask(id)
         localDataSource.updateTask(task.copy(isDone = true))
-    }
-
-    suspend fun moveTask(id: String) {
-        val task = localDataSource.getTask(id)
-        localDataSource.updateTask(
-            task.copy(
-                type = if (task.type == Task.Type.INBOX) Task.Type.TO_DO else Task.Type.INBOX
-            )
-        )
-    }
-
-    suspend fun switchUrgent(taskId: String) {
-        val task = localDataSource.getTask(taskId)
-        localDataSource.updateTask(
-            task.copy(markers = task.markers.copy(isUrgent = !task.markers.isUrgent))
-        )
-    }
-
-    suspend fun switchImportant(taskId: String) {
-        val task = localDataSource.getTask(taskId)
-        localDataSource.updateTask(
-            task.copy(markers = task.markers.copy(isImportant = !task.markers.isImportant))
-        )
     }
 
     suspend fun createTask(
