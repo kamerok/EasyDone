@@ -13,6 +13,7 @@ dependencies {
     implementation project(':feature:quickcreatetask')
     implementation project(':feature:settings')
     implementation project(':feature:setupflow')
+    implementation project(':feature:taskdetails')
 
     implementation project(':library:keyvalue')
     implementation project(':library:keyvalue:impl')

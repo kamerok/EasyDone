@@ -9,4 +9,6 @@
     <string name="edit_task_description">Description</string>
     <string name="edit_task_save">Save</string>
 
+    <string name="task_details_screen_title">Task details</string>
+
 </resources>

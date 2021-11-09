@@ -28,6 +28,8 @@ import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
 import easydone.feature.settings.SettingsFragment
 import easydone.feature.settings.SettingsNavigator
 import easydone.feature.setupflow.SetupFragment
+import easydone.feature.taskdetails.TaskDetailsFragment
+import easydone.feature.taskdetails.TaskDetailsNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
@@ -109,6 +111,20 @@ object StartFlow {
 
                         override fun navigateToTask(id: String) {
                             startViewTask(id, get())
+                        }
+                    }
+                )
+            }
+            factory {
+                TaskDetailsFragment(
+                    get(),
+                    object : TaskDetailsNavigator {
+                        override fun editTask(id: String) {
+                            get<Navigator>().openScreen(
+                                fragmentClass = EditTaskFragment::class.java,
+                                addToBackStack = true,
+                                args = EditTaskFragment.createArgs(id)
+                            )
                         }
                     }
                 )
@@ -226,9 +242,9 @@ object StartFlow {
 
     private fun startViewTask(id: String, navigator: Navigator) =
         navigator.openScreen(
-            EditTaskFragment::class.java,
+            TaskDetailsFragment::class.java,
             true,
-            EditTaskFragment.createArgs(id)
+            TaskDetailsFragment.createArgs(id)
         )
 
     private fun startCreateTask(navigator: Navigator) =

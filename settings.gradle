@@ -20,6 +20,7 @@ include ':feature:quickcreatetask'
 include ':feature:selectboard'
 include ':feature:settings'
 include ':feature:setupflow'
+include ':feature:taskdetails'
 
 include ':library:keyvalue'
 include ':library:keyvalue:impl'
