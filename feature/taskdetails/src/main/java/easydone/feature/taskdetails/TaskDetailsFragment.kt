@@ -70,7 +70,7 @@ class TaskDetailsFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
-        setContent { EditTaskScreen(viewModel) }
+        setContent { TaskDetailsScreen(viewModel) }
     }
 
     companion object {
@@ -82,7 +82,7 @@ class TaskDetailsFragment(
 }
 
 @Composable
-private fun EditTaskScreen(
+private fun TaskDetailsScreen(
     viewModel: TaskDetailsViewModel
 ) {
     BasicLayout(
