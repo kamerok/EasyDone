@@ -8,9 +8,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -49,7 +49,7 @@ internal class TaskDetailsViewModel(
                 isImportant = false
             )
         )
-    val events: Flow<Event> get() = eventChannel.consumeAsFlow()
+    val events: Flow<Event> get() = eventChannel.receiveAsFlow()
 
     fun onEdit() {
         navigator.editTask(id)

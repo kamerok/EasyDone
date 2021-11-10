@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDate
@@ -49,7 +50,7 @@ internal class EditTaskViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = IdleState
         )
-    val events: Flow<Event> get() = eventChannel.consumeAsFlow()
+    val events: Flow<Event> get() = eventChannel.receiveAsFlow()
 
     fun onTypeClick() {
         actionChannel.trySend(Action.TypeClick)
