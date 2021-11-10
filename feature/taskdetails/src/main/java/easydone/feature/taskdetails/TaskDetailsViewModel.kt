@@ -57,7 +57,7 @@ internal class TaskDetailsViewModel(
 
     fun onMove() {
         task?.let { task ->
-            eventChannel.trySend(Event.SelectType(task.type, task.dueDate))
+            eventChannel.trySend(SelectType(task.type, task.dueDate))
         }
     }
 
@@ -97,8 +97,4 @@ internal class TaskDetailsViewModel(
         Task.Type.MAYBE -> "MAYBE"
     }
 
-}
-
-sealed class Event {
-    data class SelectType(val currentType: Task.Type, val date: LocalDate?) : Event()
 }

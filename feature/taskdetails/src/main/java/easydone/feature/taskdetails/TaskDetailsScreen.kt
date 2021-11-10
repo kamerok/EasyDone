@@ -75,7 +75,7 @@ internal fun TaskDetailsScreen(
                 viewModel.events
                     .onEach {
                         when (it) {
-                            is Event.SelectType -> {
+                            is SelectType -> {
                                 selectorType = it.currentType
                                 selectorDate = it.date
                                 sheetState.show()
@@ -163,7 +163,12 @@ private fun VerticallySplitContent(
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(
+                top = 8.dp,
+                bottom = 16.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         topContent()
@@ -176,14 +181,7 @@ private fun VerticallySplitContent(
 private fun TaskContent(state: State) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                top = 8.dp,
-                bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
-            )
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {

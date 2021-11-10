@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -24,6 +25,7 @@ internal class EditTaskViewModel(
     private val navigator: EditTaskNavigator
 ) : ViewModel() {
 
+    private val eventChannel = Channel<Event>(Channel.UNLIMITED)
     private val actionChannel: Channel<Action> = Channel(capacity = Channel.UNLIMITED)
 
     val state: StateFlow<State> = flow { emit(repository.getTask(id)) }
@@ -47,9 +49,14 @@ internal class EditTaskViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = IdleState
         )
+    val events: Flow<Event> get() = eventChannel.consumeAsFlow()
 
     fun onTypeClick() {
         actionChannel.trySend(Action.TypeClick)
+    }
+
+    fun onTypeSelected(type: Task.Type, date: LocalDate?) {
+        actionChannel.trySend(Action.TypeSelected(type, date))
     }
 
     fun onTitleChange(title: String) {
@@ -79,10 +86,12 @@ internal class EditTaskViewModel(
         action: Action
     ) = when (action) {
         is Action.TypeClick -> {
-            navigator.selectType(task.type, task.dueDate)
-                ?.let { (type, date) ->
-                    task.copy(type = type, dueDate = date)
-                } ?: task
+            eventChannel.trySend(OpenSelectType(task.type, task.dueDate))
+            task
+        }
+        is Action.TypeSelected -> {
+            eventChannel.trySend(CloseSelectType)
+            task.copy(type = action.type, dueDate = action.date)
         }
         is Action.TitleChange -> task.copy(title = action.title)
         is Action.DescriptionChange -> task.copy(description = action.description)
@@ -127,6 +136,7 @@ internal class EditTaskViewModel(
 
     private sealed class Action {
         object TypeClick : Action()
+        data class TypeSelected(val type: Task.Type, val date: LocalDate?) : Action()
         data class TitleChange(val title: String) : Action()
         data class DescriptionChange(val description: String) : Action()
         object UrgentClick : Action()
