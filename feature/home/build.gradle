@@ -2,19 +2,25 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+android {
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Versions.compose
+    }
+}
 
 dependencies {
     implementation project(':core:domain')
+    implementation project(':core:strings')
     implementation project(':core:utils')
     implementation project(':core-ui:design')
-    implementation project(':feature:feed')
 
+    implementation Android.accompanistInsets
     implementation Android.appCompat
-    implementation Android.constraintLayout
+    implementation Android.composeTooling
     implementation Android.core
     implementation Android.fragment
-    implementation Android.lifecycleRuntime
-    implementation Android.material
-    implementation Kotlin.coroutinesCore
-    implementation Libraries.timber
 }

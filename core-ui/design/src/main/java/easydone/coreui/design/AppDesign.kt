@@ -57,7 +57,7 @@ fun IconImportant(modifier: Modifier = Modifier) {
 
 @Composable
 fun EasyDoneAppBar(
-    navigationIcon: @Composable () -> Unit = { DefaultBackIcon() },
+    navigationIcon: @Composable (() -> Unit)? = { DefaultBackIcon() },
     actions: @Composable RowScope.() -> Unit = {},
     title: @Composable () -> Unit
 ) {
