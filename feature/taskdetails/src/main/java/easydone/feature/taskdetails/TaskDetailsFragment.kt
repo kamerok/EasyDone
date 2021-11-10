@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -40,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -110,6 +113,10 @@ private fun TaskDetailsScreen(
 
             val state by viewModel.state.collectAsState()
 
+            BackHandler(enabled = sheetState.isVisible) {
+                scope.launch { sheetState.hide() }
+            }
+
             CompositionLocalProvider(LocalElevationOverlay provides null) {
                 ModalBottomSheetLayout(
                     sheetState = sheetState,
@@ -168,6 +175,7 @@ private fun TypeSelector(
             type = Task.Type.INBOX,
             onClick = { onTypeSelected(Task.Type.INBOX, null) }
         )
+        Divider()
         TypeSelectorItem(
             isSelected = type == Task.Type.TO_DO,
             type = Task.Type.TO_DO,
@@ -175,6 +183,7 @@ private fun TypeSelector(
         )
         val context = LocalContext.current
         val initialDay = date ?: LocalDate.now().plusDays(1)
+        Divider()
         TypeSelectorItem(
             isSelected = type == Task.Type.WAITING,
             type = Task.Type.WAITING,
@@ -199,6 +208,7 @@ private fun TypeSelector(
                     .show()
             }
         )
+        Divider()
         TypeSelectorItem(
             isSelected = type == Task.Type.MAYBE,
             type = Task.Type.MAYBE,
@@ -235,9 +245,10 @@ private fun TypeSelectorItem(
             style = MaterialTheme.typography.subtitle1
         )
         if (date != null) {
+            val formatter = remember { DateTimeFormatter.ofPattern("d MMM y") }
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = "(${DateTimeFormatter.ofPattern("d MMM y").format(date)})",
+                    text = "(${formatter.format(date)})",
                     style = MaterialTheme.typography.subtitle1
                 )
             }
