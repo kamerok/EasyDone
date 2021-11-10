@@ -125,7 +125,7 @@ internal class EditTaskViewModel(
                 if (period.years > 0) {
                     append("${period.years}y ")
                 }
-                if (period.months > 0 || period.years > 0) {
+                if (period.months > 0) {
                     append("${period.months}m ")
                 }
                 append("${period.days}d")
