@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.PriorityHigh
+import androidx.compose.material.icons.filled.Subject
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -52,6 +53,11 @@ fun IconUrgent(modifier: Modifier = Modifier) {
 @Composable
 fun IconImportant(modifier: Modifier = Modifier) {
     Icon(Icons.Default.PriorityHigh, "", tint = important, modifier = modifier)
+}
+
+@Composable
+fun IconText(modifier: Modifier = Modifier) {
+    Icon(Icons.Default.Subject, "", modifier = modifier)
 }
 
 
