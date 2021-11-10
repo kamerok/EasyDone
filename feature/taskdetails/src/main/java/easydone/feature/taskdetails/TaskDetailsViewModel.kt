@@ -49,7 +49,7 @@ internal class TaskDetailsViewModel(
                 isImportant = false
             )
         )
-    val events: Flow<Event> = eventChannel.consumeAsFlow()
+    val events: Flow<Event> get() = eventChannel.consumeAsFlow()
 
     fun onEdit() {
         navigator.editTask(id)
