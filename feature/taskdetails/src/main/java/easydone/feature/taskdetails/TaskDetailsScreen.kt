@@ -1,4 +1,4 @@
-package easydone.feature.taskdetails.compose
+package easydone.feature.taskdetails
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -53,10 +53,6 @@ import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.IconImportant
 import easydone.coreui.design.IconUrgent
 import easydone.feature.selecttype.TypeSelector
-import easydone.feature.taskdetails.Event
-import easydone.feature.taskdetails.R
-import easydone.feature.taskdetails.State
-import easydone.feature.taskdetails.TaskDetailsViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch

@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import easydone.core.domain.DomainRepository
-import easydone.feature.taskdetails.compose.TaskDetailsScreen
 
 
 class TaskDetailsFragment(
