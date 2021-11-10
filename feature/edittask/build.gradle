@@ -15,6 +15,7 @@ dependencies {
     implementation project(':core:domain')
     implementation project(':core:strings')
     implementation project(':core-ui:design')
+    implementation project(':feature:selecttype')
 
     implementation Android.accompanistAppCompat
     implementation Android.accompanistInsets
