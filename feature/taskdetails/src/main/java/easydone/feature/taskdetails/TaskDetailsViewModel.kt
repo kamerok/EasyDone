@@ -27,7 +27,9 @@ internal class TaskDetailsViewModel(
         .onEach { task = it }
         .map { task ->
             State(
-                type = task.type.format(task.dueDate),
+                type = task.type,
+                date = task.dueDate,
+                typeText = task.type.format(task.dueDate),
                 title = task.title,
                 description = task.description,
                 isUrgent = task.markers.isUrgent,
@@ -37,21 +39,18 @@ internal class TaskDetailsViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = State("", "", "", isUrgent = false, isImportant = false)
+            initialValue = State(Task.Type.INBOX, null, "", "", "", isUrgent = false, isImportant = false)
         )
 
     fun onEdit() {
         navigator.editTask(id)
     }
 
-    fun onMove() {
+    fun onMove(type: Task.Type, date: LocalDate? = null) {
         task?.let { task ->
             viewModelScope.launch {
-                val result = navigator.selectType(task.type, task.dueDate)
-                if (result != null) {
-                    repository.saveTask(task.copy(type = result.first, dueDate = result.second))
-                    navigator.close()
-                }
+                repository.saveTask(task.copy(type = type, dueDate = date))
+                navigator.close()
             }
         }
     }
