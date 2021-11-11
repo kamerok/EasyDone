@@ -1,11 +1,39 @@
 package easydone.feature.waiting
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.model.Task
+import easydone.coreui.design.UiTask
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 
 internal class WaitingViewModel(
     repository: DomainRepository,
-    navigator: WaitingNavigator
+    private val navigator: WaitingNavigator
 ) : ViewModel() {
+
+    val state: StateFlow<State> =
+        repository.getTasks(Task.Type.WAITING)
+            .map { State(it.map { it.toUiTask() }) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = State(emptyList())
+            )
+
+    fun onTaskClick(task: UiTask) {
+        navigator.openTask(task.id)
+    }
+
+    private fun Task.toUiTask() = UiTask(
+        id = id,
+        title = title,
+        hasDescription = description.isNotBlank(),
+        isUrgent = markers.isUrgent,
+        isImportant = markers.isImportant
+    )
 }
