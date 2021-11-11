@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,11 +17,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,82 +50,91 @@ internal fun HomeScreen() {
     AppTheme {
         ProvideWindowInsets {
             FullscreenContent {
-                Column {
-                    EasyDoneAppBar(navigationIcon = null) {
-                        Text(stringResource(R.string.app_name))
-                    }
-                    fun task(i: Int = 0) = UiTask("id:$i", "Task $i", false, false, false)
-                    val state = State(
-                        inboxCount = 5,
-                        todoTasks = (0..10).map { task(it) },
-                        nextWaitingTask = task() to LocalDate.now().plusDays(10),
-                        waitingCount = 10,
-                        maybeTasks = (10..20).map { task(it) }
-                    )
-                    LazyColumn(
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        if (state.inboxCount > 0) {
-                            item {
-                                InboxMessage(
-                                    count = state.inboxCount,
-                                    onSort = {}
-                                )
-                            }
+                Box {
+                    Column {
+                        EasyDoneAppBar(navigationIcon = null) {
+                            Text(stringResource(R.string.app_name))
                         }
-
-                        if (state.todoTasks.isNotEmpty()) {
-                            item { Title("ToDo") }
-                            items(state.todoTasks) { task ->
-                                TaskCard(
-                                    task = task,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { }
-                                )
+                        fun task(i: Int = 0) = UiTask("id:$i", "Task $i", false, false, false)
+                        val state = State(
+                            inboxCount = 5,
+                            todoTasks = (0..10).map { task(it) },
+                            nextWaitingTask = task() to LocalDate.now().plusDays(10),
+                            waitingCount = 10,
+                            maybeTasks = (10..20).map { task(it) }
+                        )
+                        LazyColumn(
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            if (state.inboxCount > 0) {
+                                item {
+                                    InboxMessage(
+                                        count = state.inboxCount,
+                                        onSort = {}
+                                    )
+                                }
                             }
-                            item { Spacer(modifier = Modifier.height(16.dp)) }
-                        }
 
-                        if (state.nextWaitingTask != null) {
-                            item {
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-                                    Title("Up Next")
+                            if (state.todoTasks.isNotEmpty()) {
+                                item { Title("ToDo") }
+                                items(state.todoTasks) { task ->
                                     TaskCard(
-                                        task = state.nextWaitingTask.first,
+                                        task = task,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clickable { }
                                     )
-                                    if (state.waitingCount > 1) {
-                                        MoreButton(
-                                            count = state.waitingCount - 1,
+                                }
+                                item { Spacer(modifier = Modifier.height(16.dp)) }
+                            }
+
+                            if (state.nextWaitingTask != null) {
+                                item {
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                                    ) {
+                                        Title("Up Next")
+                                        TaskCard(
+                                            task = state.nextWaitingTask.first,
                                             modifier = Modifier
-                                                .align(Alignment.CenterHorizontally),
-                                            onClick = {}
+                                                .fillMaxWidth()
+                                                .clickable { }
                                         )
+                                        if (state.waitingCount > 1) {
+                                            MoreButton(
+                                                count = state.waitingCount - 1,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterHorizontally),
+                                                onClick = {}
+                                            )
+                                        }
                                     }
                                 }
+                                item { Spacer(modifier = Modifier.height(16.dp)) }
                             }
-                            item { Spacer(modifier = Modifier.height(16.dp)) }
-                        }
-                        if (state.maybeTasks.isNotEmpty()) {
-                            item {
-                                Title("Maybe")
+                            if (state.maybeTasks.isNotEmpty()) {
+                                item { Title("Maybe") }
+                                items(state.maybeTasks) { task ->
+                                    TaskCard(
+                                        task = task,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { }
+                                    )
+                                }
                             }
-                            items(state.maybeTasks) { task ->
-                                TaskCard(
-                                    task = task,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { }
-                                )
-                            }
+                            //fab size
+                            item { Spacer(modifier = Modifier.height(56.dp)) }
                         }
                     }
+                    FloatingActionButton(
+                        backgroundColor = MaterialTheme.colors.primary,
+                        onClick = { },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp)
+                    ) { Icon(Icons.Default.Add, "") }
                 }
             }
         }
