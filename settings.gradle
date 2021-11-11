@@ -23,6 +23,7 @@ include ':feature:selecttype'
 include ':feature:settings'
 include ':feature:setupflow'
 include ':feature:taskdetails'
+include ':feature:waiting'
 
 include ':library:keyvalue'
 include ':library:keyvalue:impl'

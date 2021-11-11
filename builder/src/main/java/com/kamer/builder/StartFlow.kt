@@ -30,6 +30,8 @@ import easydone.feature.settings.SettingsNavigator
 import easydone.feature.setupflow.SetupFragment
 import easydone.feature.taskdetails.TaskDetailsFragment
 import easydone.feature.taskdetails.TaskDetailsNavigator
+import easydone.feature.waiting.WaitingFragment
+import easydone.feature.waiting.WaitingNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.library.trelloapi.TrelloApi
@@ -110,7 +112,7 @@ object StartFlow {
                         }
 
                         override fun navigateToWaiting() {
-                            TODO("Not yet implemented")
+                            get<Navigator>().openScreen(WaitingFragment::class.java, true)
                         }
 
                         override fun navigateToTask(id: String) {
@@ -123,6 +125,16 @@ object StartFlow {
                 InboxFragment(
                     get(),
                     object : InboxNavigator {
+                        override fun openTask(id: String) {
+                            startViewTask(id, get())
+                        }
+                    }
+                )
+            }
+            factory {
+                WaitingFragment(
+                    get(),
+                    object : WaitingNavigator {
                         override fun openTask(id: String) {
                             startViewTask(id, get())
                         }
