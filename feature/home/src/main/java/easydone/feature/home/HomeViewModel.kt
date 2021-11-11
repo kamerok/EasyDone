@@ -47,13 +47,17 @@ internal class HomeViewModel(
         navigator.navigateToCreate()
     }
 
-    fun onSort() {}
+    fun onSort() {
+        navigator.navigateToInbox()
+    }
 
     fun onTaskClick(task: UiTask) {
         navigator.navigateToTask(task.id)
     }
 
-    fun onWaitingMore() {}
+    fun onWaitingMore() {
+        navigator.navigateToWaiting()
+    }
 
     fun onSettings() {
         navigator.navigateToSettings()

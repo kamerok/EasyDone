@@ -1,0 +1,24 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Versions.compose
+    }
+}
+
+dependencies {
+    implementation project(':core:domain')
+    implementation project(':core:strings')
+    implementation project(':core-ui:design')
+
+    implementation Android.accompanistInsets
+    implementation Android.appCompat
+    implementation Android.composeTooling
+    implementation Android.core
+    implementation Android.fragment
+}

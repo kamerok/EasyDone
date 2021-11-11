@@ -7,6 +7,10 @@ interface HomeNavigator {
 
     fun navigateToSettings()
 
+    fun navigateToInbox()
+
+    fun navigateToWaiting()
+
     fun navigateToTask(id: String)
 
 }

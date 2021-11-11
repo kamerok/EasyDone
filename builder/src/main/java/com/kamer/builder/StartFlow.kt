@@ -21,6 +21,8 @@ import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
+import easydone.feature.inbox.InboxFragment
+import easydone.feature.inbox.InboxNavigator
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
 import easydone.feature.settings.SettingsFragment
@@ -103,7 +105,25 @@ object StartFlow {
                             startSettings(get())
                         }
 
+                        override fun navigateToInbox() {
+                            get<Navigator>().openScreen(InboxFragment::class.java, true)
+                        }
+
+                        override fun navigateToWaiting() {
+                            TODO("Not yet implemented")
+                        }
+
                         override fun navigateToTask(id: String) {
+                            startViewTask(id, get())
+                        }
+                    }
+                )
+            }
+            factory {
+                InboxFragment(
+                    get(),
+                    object : InboxNavigator {
+                        override fun openTask(id: String) {
                             startViewTask(id, get())
                         }
                     }
