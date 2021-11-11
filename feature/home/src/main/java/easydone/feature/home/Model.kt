@@ -1,5 +1,6 @@
 package easydone.feature.home
 
+import easydone.coreui.design.UiTask
 import java.time.LocalDate
 
 
@@ -9,12 +10,4 @@ internal data class State(
     val nextWaitingTask: Pair<UiTask, LocalDate>?,
     val waitingCount: Int,
     val maybeTasks: List<UiTask>
-)
-
-internal data class UiTask(
-    val id: String,
-    val title: String,
-    val hasDescription: Boolean,
-    val isUrgent: Boolean,
-    val isImportant: Boolean
 )

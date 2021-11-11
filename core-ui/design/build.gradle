@@ -15,5 +15,6 @@ dependencies {
     implementation Android.activityCompose
     implementation Android.appCompat
     implementation Android.composeIcons
+    implementation Android.composeTooling
     implementation Android.material
 }

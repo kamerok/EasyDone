@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
@@ -36,17 +35,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
 import com.kamer.home.R
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
-import easydone.coreui.design.IconImportant
-import easydone.coreui.design.IconText
-import easydone.coreui.design.IconUrgent
+import easydone.coreui.design.TaskCard
+import easydone.coreui.design.UiTask
 import java.time.LocalDate
 import java.time.Period
 
@@ -270,38 +266,6 @@ private fun Title(text: String) {
     )
 }
 
-@Composable
-private fun TaskCard(
-    task: UiTask,
-    modifier: Modifier = Modifier
-) {
-    Card(modifier = modifier) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Text(
-                text = task.title,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            if (task.hasDescription || task.isUrgent || task.isImportant) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    if (task.hasDescription) {
-                        IconText()
-                    }
-                    if (task.isImportant) {
-                        IconImportant()
-                    }
-                    if (task.isUrgent) {
-                        IconUrgent()
-                    }
-                }
-            }
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MoreButton(
@@ -337,48 +301,4 @@ private fun MoreButton(
             )
         }
     }
-}
-
-@Preview
-@Composable
-private fun TaskCardPreview() {
-    TaskCard(
-        task = UiTask(
-            id = "id",
-            title = "Title",
-            hasDescription = true,
-            isUrgent = true,
-            isImportant = true
-        )
-    )
-}
-
-@Preview
-@Composable
-private fun ShortTaskCardPreview() {
-    TaskCard(
-        task = UiTask(
-            id = "id",
-            title = "Title",
-            hasDescription = false,
-            isUrgent = false,
-            isImportant = false
-        )
-    )
-}
-
-@Preview(widthDp = 300)
-@Composable
-private fun LongTaskCardPreview() {
-    TaskCard(
-        task = UiTask(
-            id = "id",
-            title = "Title title title title title title title title title title" +
-                    " title title title title title title title title title title" +
-                    " title title title title title",
-            hasDescription = true,
-            isUrgent = true,
-            isImportant = true
-        )
-    )
 }

@@ -2,12 +2,18 @@ package easydone.coreui.design
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
@@ -24,6 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
@@ -104,4 +112,88 @@ private fun DefaultBackIcon() {
     IconButton(onClick = { dispatcher?.onBackPressed() }) {
         Icon(Icons.Default.ArrowBack, "")
     }
+}
+
+data class UiTask(
+    val id: String,
+    val title: String,
+    val hasDescription: Boolean,
+    val isUrgent: Boolean,
+    val isImportant: Boolean
+)
+
+@Composable
+fun TaskCard(
+    task: UiTask,
+    modifier: Modifier = Modifier
+) {
+    Card(modifier = modifier) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text(
+                text = task.title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            if (task.hasDescription || task.isUrgent || task.isImportant) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    if (task.hasDescription) {
+                        IconText()
+                    }
+                    if (task.isImportant) {
+                        IconImportant()
+                    }
+                    if (task.isUrgent) {
+                        IconUrgent()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TaskCardPreview() {
+    TaskCard(
+        task = UiTask(
+            id = "id",
+            title = "Title",
+            hasDescription = true,
+            isUrgent = true,
+            isImportant = true
+        )
+    )
+}
+
+@Preview
+@Composable
+private fun ShortTaskCardPreview() {
+    TaskCard(
+        task = UiTask(
+            id = "id",
+            title = "Title",
+            hasDescription = false,
+            isUrgent = false,
+            isImportant = false
+        )
+    )
+}
+
+@Preview(widthDp = 300)
+@Composable
+private fun LongTaskCardPreview() {
+    TaskCard(
+        task = UiTask(
+            id = "id",
+            title = "Title title title title title title title title title title" +
+                    " title title title title title title title title title title" +
+                    " title title title title title",
+            hasDescription = true,
+            isUrgent = true,
+            isImportant = true
+        )
+    )
 }
