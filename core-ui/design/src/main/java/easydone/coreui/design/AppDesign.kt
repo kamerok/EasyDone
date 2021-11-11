@@ -2,7 +2,9 @@ package easydone.coreui.design
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -11,10 +13,15 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PriorityHigh
 import androidx.compose.material.icons.filled.Subject
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -65,6 +72,7 @@ fun IconText(modifier: Modifier = Modifier) {
 fun EasyDoneAppBar(
     navigationIcon: @Composable (() -> Unit)? = { DefaultBackIcon() },
     actions: @Composable RowScope.() -> Unit = {},
+    menu: @Composable (ColumnScope.() -> Unit)? = null,
     title: @Composable () -> Unit
 ) {
     TopAppBar(
@@ -72,7 +80,21 @@ fun EasyDoneAppBar(
         backgroundColor = MaterialTheme.colors.background,
         title = title,
         navigationIcon = navigationIcon,
-        actions = actions,
+        actions = {
+            actions()
+            if (menu != null) {
+                var showMenu by remember { mutableStateOf(false) }
+                IconButton(onClick = { showMenu = !showMenu }) {
+                    Icon(Icons.Default.MoreVert, "")
+                }
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false },
+                ) {
+                    menu()
+                }
+            }
+        },
     )
 }
 

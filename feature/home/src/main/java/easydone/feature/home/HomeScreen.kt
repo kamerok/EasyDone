@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -57,9 +58,16 @@ internal fun HomeScreen(viewModel: HomeViewModel) {
             FullscreenContent {
                 Box {
                     Column {
-                        EasyDoneAppBar(navigationIcon = null) {
-                            Text(stringResource(R.string.app_name))
-                        }
+                        EasyDoneAppBar(
+                            navigationIcon = null,
+                            title = { Text(stringResource(R.string.app_name)) },
+                            menu = {
+                                DropdownMenuItem(onClick = viewModel::onSettings) {
+                                    Text(text = "Settings")
+                                }
+                            }
+                        )
+
                         val state by viewModel.state.collectAsState()
                         LazyColumn(
                             contentPadding = PaddingValues(16.dp),

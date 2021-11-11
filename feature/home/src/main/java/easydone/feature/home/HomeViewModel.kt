@@ -26,4 +26,6 @@ internal class HomeViewModel : ViewModel() {
 
     fun onWaitingMore() {}
 
+    fun onSettings() {}
+
 }
