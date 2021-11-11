@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -34,6 +36,7 @@ import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.IconImportant
 import easydone.coreui.design.IconText
 import easydone.coreui.design.IconUrgent
+import java.time.LocalDate
 
 
 @Composable
@@ -45,27 +48,79 @@ internal fun HomeScreen() {
                     EasyDoneAppBar(navigationIcon = null) {
                         Text(stringResource(R.string.app_name))
                     }
+                    fun task() = UiTask("id", "Task", false, false, false)
+                    val state = State(
+                        inboxCount = 5,
+                        todoTasks = (0..100).map { task() },
+                        nextWaitingTask = task() to LocalDate.now().plusDays(10),
+                        waitingCount = 10,
+                        maybeTasks = (0..100).map { task() }
+                    )
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.padding(16.dp)
+                        verticalArrangement = Arrangement.spacedBy(32.dp),
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp)
                     ) {
-                        InboxMessage(
-                            count = 10,
-                            onSort = {}
-                        )
-                        Title("ToDo")
-                        TaskCard(
-                            task = UiTask("Task", false, false, false),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { }
-                        )
-                        MoreButton(
-                            count = 10,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally),
-                            onClick = {}
-                        )
+                        if (state.inboxCount > 0 || state.todoTasks.isNotEmpty()) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                if (state.inboxCount > 0) {
+                                    InboxMessage(
+                                        count = state.inboxCount,
+                                        onSort = {}
+                                    )
+                                }
+                                if (state.todoTasks.isNotEmpty()) {
+                                    Title("ToDo")
+                                    state.todoTasks.forEach { task ->
+                                        TaskCard(
+                                            task = task,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clickable { }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        if (state.nextWaitingTask != null) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Title("Up Next")
+                                TaskCard(
+                                    task = state.nextWaitingTask.first,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { }
+                                )
+                                if (state.waitingCount > 1) {
+                                    MoreButton(
+                                        count = state.waitingCount - 1,
+                                        modifier = Modifier
+                                            .align(Alignment.CenterHorizontally),
+                                        onClick = {}
+                                    )
+                                }
+                            }
+                        }
+                        if (state.maybeTasks.isNotEmpty()) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Title("Maybe")
+                                state.maybeTasks.forEach { task ->
+                                    TaskCard(
+                                        task = task,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -123,13 +178,6 @@ private fun Title(text: String) {
         style = MaterialTheme.typography.h5
     )
 }
-
-data class UiTask(
-    val title: String,
-    val hasDescription: Boolean,
-    val isUrgent: Boolean,
-    val isImportant: Boolean
-)
 
 @Composable
 private fun TaskCard(
@@ -211,10 +259,25 @@ private fun ScreenPreview() {
 private fun TaskCardPreview() {
     TaskCard(
         task = UiTask(
+            id = "id",
             title = "Title",
             hasDescription = true,
             isUrgent = true,
             isImportant = true
+        )
+    )
+}
+
+@Preview
+@Composable
+private fun ShortTaskCardPreview() {
+    TaskCard(
+        task = UiTask(
+            id = "id",
+            title = "Title",
+            hasDescription = false,
+            isUrgent = false,
+            isImportant = false
         )
     )
 }
@@ -224,6 +287,7 @@ private fun TaskCardPreview() {
 private fun LongTaskCardPreview() {
     TaskCard(
         task = UiTask(
+            id = "id",
             title = "Title title title title title title title title title title" +
                     " title title title title title title title title title title" +
                     " title title title title title",
