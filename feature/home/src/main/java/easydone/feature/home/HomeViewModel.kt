@@ -1,12 +1,16 @@
 package easydone.feature.home
 
 import androidx.lifecycle.ViewModel
+import easydone.core.domain.DomainRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDate
 
 
-internal class HomeViewModel : ViewModel() {
+internal class HomeViewModel(
+    private val repository: DomainRepository,
+    private val navigator: HomeNavigator
+) : ViewModel() {
 
     private fun task(i: Int = 0) = UiTask("id:$i", "Task $i", false, false, false)
 
@@ -18,14 +22,20 @@ internal class HomeViewModel : ViewModel() {
         maybeTasks = (10..20).map { task(it) }
     ))
 
-    fun onAdd() {}
+    fun onAdd() {
+        navigator.navigateToCreate()
+    }
 
     fun onSort() {}
 
-    fun onTaskClick(task: UiTask) {}
+    fun onTaskClick(task: UiTask) {
+        navigator.navigateToTask(task.id)
+    }
 
     fun onWaitingMore() {}
 
-    fun onSettings() {}
+    fun onSettings() {
+        navigator.navigateToSettings()
+    }
 
 }
