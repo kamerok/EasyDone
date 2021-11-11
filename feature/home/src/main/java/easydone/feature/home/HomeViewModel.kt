@@ -25,11 +25,11 @@ internal class HomeViewModel(
         ) { inbox, todo, waiting, maybe ->
             State(
                 inboxCount = inbox.size,
-                todoTasks = todo.map { it.toUiTask() },
+                todoTasks = todo.sortedWith(taskComparator).map { it.toUiTask() },
                 nextWaitingTask = waiting.minByOrNull { it.dueDate!! }
                     ?.let { it.toUiTask() to it.dueDate!! },
                 waitingCount = waiting.size,
-                maybeTasks = maybe.map { it.toUiTask() }
+                maybeTasks = maybe.sortedWith(taskComparator).map { it.toUiTask() }
             )
         }.stateIn(
             scope = viewModelScope,
@@ -70,5 +70,19 @@ internal class HomeViewModel(
         isUrgent = markers.isUrgent,
         isImportant = markers.isImportant
     )
+
+    companion object {
+        private val taskComparator = compareBy<Task>(
+            {
+                when {
+                    it.markers.isUrgent && it.markers.isImportant -> 0
+                    it.markers.isUrgent -> 1
+                    it.markers.isImportant -> 2
+                    else -> 3
+                }
+            },
+            { it.title }
+        )
+    }
 
 }
