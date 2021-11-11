@@ -1,5 +1,6 @@
 package easydone.feature.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,12 +10,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,6 +54,18 @@ internal fun HomeScreen() {
                             onSort = {}
                         )
                         Title("ToDo")
+                        TaskCard(
+                            task = UiTask("Task", false, false, false),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { }
+                        )
+                        MoreButton(
+                            count = 10,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            onClick = {}
+                        )
                     }
                 }
             }
@@ -77,7 +95,7 @@ private fun InboxMessage(
     onSort: () -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
@@ -114,8 +132,11 @@ data class UiTask(
 )
 
 @Composable
-private fun TaskCard(task: UiTask) {
-    Card {
+private fun TaskCard(
+    task: UiTask,
+    modifier: Modifier = Modifier
+) {
+    Card(modifier = modifier) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(8.dp)
@@ -125,24 +146,58 @@ private fun TaskCard(task: UiTask) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                if (task.hasDescription) {
-                    IconText()
-                }
-                if (task.isImportant) {
-                    IconImportant()
-                }
-                if (task.isUrgent) {
-                    IconUrgent()
+            if (task.hasDescription || task.isUrgent || task.isImportant) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    if (task.hasDescription) {
+                        IconText()
+                    }
+                    if (task.isImportant) {
+                        IconImportant()
+                    }
+                    if (task.isUrgent) {
+                        IconUrgent()
+                    }
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun MoreButton(count: Int) {
-    //TODO
+private fun MoreButton(
+    count: Int,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
+        color = Color.Transparent,
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(
+                top = 8.dp,
+                bottom = 8.dp,
+                start = 16.dp,
+                end = 8.dp
+            )
+        ) {
+            Text(
+                text = "VIEW $count MORE",
+                style = MaterialTheme.typography.button,
+                color = MaterialTheme.colors.primary
+            )
+            Icon(
+                Icons.Default.ChevronRight,
+                "",
+                tint = MaterialTheme.colors.primary
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
