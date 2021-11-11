@@ -61,7 +61,7 @@ internal class EditTaskViewModel(
     }
 
     fun onTitleChange(title: String) {
-        actionChannel.trySend(Action.TitleChange(title))
+        actionChannel.trySend(Action.TitleChange(title.replace(Regex("[\n\r]"), " ")))
     }
 
     fun onDescriptionChange(description: String) {

@@ -209,7 +209,6 @@ private fun TaskTitle(
             onValueChange = onChange,
             isError = isError,
             label = { Text(stringResource(R.string.edit_task_title)) },
-            singleLine = true,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
             )
