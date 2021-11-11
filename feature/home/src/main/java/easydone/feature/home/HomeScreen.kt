@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +45,7 @@ import easydone.coreui.design.IconImportant
 import easydone.coreui.design.IconText
 import easydone.coreui.design.IconUrgent
 import java.time.LocalDate
+import java.time.Period
 
 
 @Composable
@@ -67,65 +70,25 @@ internal fun HomeScreen() {
                             contentPadding = PaddingValues(16.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            if (state.inboxCount > 0) {
-                                item {
-                                    InboxMessage(
-                                        count = state.inboxCount,
-                                        onSort = {}
-                                    )
-                                }
-                            }
-
-                            if (state.todoTasks.isNotEmpty()) {
-                                item { Title("ToDo") }
-                                items(state.todoTasks) { task ->
-                                    TaskCard(
-                                        task = task,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable { }
-                                    )
-                                }
-                                item { Spacer(modifier = Modifier.height(16.dp)) }
-                            }
-
-                            if (state.nextWaitingTask != null) {
-                                item {
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                                    ) {
-                                        Title("Up Next")
-                                        TaskCard(
-                                            task = state.nextWaitingTask.first,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .clickable { }
-                                        )
-                                        if (state.waitingCount > 1) {
-                                            MoreButton(
-                                                count = state.waitingCount - 1,
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterHorizontally),
-                                                onClick = {}
-                                            )
-                                        }
-                                    }
-                                }
-                                item { Spacer(modifier = Modifier.height(16.dp)) }
-                            }
-                            if (state.maybeTasks.isNotEmpty()) {
-                                item { Title("Maybe") }
-                                items(state.maybeTasks) { task ->
-                                    TaskCard(
-                                        task = task,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable { }
-                                    )
-                                }
-                            }
-                            //fab size
-                            item { Spacer(modifier = Modifier.height(56.dp)) }
+                            inboxSection(
+                                inboxCount = state.inboxCount,
+                                onSort = {}
+                            )
+                            todoSection(
+                                tasks = state.todoTasks,
+                                onTaskClick = { task -> }
+                            )
+                            waitingSection(
+                                nextWaitingTask = state.nextWaitingTask,
+                                waitingCount = state.waitingCount,
+                                onTaskClick = { task -> },
+                                onMore = {}
+                            )
+                            maybeSection(
+                                tasks = state.maybeTasks,
+                                onTaskClick = { task -> }
+                            )
+                            fabSpaceItem()
                         }
                     }
                     FloatingActionButton(
@@ -139,6 +102,118 @@ internal fun HomeScreen() {
             }
         }
     }
+}
+
+private fun LazyListScope.inboxSection(
+    inboxCount: Int,
+    onSort: () -> Unit
+) {
+    if (inboxCount > 0) {
+        item {
+            InboxMessage(
+                count = inboxCount,
+                onSort = onSort
+            )
+        }
+    }
+}
+
+private fun LazyListScope.todoSection(
+    tasks: List<UiTask>,
+    onTaskClick: (UiTask) -> Unit
+) {
+    if (tasks.isNotEmpty()) {
+        titleItem("ToDo")
+        taskItems(
+            tasks = tasks,
+            onClick = onTaskClick
+        )
+        sectionSpaceItem()
+    }
+}
+
+private fun LazyListScope.waitingSection(
+    nextWaitingTask: Pair<UiTask, LocalDate>?,
+    waitingCount: Int,
+    onTaskClick: (UiTask) -> Unit,
+    onMore: () -> Unit
+) {
+    if (nextWaitingTask != null) {
+        item {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                val period = remember(nextWaitingTask) {
+                    //TODO: reuse format logic
+                    val period = Period.between(LocalDate.now(), nextWaitingTask.second)
+                    buildString {
+                        if (period.years > 0) {
+                            append("${period.years}y ")
+                        }
+                        if (period.months > 0) {
+                            append("${period.months}m ")
+                        }
+                        append("${period.days}d")
+                    }
+                }
+                Title("Up Next in $period")
+                TaskCard(
+                    task = nextWaitingTask.first,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onTaskClick(nextWaitingTask.first) }
+                )
+                if (waitingCount > 1) {
+                    MoreButton(
+                        count = waitingCount - 1,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        onClick = onMore
+                    )
+                }
+            }
+        }
+        sectionSpaceItem()
+    }
+}
+
+private fun LazyListScope.maybeSection(
+    tasks: List<UiTask>,
+    onTaskClick: (UiTask) -> Unit
+) {
+    if (tasks.isNotEmpty()) {
+        titleItem("Maybe")
+        taskItems(
+            tasks = tasks,
+            onClick = onTaskClick
+        )
+    }
+}
+
+private fun LazyListScope.titleItem(text: String) {
+    item { Title(text) }
+}
+
+private fun LazyListScope.taskItems(
+    tasks: List<UiTask>,
+    onClick: (UiTask) -> Unit
+) {
+    items(tasks) { task ->
+        TaskCard(
+            task = task,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick(task) }
+        )
+    }
+}
+
+private fun LazyListScope.sectionSpaceItem() {
+    item { Spacer(modifier = Modifier.height(16.dp)) }
+}
+
+private fun LazyListScope.fabSpaceItem() {
+    item { Spacer(modifier = Modifier.height(56.dp)) }
 }
 
 @Composable
