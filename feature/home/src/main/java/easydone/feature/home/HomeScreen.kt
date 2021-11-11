@@ -5,12 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -48,77 +51,75 @@ internal fun HomeScreen() {
                     EasyDoneAppBar(navigationIcon = null) {
                         Text(stringResource(R.string.app_name))
                     }
-                    fun task() = UiTask("id", "Task", false, false, false)
+                    fun task(i: Int = 0) = UiTask("id:$i", "Task $i", false, false, false)
                     val state = State(
                         inboxCount = 5,
-                        todoTasks = (0..100).map { task() },
+                        todoTasks = (0..10).map { task(it) },
                         nextWaitingTask = task() to LocalDate.now().plusDays(10),
                         waitingCount = 10,
-                        maybeTasks = (0..100).map { task() }
+                        maybeTasks = (10..20).map { task(it) }
                     )
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(32.dp),
-                        modifier = Modifier
-                            .verticalScroll(rememberScrollState())
-                            .padding(16.dp)
+                    LazyColumn(
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        if (state.inboxCount > 0 || state.todoTasks.isNotEmpty()) {
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                if (state.inboxCount > 0) {
-                                    InboxMessage(
-                                        count = state.inboxCount,
-                                        onSort = {}
-                                    )
-                                }
-                                if (state.todoTasks.isNotEmpty()) {
-                                    Title("ToDo")
-                                    state.todoTasks.forEach { task ->
-                                        TaskCard(
-                                            task = task,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .clickable { }
-                                        )
-                                    }
-                                }
+                        if (state.inboxCount > 0) {
+                            item {
+                                InboxMessage(
+                                    count = state.inboxCount,
+                                    onSort = {}
+                                )
                             }
                         }
-                        if (state.nextWaitingTask != null) {
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                Title("Up Next")
+
+                        if (state.todoTasks.isNotEmpty()) {
+                            item { Title("ToDo") }
+                            items(state.todoTasks) { task ->
                                 TaskCard(
-                                    task = state.nextWaitingTask.first,
+                                    task = task,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable { }
                                 )
-                                if (state.waitingCount > 1) {
-                                    MoreButton(
-                                        count = state.waitingCount - 1,
-                                        modifier = Modifier
-                                            .align(Alignment.CenterHorizontally),
-                                        onClick = {}
-                                    )
-                                }
                             }
+                            item { Spacer(modifier = Modifier.height(16.dp)) }
                         }
-                        if (state.maybeTasks.isNotEmpty()) {
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                Title("Maybe")
-                                state.maybeTasks.forEach { task ->
+
+                        if (state.nextWaitingTask != null) {
+                            item {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    Title("Up Next")
                                     TaskCard(
-                                        task = task,
+                                        task = state.nextWaitingTask.first,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clickable { }
                                     )
+                                    if (state.waitingCount > 1) {
+                                        MoreButton(
+                                            count = state.waitingCount - 1,
+                                            modifier = Modifier
+                                                .align(Alignment.CenterHorizontally),
+                                            onClick = {}
+                                        )
+                                    }
                                 }
+                            }
+                            item { Spacer(modifier = Modifier.height(16.dp)) }
+                        }
+                        if (state.maybeTasks.isNotEmpty()) {
+                            item {
+                                Title("Maybe")
+                            }
+                            items(state.maybeTasks) { task ->
+                                TaskCard(
+                                    task = task,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { }
+                                )
                             }
                         }
                     }
