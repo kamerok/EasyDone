@@ -26,7 +26,7 @@ class HomeFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
-        setContent { HomeScreen() }
+        setContent { HomeScreen(HomeViewModel()) }
     }
 
 }

@@ -27,6 +27,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,7 +51,7 @@ import java.time.Period
 
 
 @Composable
-internal fun HomeScreen() {
+internal fun HomeScreen(viewModel: HomeViewModel) {
     AppTheme {
         ProvideWindowInsets {
             FullscreenContent {
@@ -58,42 +60,35 @@ internal fun HomeScreen() {
                         EasyDoneAppBar(navigationIcon = null) {
                             Text(stringResource(R.string.app_name))
                         }
-                        fun task(i: Int = 0) = UiTask("id:$i", "Task $i", false, false, false)
-                        val state = State(
-                            inboxCount = 5,
-                            todoTasks = (0..10).map { task(it) },
-                            nextWaitingTask = task() to LocalDate.now().plusDays(10),
-                            waitingCount = 10,
-                            maybeTasks = (10..20).map { task(it) }
-                        )
+                        val state by viewModel.state.collectAsState()
                         LazyColumn(
                             contentPadding = PaddingValues(16.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             inboxSection(
                                 inboxCount = state.inboxCount,
-                                onSort = {}
+                                onSort = viewModel::onSort
                             )
                             todoSection(
                                 tasks = state.todoTasks,
-                                onTaskClick = { task -> }
+                                onTaskClick = viewModel::onTaskClick
                             )
                             waitingSection(
                                 nextWaitingTask = state.nextWaitingTask,
                                 waitingCount = state.waitingCount,
-                                onTaskClick = { task -> },
-                                onMore = {}
+                                onTaskClick = viewModel::onTaskClick,
+                                onMore = viewModel::onWaitingMore
                             )
                             maybeSection(
                                 tasks = state.maybeTasks,
-                                onTaskClick = { task -> }
+                                onTaskClick = viewModel::onTaskClick
                             )
                             fabSpaceItem()
                         }
                     }
                     FloatingActionButton(
                         backgroundColor = MaterialTheme.colors.primary,
-                        onClick = { },
+                        onClick = viewModel::onAdd,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(16.dp)
@@ -334,12 +329,6 @@ private fun MoreButton(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ScreenPreview() {
-    HomeScreen()
 }
 
 @Preview

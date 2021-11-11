@@ -3,7 +3,7 @@ package easydone.feature.home
 import java.time.LocalDate
 
 
-data class State(
+internal data class State(
     val inboxCount: Int,
     val todoTasks: List<UiTask>,
     val nextWaitingTask: Pair<UiTask, LocalDate>?,
@@ -11,7 +11,7 @@ data class State(
     val maybeTasks: List<UiTask>
 )
 
-data class UiTask(
+internal data class UiTask(
     val id: String,
     val title: String,
     val hasDescription: Boolean,
