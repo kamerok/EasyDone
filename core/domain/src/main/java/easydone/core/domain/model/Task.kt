@@ -8,13 +8,15 @@ data class Task(
     val type: Type,
     val title: String,
     val description: String,
-    val dueDate: LocalDate?,
     val markers: Markers,
     val isDone: Boolean
 ) {
 
-    enum class Type {
-        INBOX, TO_DO, WAITING, MAYBE
+    sealed class Type {
+        object Inbox : Type()
+        object ToDo : Type()
+        data class Waiting(val date: LocalDate) : Type()
+        object Maybe : Type()
     }
 
 }

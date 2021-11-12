@@ -17,7 +17,7 @@ internal class WaitingViewModel(
 ) : ViewModel() {
 
     val state: StateFlow<State> =
-        repository.getTasks(Task.Type.WAITING)
+        repository.getTasks(Task.Type.Waiting::class)
             .map { State(it.map { it.toUiTask() }) }
             .stateIn(
                 scope = viewModelScope,

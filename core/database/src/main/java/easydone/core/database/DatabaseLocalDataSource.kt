@@ -4,6 +4,7 @@ import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import easydone.core.database.model.ChangeEntry
+import easydone.core.database.model.DbTaskType
 import easydone.core.database.model.EntityField
 import easydone.core.database.model.EntityName
 import easydone.core.domain.LocalDataSource
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.UUID
+import kotlin.reflect.KClass
 import easydone.core.database.Task as DbTask
 
 
@@ -49,8 +51,8 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
     override fun observeChangesCount(): Flow<Long> =
         changesQueries.selectChangesCount().asFlow().map { it.executeAsOne() }
 
-    override fun observeTasks(type: Task.Type): Flow<List<Task>> =
-        taskQueries.selectByType(type)
+    override fun observeTasks(type: KClass<out Task.Type>): Flow<List<Task>> =
+        taskQueries.selectByType(getDbType(type))
             .asFlow()
             .map { it.executeAsList() }
             .map { dbTasks -> dbTasks.map { it.toTask() } }
@@ -67,12 +69,13 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
     override suspend fun createTask(taskTemplate: TaskTemplate) = withContext(Dispatchers.IO) {
         database.transaction {
             val id = UUID.randomUUID().toString()
+            val type = getDbType(taskTemplate.type::class)
             taskQueries.insert(
                 id = id,
-                type = taskTemplate.type,
+                type = type,
                 title = taskTemplate.title,
                 description = taskTemplate.description,
-                due_date = null,
+                due_date = (taskTemplate.type as? Task.Type.Waiting)?.date,
                 is_urgent = taskTemplate.isUrgent,
                 is_important = taskTemplate.isImportant,
                 is_done = false
@@ -80,7 +83,7 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
             changesQueries.apply {
                 insertChange(EntityName.TASK, id)
                 val changeId = lastInsertedRow().executeAsOne()
-                insertCreateDelta(changeId, EntityField.TYPE, taskTemplate.type.name)
+                insertCreateDelta(changeId, EntityField.TYPE, type.name)
                 insertCreateDelta(changeId, EntityField.TITLE, taskTemplate.title)
                 if (taskTemplate.description.isNotEmpty()) {
                     insertCreateDelta(changeId, EntityField.DESCRIPTION, taskTemplate.description)
@@ -110,10 +113,10 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
 
     private fun insertTask(task: Task) = taskQueries.insert(
         id = task.id,
-        type = task.type,
+        type = getDbType(task.type::class),
         title = task.title,
         description = task.description,
-        due_date = task.dueDate,
+        due_date = (task.type as? Task.Type.Waiting)?.date,
         is_urgent = task.markers.isUrgent,
         is_important = task.markers.isImportant,
         is_done = task.isDone
@@ -123,10 +126,10 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
         val id = task.id
         val oldTask = taskQueries.selectById(id).executeAsOne().toTask()
         taskQueries.update(
-            type = task.type,
+            type = getDbType(task.type::class),
             title = task.title,
             description = task.description,
-            due_date = task.dueDate,
+            due_date = (task.type as? Task.Type.Waiting)?.date,
             is_urgent = task.markers.isUrgent,
             is_important = task.markers.isImportant,
             is_done = task.isDone,
@@ -159,10 +162,10 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
                     }
                 }
             }
-            writeDelta(EntityField.TYPE) { type }
+            writeDelta(EntityField.TYPE) { getDbType(type::class) }
             writeDelta(EntityField.TITLE) { title }
             writeDelta(EntityField.DESCRIPTION) { description }
-            writeDelta(EntityField.DUE_DATE) { dueDate }
+            writeDelta(EntityField.DUE_DATE) { (type as? Task.Type.Waiting)?.date }
             writeDelta(EntityField.MARKERS) { markers }
             writeDelta(EntityField.IS_DONE) { isDone }
 
@@ -172,25 +175,48 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
         }
     }
 
-    private fun ChangeEntry.toDelta() = TaskDelta(
-        id = changeId,
-        taskId = entityId,
-        type = fields[EntityField.TYPE] as Task.Type?,
-        title = fields[EntityField.TITLE] as String?,
-        description = fields[EntityField.DESCRIPTION] as String?,
-        dueDate = fields[EntityField.DUE_DATE] as LocalDate?,
-        dueDateChanged = fields.containsKey(EntityField.DUE_DATE),
-        markers = fields[EntityField.MARKERS] as Markers?,
-        isDone = fields[EntityField.IS_DONE] as Boolean?
-    )
+    private fun getDbType(type: KClass<out Task.Type>): DbTaskType =
+        when (type) {
+            Task.Type.Inbox::class -> DbTaskType.INBOX
+            Task.Type.ToDo::class -> DbTaskType.TO_DO
+            Task.Type.Waiting::class -> DbTaskType.WAITING
+            Task.Type.Maybe::class -> DbTaskType.MAYBE
+            else -> throw IllegalArgumentException("Unknown type")
+        }
 
     private fun DbTask.toTask() = Task(
         id = id,
-        type = type,
+        type = type.toType(due_date),
         title = title,
         description = description,
-        dueDate = due_date,
         markers = Markers(is_urgent, is_important),
         isDone = is_done
     )
+}
+
+internal fun ChangeEntry.toDelta() = TaskDelta(
+    id = changeId,
+    taskId = entityId,
+    type = newType(),
+    title = fields[EntityField.TITLE] as String?,
+    description = fields[EntityField.DESCRIPTION] as String?,
+    markers = fields[EntityField.MARKERS] as Markers?,
+    isDone = fields[EntityField.IS_DONE] as Boolean?
+)
+
+private fun ChangeEntry.newType(): Task.Type? {
+    val newDbType = fields[EntityField.TYPE] as DbTaskType?
+    val newDate = fields[EntityField.DUE_DATE] as LocalDate?
+    return when {
+        newDbType != null -> newDbType.toType(newDate)
+        newDate != null -> Task.Type.Waiting(newDate)
+        else -> null
+    }
+}
+
+private fun DbTaskType.toType(date: LocalDate?): Task.Type = when (this) {
+    DbTaskType.INBOX -> Task.Type.Inbox
+    DbTaskType.TO_DO -> Task.Type.ToDo
+    DbTaskType.WAITING -> Task.Type.Waiting(requireNotNull(date))
+    DbTaskType.MAYBE -> Task.Type.Maybe
 }

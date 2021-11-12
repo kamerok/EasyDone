@@ -1,10 +1,10 @@
-import easydone.core.domain.model.Task;
+import easydone.core.database.model.DbTaskType;
 import java.time.LocalDate;
 
 
 CREATE TABLE task (
   id TEXT NOT NULL UNIQUE,
-  type TEXT AS Task.Type NOT NULL,
+  type TEXT AS DbTaskType NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   due_date TEXT AS LocalDate DEFAULT NULL,

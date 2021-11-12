@@ -45,10 +45,14 @@ class TrelloRemoteDataSource(
                 }
 
                 val type = when (card.idList) {
-                    authInfoHolder.getInboxListId() -> Task.Type.INBOX
-                    authInfoHolder.getWaitingListId() -> Task.Type.WAITING
-                    authInfoHolder.getMaybeListId() -> Task.Type.MAYBE
-                    else -> Task.Type.TO_DO
+                    authInfoHolder.getInboxListId() -> Task.Type.Inbox
+                    authInfoHolder.getWaitingListId() -> Task.Type.Waiting(
+                        //todo: handle waiting items with no data
+                        requireNotNull(card.due)
+                            .let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME) }
+                    )
+                    authInfoHolder.getMaybeListId() -> Task.Type.Maybe
+                    else -> Task.Type.ToDo
                 }
                 val isUrgent = card.idLabels.contains(authInfoHolder.getUrgentLabelId()!!)
                 val isImportant = card.idLabels.contains(authInfoHolder.getImportantLabelId()!!)
@@ -74,10 +78,12 @@ class TrelloRemoteDataSource(
                         name = delta.title,
                         desc = delta.description,
                         closed = delta.isDone,
-                        due = if (delta.dueDateChanged) {
-                            delta.dueDate?.format(DateTimeFormatter.ISO_DATE) ?: ""
-                        } else {
-                            null
+                        due = delta.type?.let { type ->
+                            if (type is Task.Type.Waiting) {
+                                type.date.format(DateTimeFormatter.ISO_DATE)
+                            } else {
+                                ""
+                            }
                         },
                         listId = delta.type?.let { getListId(it) },
                         idLabels = labels
@@ -121,10 +127,10 @@ class TrelloRemoteDataSource(
 
     private suspend fun getListId(type: Task.Type): String {
         return when (type) {
-            Task.Type.INBOX -> authInfoHolder.getInboxListId()!!
-            Task.Type.TO_DO -> authInfoHolder.getTodoListId()!!
-            Task.Type.WAITING -> authInfoHolder.getWaitingListId()!!
-            Task.Type.MAYBE -> authInfoHolder.getMaybeListId()!!
+            is Task.Type.Inbox -> authInfoHolder.getInboxListId()!!
+            is Task.Type.ToDo -> authInfoHolder.getTodoListId()!!
+            is Task.Type.Waiting -> authInfoHolder.getWaitingListId()!!
+            is Task.Type.Maybe -> authInfoHolder.getMaybeListId()!!
         }
     }
 
@@ -134,13 +140,11 @@ class TrelloRemoteDataSource(
         isUrgent: Boolean,
         isImportant: Boolean
     ): Task {
-        val date = due?.let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME) }
         return Task(
             id = id,
             type = type,
             title = name,
             description = desc,
-            dueDate = date,
             markers = Markers(
                 isUrgent = isUrgent,
                 isImportant = isImportant

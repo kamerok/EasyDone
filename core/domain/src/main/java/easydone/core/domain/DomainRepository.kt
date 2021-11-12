@@ -3,11 +3,12 @@ package easydone.core.domain
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.flow.Flow
+import kotlin.reflect.KClass
 
 
 class DomainRepository(private val localDataSource: LocalDataSource) {
 
-    fun getTasks(type: Task.Type): Flow<List<Task>> = localDataSource.observeTasks(type)
+    fun getTasks(type: KClass<out Task.Type>): Flow<List<Task>> = localDataSource.observeTasks(type)
 
     suspend fun getTask(id: String): Task = localDataSource.getTask(id)
 
@@ -33,7 +34,7 @@ class DomainRepository(private val localDataSource: LocalDataSource) {
         if (title.isEmpty()) throw IllegalArgumentException("title should not be empty")
         localDataSource.createTask(
             TaskTemplate(
-                type = if (skipInbox) Task.Type.TO_DO else Task.Type.INBOX,
+                type = if (skipInbox) Task.Type.ToDo else Task.Type.Inbox,
                 title = title,
                 description = description,
                 isUrgent = isUrgent,

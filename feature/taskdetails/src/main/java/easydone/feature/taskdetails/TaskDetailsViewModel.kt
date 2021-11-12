@@ -31,7 +31,7 @@ internal class TaskDetailsViewModel(
         .onEach { task = it }
         .map { task ->
             State(
-                typeText = task.type.format(task.dueDate),
+                typeText = task.type.format(),
                 title = task.title,
                 description = task.description,
                 isUrgent = task.markers.isUrgent,
@@ -57,14 +57,14 @@ internal class TaskDetailsViewModel(
 
     fun onMove() {
         task?.let { task ->
-            eventChannel.trySend(SelectType(task.type, task.dueDate))
+            eventChannel.trySend(SelectType(task.type))
         }
     }
 
-    fun onTypeSelected(type: Task.Type, date: LocalDate? = null) {
+    fun onTypeSelected(type: Task.Type) {
         task?.let { task ->
             viewModelScope.launch {
-                repository.saveTask(task.copy(type = type, dueDate = date))
+                repository.saveTask(task.copy(type = type))
                 navigator.close()
             }
         }
@@ -78,10 +78,10 @@ internal class TaskDetailsViewModel(
     }
 
     //TODO: extract resources, reuse format logic
-    private fun Task.Type.format(date: LocalDate? = null) = when (this) {
-        Task.Type.INBOX -> "INBOX"
-        Task.Type.TO_DO -> "TO-DO"
-        Task.Type.WAITING -> "WAITING".plus(date?.let {
+    private fun Task.Type.format() = when (this) {
+        is Task.Type.Inbox -> "INBOX"
+        is Task.Type.ToDo -> "TO-DO"
+        is Task.Type.Waiting -> "WAITING".plus(date.let {
             val period = Period.between(LocalDate.now(), it)
             val periodString = buildString {
                 if (period.years > 0) {
@@ -93,8 +93,8 @@ internal class TaskDetailsViewModel(
                 append("${period.days}d")
             }
             " until ${it.format(DateTimeFormatter.ofPattern("d MMM y"))} ($periodString)"
-        } ?: "")
-        Task.Type.MAYBE -> "MAYBE"
+        })
+        is Task.Type.Maybe -> "MAYBE"
     }
 
 }

@@ -36,7 +36,7 @@ internal class EditTaskViewModel(
                 .scan(originalTask) { task, action -> reduce(originalTask, task, action) }
                 .map { task ->
                     ContentState(
-                        type = task.type.format(task.dueDate),
+                        type = task.type.format(),
                         title = task.title,
                         titleError = if (task.title.isBlank()) "Should not be empty" else null,
                         description = task.description,
@@ -56,8 +56,8 @@ internal class EditTaskViewModel(
         actionChannel.trySend(Action.TypeClick)
     }
 
-    fun onTypeSelected(type: Task.Type, date: LocalDate?) {
-        actionChannel.trySend(Action.TypeSelected(type, date))
+    fun onTypeSelected(type: Task.Type) {
+        actionChannel.trySend(Action.TypeSelected(type))
     }
 
     fun onTitleChange(title: String) {
@@ -87,12 +87,12 @@ internal class EditTaskViewModel(
         action: Action
     ) = when (action) {
         is Action.TypeClick -> {
-            eventChannel.trySend(OpenSelectType(task.type, task.dueDate))
+            eventChannel.trySend(OpenSelectType(task.type))
             task
         }
         is Action.TypeSelected -> {
             eventChannel.trySend(CloseSelectType)
-            task.copy(type = action.type, dueDate = action.date)
+            task.copy(type = action.type)
         }
         is Action.TitleChange -> task.copy(title = action.title)
         is Action.DescriptionChange -> task.copy(description = action.description)
@@ -116,10 +116,10 @@ internal class EditTaskViewModel(
     }
 
     //TODO: extract resources, reuse format logic
-    private fun Task.Type.format(date: LocalDate? = null) = when (this) {
-        Task.Type.INBOX -> "INBOX"
-        Task.Type.TO_DO -> "TO-DO"
-        Task.Type.WAITING -> "WAITING".plus(date?.let {
+    private fun Task.Type.format() = when (this) {
+        is Task.Type.Inbox -> "INBOX"
+        is Task.Type.ToDo -> "TO-DO"
+        is Task.Type.Waiting -> "WAITING".plus(date.let {
             val period = Period.between(LocalDate.now(), it)
             val periodString = buildString {
                 if (period.years > 0) {
@@ -131,13 +131,13 @@ internal class EditTaskViewModel(
                 append("${period.days}d")
             }
             " until ${it.format(DateTimeFormatter.ofPattern("d MMM y"))} ($periodString)"
-        } ?: "")
-        Task.Type.MAYBE -> "MAYBE"
+        })
+        is Task.Type.Maybe -> "MAYBE"
     }
 
     private sealed class Action {
         object TypeClick : Action()
-        data class TypeSelected(val type: Task.Type, val date: LocalDate?) : Action()
+        data class TypeSelected(val type: Task.Type) : Action()
         data class TitleChange(val title: String) : Action()
         data class DescriptionChange(val description: String) : Action()
         object UrgentClick : Action()

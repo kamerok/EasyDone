@@ -31,35 +31,35 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TypeSelector(
     type: Task.Type,
-    date: LocalDate?,
-    onTypeSelected: (Task.Type, LocalDate?) -> Unit,
+    onTypeSelected: (Task.Type) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    //TODO: extract resources
     Column(modifier = modifier) {
         TypeSelectorItem(
-            isSelected = type == Task.Type.INBOX,
-            type = Task.Type.INBOX,
-            onClick = { onTypeSelected(Task.Type.INBOX, null) }
+            isSelected = type == Task.Type.Inbox,
+            typeText = "Inbox",
+            onClick = { onTypeSelected(Task.Type.Inbox) }
         )
         Divider()
         TypeSelectorItem(
-            isSelected = type == Task.Type.TO_DO,
-            type = Task.Type.TO_DO,
-            onClick = { onTypeSelected(Task.Type.TO_DO, null) }
+            isSelected = type == Task.Type.ToDo,
+            typeText = "ToDo",
+            onClick = { onTypeSelected(Task.Type.ToDo) }
         )
         val context = LocalContext.current
-        val initialDay = date ?: LocalDate.now().plusDays(1)
+        val initialDay = if (type is Task.Type.Waiting) type.date else LocalDate.now().plusDays(1)
         Divider()
         TypeSelectorItem(
-            isSelected = type == Task.Type.WAITING,
-            type = Task.Type.WAITING,
-            date = date,
+            isSelected = type is Task.Type.Waiting,
+            typeText = "Waiting",
+            date = if (type is Task.Type.Waiting) type.date else null,
             onClick = {
                 DatePickerDialog(
                     context,
                     { _, year, month, dayOfMonth ->
                         val newDate = LocalDate.of(year, month + 1, dayOfMonth)
-                        onTypeSelected(Task.Type.WAITING, newDate)
+                        onTypeSelected(Task.Type.Waiting(newDate))
                     },
                     initialDay.year,
                     initialDay.monthValue - 1,
@@ -76,9 +76,9 @@ fun TypeSelector(
         )
         Divider()
         TypeSelectorItem(
-            isSelected = type == Task.Type.MAYBE,
-            type = Task.Type.MAYBE,
-            onClick = { onTypeSelected(Task.Type.MAYBE, null) }
+            isSelected = type == Task.Type.Maybe,
+            typeText = "Maybe",
+            onClick = { onTypeSelected(Task.Type.Maybe) }
         )
     }
 }
@@ -86,7 +86,7 @@ fun TypeSelector(
 @Composable
 private fun TypeSelectorItem(
     isSelected: Boolean,
-    type: Task.Type,
+    typeText: String,
     date: LocalDate? = null,
     onClick: () -> Unit
 ) {
@@ -97,13 +97,6 @@ private fun TypeSelectorItem(
             .clickable(onClick = onClick)
             .padding(16.dp)
     ) {
-        //TODO: extract resources
-        val typeText = when (type) {
-            Task.Type.INBOX -> "Inbox"
-            Task.Type.TO_DO -> "ToDo"
-            Task.Type.WAITING -> "Waiting"
-            Task.Type.MAYBE -> "Maybe"
-        }
         if (isSelected) {
             Icon(Icons.Default.Check, "")
         }
@@ -127,8 +120,7 @@ private fun TypeSelectorItem(
 @Composable
 private fun TypeSelectorPreview() {
     TypeSelector(
-        type = Task.Type.WAITING,
-        date = LocalDate.of(2020, 1, 10),
-        onTypeSelected = { _, _ -> }
+        type = Task.Type.Waiting(LocalDate.of(2020, 1, 10)),
+        onTypeSelected = { }
     )
 }

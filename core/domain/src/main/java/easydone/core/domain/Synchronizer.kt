@@ -1,8 +1,6 @@
 package easydone.core.domain
 
 import easydone.core.domain.model.Task
-import easydone.core.domain.model.Task.Type.INBOX
-import easydone.core.domain.model.Task.Type.WAITING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -76,20 +74,10 @@ class Synchronizer(
     companion object {
         internal fun updateWaitingTasks(tasks: List<Task>, today: LocalDate): List<Task> =
             tasks.mapNotNull { task ->
-                if (task.dueDate != null) {
-                    when {
-                        task.dueDate.isAfter(today) && task.type != WAITING -> task.copy(type = WAITING)
-                        task.type == WAITING && !task.dueDate.isAfter(today) ->
-                            task.copy(type = INBOX, dueDate = null)
-                        !task.dueDate.isAfter(today) -> task.copy(dueDate = null)
-                        else -> null
-                    }
+                if (task.type is Task.Type.Waiting && !task.type.date.isAfter(today)) {
+                    task.copy(type = Task.Type.Inbox)
                 } else {
-                    if (task.type == WAITING) {
-                        task.copy(type = INBOX)
-                    } else {
-                        null
-                    }
+                    null
                 }
             }
     }

@@ -18,16 +18,16 @@ internal class HomeViewModel(
 
     val state: StateFlow<State> =
         combine(
-            repository.getTasks(Task.Type.INBOX),
-            repository.getTasks(Task.Type.TO_DO),
-            repository.getTasks(Task.Type.WAITING),
-            repository.getTasks(Task.Type.MAYBE)
+            repository.getTasks(Task.Type.Inbox::class),
+            repository.getTasks(Task.Type.ToDo::class),
+            repository.getTasks(Task.Type.Waiting::class),
+            repository.getTasks(Task.Type.Maybe::class)
         ) { inbox, todo, waiting, maybe ->
             State(
                 inboxCount = inbox.size,
                 todoTasks = todo.sortedWith(taskComparator).map { it.toUiTask() },
-                nextWaitingTask = waiting.minByOrNull { it.dueDate!! }
-                    ?.let { it.toUiTask() to it.dueDate!! },
+                nextWaitingTask = waiting.minByOrNull { (it.type as Task.Type.Waiting).date }
+                    ?.let { it.toUiTask() to (it.type as Task.Type.Waiting).date },
                 waitingCount = waiting.size,
                 maybeTasks = maybe.sortedWith(taskComparator).map { it.toUiTask() }
             )

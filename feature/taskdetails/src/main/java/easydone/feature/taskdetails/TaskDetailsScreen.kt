@@ -56,7 +56,6 @@ import easydone.feature.selecttype.TypeSelector
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -69,15 +68,13 @@ internal fun TaskDetailsScreen(
             val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
             val scope = rememberCoroutineScope()
 
-            var selectorType: Task.Type by remember { mutableStateOf(Task.Type.INBOX) }
-            var selectorDate: LocalDate? by remember { mutableStateOf(null) }
+            var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
             LaunchedEffect(viewModel) {
                 viewModel.events
                     .onEach {
                         when (it) {
                             is SelectType -> {
                                 selectorType = it.currentType
-                                selectorDate = it.date
                                 sheetState.show()
                             }
                         }
@@ -95,7 +92,6 @@ internal fun TaskDetailsScreen(
                     sheetContent = {
                         TypeSelector(
                             type = selectorType,
-                            date = selectorDate,
                             onTypeSelected = viewModel::onTypeSelected,
                             modifier = Modifier.navigationBarsPadding()
                         )

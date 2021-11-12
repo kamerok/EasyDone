@@ -18,7 +18,7 @@ internal class InboxViewModel(
 ) : ViewModel() {
 
     val state: StateFlow<State> =
-        repository.getTasks(Task.Type.INBOX)
+        repository.getTasks(Task.Type.Inbox::class)
             .onEach { if (it.isEmpty()) navigator.close() }
             .map { State(it.map { it.toUiTask() }) }
             .stateIn(

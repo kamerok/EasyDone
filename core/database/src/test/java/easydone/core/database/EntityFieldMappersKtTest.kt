@@ -3,7 +3,7 @@ package easydone.core.database
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
-import easydone.core.domain.model.Task
+import easydone.core.database.model.DbTaskType
 import org.junit.Test
 import java.time.LocalDate
 
@@ -13,7 +13,7 @@ class EntityFieldMappersKtTest {
     fun `Type mapper`() {
         val mapper = TypeMapper
         assertThat(mapper.toValue(mapper.toString(null))).isNull()
-        assertThat(mapper.toValue(mapper.toString(Task.Type.INBOX))).isEqualTo(Task.Type.INBOX)
+        assertThat(mapper.toValue(mapper.toString(DbTaskType.INBOX))).isEqualTo(DbTaskType.INBOX)
     }
 
     @Test

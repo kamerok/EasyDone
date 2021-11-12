@@ -4,6 +4,7 @@ import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskDelta
 import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.flow.Flow
+import kotlin.reflect.KClass
 
 
 interface LocalDataSource {
@@ -12,7 +13,7 @@ interface LocalDataSource {
 
     fun observeChangesCount(): Flow<Long>
 
-    fun observeTasks(type: Task.Type): Flow<List<Task>>
+    fun observeTasks(type: KClass<out Task.Type>): Flow<List<Task>>
 
     fun observeTask(id: String): Flow<Task>
 

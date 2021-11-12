@@ -1,7 +1,6 @@
 package easydone.feature.edittask
 
 import easydone.core.domain.model.Task
-import java.time.LocalDate
 
 internal sealed class State
 
@@ -18,6 +17,6 @@ internal data class ContentState(
 
 internal sealed class Event
 
-internal data class OpenSelectType(val currentType: Task.Type, val date: LocalDate?) : Event()
+internal data class OpenSelectType(val currentType: Task.Type) : Event()
 
 internal object CloseSelectType : Event()
