@@ -8,6 +8,7 @@ import easydone.coreui.design.UiTask
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
 
@@ -18,6 +19,7 @@ internal class InboxViewModel(
 
     val state: StateFlow<State> =
         repository.getTasks(Task.Type.INBOX)
+            .onEach { if (it.isEmpty()) navigator.close() }
             .map { State(it.map { it.toUiTask() }) }
             .stateIn(
                 scope = viewModelScope,

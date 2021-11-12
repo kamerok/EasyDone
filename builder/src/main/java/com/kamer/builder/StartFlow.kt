@@ -128,6 +128,10 @@ object StartFlow {
                         override fun openTask(id: String) {
                             startViewTask(id, get())
                         }
+
+                        override fun close() {
+                            get<Navigator>().popScreen()
+                        }
                     }
                 )
             }

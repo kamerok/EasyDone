@@ -5,4 +5,6 @@ interface InboxNavigator {
 
     fun openTask(id: String)
 
+    fun close()
+
 }
