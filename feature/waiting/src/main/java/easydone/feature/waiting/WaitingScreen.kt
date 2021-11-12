@@ -21,6 +21,9 @@ import com.google.accompanist.insets.systemBarsPadding
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.TaskCard
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -35,14 +38,39 @@ internal fun WaitingScreen(viewModel: WaitingViewModel) {
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(state.tasks) { task ->
-                            TaskCard(
-                                task = task,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { viewModel.onTaskClick(task) }
-                            )
-                        }
+                        //TODO: reuse format logic
+                        val formatter = DateTimeFormatter.ofPattern("d MMM y")
+                        state.tasks.entries
+                            .sortedBy { it.key }
+                            .forEach { (date, tasks) ->
+                                item {
+                                    val period = Period.between(LocalDate.now(), date)
+                                    val dateText = buildString {
+                                        append(formatter.format(date))
+                                        append(" (")
+                                        if (period.years > 0) {
+                                            append("${period.years}y ")
+                                        }
+                                        if (period.months > 0) {
+                                            append("${period.months}m ")
+                                        }
+                                        append("${period.days}d")
+                                        append(")")
+                                    }
+                                    Text(
+                                        text = dateText,
+                                        style = MaterialTheme.typography.h5
+                                    )
+                                }
+                                items(tasks) { task ->
+                                    TaskCard(
+                                        task = task,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { viewModel.onTaskClick(task) }
+                                    )
+                                }
+                            }
                     }
                 }
             }

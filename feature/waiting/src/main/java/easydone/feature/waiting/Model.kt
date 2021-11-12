@@ -1,8 +1,9 @@
 package easydone.feature.waiting
 
 import easydone.coreui.design.UiTask
+import java.time.LocalDate
 
 
 data class State(
-    val tasks: List<UiTask>
+    val tasks: Map<LocalDate, List<UiTask>>
 )

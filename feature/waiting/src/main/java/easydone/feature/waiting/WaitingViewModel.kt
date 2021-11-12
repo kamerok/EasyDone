@@ -18,11 +18,17 @@ internal class WaitingViewModel(
 
     val state: StateFlow<State> =
         repository.getTasks(Task.Type.Waiting::class)
-            .map { State(it.map { it.toUiTask() }) }
+            .map { tasks ->
+                State(
+                    tasks
+                        .groupBy { (it.type as Task.Type.Waiting).date }
+                        .mapValues { (_, dateTasks) -> dateTasks.map { it.toUiTask() } }
+                )
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = State(emptyList())
+                initialValue = State(emptyMap())
             )
 
     fun onTaskClick(task: UiTask) {
