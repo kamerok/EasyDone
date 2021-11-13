@@ -2,7 +2,6 @@ package com.kamer.builder
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import easydone.feature.createtask.CreateTaskFragment
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.home.HomeFragment
 import easydone.feature.inbox.InboxFragment
@@ -25,7 +24,6 @@ object CustomFragmentFactory : FragmentFactory() {
             EditTaskFragment::class.java.name -> GlobalContext.get().get<EditTaskFragment>()
             QuickCreateTaskFragment::class.java.name -> GlobalContext.get()
                 .get<QuickCreateTaskFragment>()
-            CreateTaskFragment::class.java.name -> GlobalContext.get().get<CreateTaskFragment>()
             SettingsFragment::class.java.name -> GlobalContext.get().get<SettingsFragment>()
             SetupFragment::class.java.name -> GlobalContext.get().get<SetupFragment>()
             else -> super.instantiate(classLoader, className)

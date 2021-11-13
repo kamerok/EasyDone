@@ -15,8 +15,6 @@ import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.Synchronizer
 import easydone.core.network.AuthInfoHolder
 import easydone.core.network.TrelloRemoteDataSource
-import easydone.feature.createtask.CreateTaskFragment
-import easydone.feature.createtask.CreateTaskNavigator
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.home.HomeFragment
@@ -181,16 +179,6 @@ object StartFlow {
                     object : QuickCreateTaskNavigator {
                         override fun closeScreen() {
                             ActivityHolder.getActivity().finishAffinity()
-                        }
-                    }
-                )
-            }
-            factory {
-                CreateTaskFragment(
-                    get(),
-                    object : CreateTaskNavigator {
-                        override fun closeScreen() {
-                            get<Navigator>().popScreen()
                         }
                     }
                 )
