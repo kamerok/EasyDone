@@ -18,7 +18,7 @@ class EditTaskFragment(
     private val navigator: EditTaskNavigator
 ) : Fragment() {
 
-    private val id: String by lazy { arguments?.getString(TASK_ID) ?: error("ID must be provided") }
+    private val id: String? by lazy { arguments?.getString(TASK_ID) }
 
     private val viewModel: EditTaskViewModel by viewModels(factoryProducer = {
         object : ViewModelProvider.Factory {

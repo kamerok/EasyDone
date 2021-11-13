@@ -43,4 +43,9 @@ class DomainRepository(private val localDataSource: LocalDataSource) {
         )
     }
 
+    suspend fun createTask(template: TaskTemplate) {
+        if (template.title.isEmpty()) throw IllegalArgumentException("title should not be empty")
+        localDataSource.createTask(template)
+    }
+
 }

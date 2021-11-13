@@ -3,7 +3,9 @@ package easydone.feature.edittask
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
+import easydone.core.domain.model.TaskTemplate
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,7 +23,7 @@ import java.time.format.DateTimeFormatter
 
 
 internal class EditTaskViewModel(
-    private val id: String,
+    private val id: String?,
     private val repository: DomainRepository,
     private val navigator: EditTaskNavigator
 ) : ViewModel() {
@@ -29,13 +31,29 @@ internal class EditTaskViewModel(
     private val eventChannel = Channel<Event>(Channel.UNLIMITED)
     private val actionChannel: Channel<Action> = Channel(capacity = Channel.UNLIMITED)
 
-    val state: StateFlow<State> = flow { emit(repository.getTask(id)) }
+    val state: StateFlow<State> = flow {
+        if (id != null) {
+            emit(repository.getTask(id))
+        } else {
+            emit(
+                Task(
+                    id = "",
+                    type = Task.Type.Inbox,
+                    title = "",
+                    description = "",
+                    markers = Markers(isUrgent = false, isImportant = false),
+                    isDone = false
+                )
+            )
+        }
+    }
         .flatMapConcat { originalTask ->
             actionChannel
                 .consumeAsFlow()
                 .scan(originalTask) { task, action -> reduce(originalTask, task, action) }
                 .map { task ->
                     ContentState(
+                        isCreate = id == null,
                         type = task.type.format(),
                         title = task.title,
                         titleError = if (task.title.isBlank()) "Should not be empty" else null,
@@ -103,11 +121,23 @@ internal class EditTaskViewModel(
             markers = task.markers.copy(isImportant = !task.markers.isImportant)
         )
         is Action.Save -> {
-            if (task == originalTask) {
+            if (task == originalTask && id != null) {
                 navigator.close()
             } else {
                 if (task.title.isNotBlank()) {
-                    repository.saveTask(task)
+                    if (id != null) {
+                        repository.saveTask(task)
+                    } else {
+                        repository.createTask(
+                            TaskTemplate(
+                                type = task.type,
+                                title = task.title,
+                                description = task.description,
+                                isUrgent = task.markers.isUrgent,
+                                isImportant = task.markers.isImportant
+                            )
+                        )
+                    }
                     navigator.close()
                 }
             }

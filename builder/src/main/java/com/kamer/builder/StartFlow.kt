@@ -245,7 +245,7 @@ object StartFlow {
         )
 
     private fun startCreateTask(navigator: Navigator) =
-        navigator.openScreen(CreateTaskFragment::class.java, true)
+        navigator.openScreen(EditTaskFragment::class.java, true)
 
     private fun startSettings(navigator: Navigator) =
         navigator.openScreen(SettingsFragment::class.java, true)

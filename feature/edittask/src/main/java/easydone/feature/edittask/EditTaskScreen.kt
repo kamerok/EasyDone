@@ -45,7 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
 import easydone.core.domain.model.Task
@@ -64,41 +63,42 @@ import kotlinx.coroutines.launch
 internal fun EditTaskScreen(viewModel: EditTaskViewModel) {
     AppTheme {
         ProvideWindowInsets(windowInsetsAnimationsEnabled = false) {
-            val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-            val scope = rememberCoroutineScope()
+            FullscreenContent {
+                val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+                val scope = rememberCoroutineScope()
 
-            BackHandler(enabled = sheetState.isVisible) {
-                scope.launch { sheetState.hide() }
-            }
+                BackHandler(enabled = sheetState.isVisible) {
+                    scope.launch { sheetState.hide() }
+                }
 
-            var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
+                var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
 
-            LaunchedEffect(viewModel) {
-                viewModel.events
-                    .onEach {
-                        when (it) {
-                            is OpenSelectType -> {
-                                selectorType = it.currentType
-                                sheetState.show()
+                LaunchedEffect(viewModel) {
+                    viewModel.events
+                        .onEach {
+                            when (it) {
+                                is OpenSelectType -> {
+                                    selectorType = it.currentType
+                                    sheetState.show()
+                                }
+                                is CloseSelectType -> sheetState.hide()
                             }
-                            is CloseSelectType -> sheetState.hide()
                         }
-                    }
-                    .launchIn(this)
-            }
+                        .launchIn(this)
+                }
 
-            CompositionLocalProvider(LocalElevationOverlay provides null) {
-                ModalBottomSheetLayout(
-                    sheetState = sheetState,
-                    sheetContent = {
-                        TypeSelector(
-                            type = selectorType,
-                            onTypeSelected = viewModel::onTypeSelected,
-                            modifier = Modifier.navigationBarsPadding()
-                        )
-                    },
-                    content = { EditTaskContent(viewModel) }
-                )
+                CompositionLocalProvider(LocalElevationOverlay provides null) {
+                    ModalBottomSheetLayout(
+                        sheetState = sheetState,
+                        sheetContent = {
+                            TypeSelector(
+                                type = selectorType,
+                                onTypeSelected = viewModel::onTypeSelected
+                            )
+                        },
+                        content = { EditTaskContent(viewModel) }
+                    )
+                }
             }
         }
     }
@@ -106,39 +106,37 @@ internal fun EditTaskScreen(viewModel: EditTaskViewModel) {
 
 @Composable
 private fun EditTaskContent(viewModel: EditTaskViewModel) {
-    FullscreenContent {
-        val state = viewModel.state.collectAsState()
-        val stateValue = state.value
-        if (stateValue is ContentState) {
-            ScreenContent(
-                topContent = {
-                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        TaskType(
-                            label = stateValue.type,
-                            onClick = viewModel::onTypeClick
-                        )
-                        TaskTitle(
-                            text = stateValue.title,
-                            error = stateValue.titleError,
-                            onChange = viewModel::onTitleChange
-                        )
-                        TaskDescription(
-                            text = stateValue.description,
-                            onDescriptionChange = viewModel::onDescriptionChange
-                        )
-                        TaskMarkers(
-                            isUrgent = stateValue.isUrgent,
-                            isImportant = stateValue.isImportant,
-                            onUrgentClick = viewModel::onUrgentClick,
-                            onImportantClick = viewModel::onImportantClick
-                        )
-                    }
-                },
-                bottomContent = {
-                    SaveButton(viewModel::onSave)
+    val state = viewModel.state.collectAsState().value
+    if (state is ContentState) {
+        ScreenContent(
+            isCreate = state.isCreate,
+            topContent = {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    TaskType(
+                        label = state.type,
+                        onClick = viewModel::onTypeClick
+                    )
+                    TaskTitle(
+                        text = state.title,
+                        error = state.titleError,
+                        onChange = viewModel::onTitleChange
+                    )
+                    TaskDescription(
+                        text = state.description,
+                        onDescriptionChange = viewModel::onDescriptionChange
+                    )
+                    TaskMarkers(
+                        isUrgent = state.isUrgent,
+                        isImportant = state.isImportant,
+                        onUrgentClick = viewModel::onUrgentClick,
+                        onImportantClick = viewModel::onImportantClick
+                    )
                 }
-            )
-        }
+            },
+            bottomContent = {
+                SaveButton(viewModel::onSave)
+            }
+        )
     }
 }
 
@@ -161,11 +159,22 @@ private fun FullscreenContent(
 
 @Composable
 private fun ScreenContent(
+    isCreate: Boolean,
     topContent: @Composable () -> Unit,
     bottomContent: @Composable () -> Unit,
 ) {
     Column {
-        EasyDoneAppBar { Text(stringResource(R.string.edit_task_screen_title)) }
+        EasyDoneAppBar {
+            Text(
+                stringResource(
+                    if (isCreate) {
+                        R.string.edit_task_screen_title_add
+                    } else {
+                        R.string.edit_task_screen_title_edit
+                    }
+                )
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()

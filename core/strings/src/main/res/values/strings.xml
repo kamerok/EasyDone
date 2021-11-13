@@ -5,7 +5,8 @@
     <string name="urgent">Urgent</string>
     <string name="important">Important</string>
 
-    <string name="edit_task_screen_title">Edit task</string>
+    <string name="edit_task_screen_title_add">Add task</string>
+    <string name="edit_task_screen_title_edit">Edit task</string>
     <string name="edit_task_title">Title</string>
     <string name="edit_task_description">Description</string>
     <string name="edit_task_save">Save</string>

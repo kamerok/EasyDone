@@ -7,6 +7,7 @@ internal sealed class State
 internal object IdleState : State()
 
 internal data class ContentState(
+    val isCreate: Boolean,
     val type: String,
     val title: String,
     val titleError: String?,
