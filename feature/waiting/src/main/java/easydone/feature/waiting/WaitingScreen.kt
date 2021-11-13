@@ -56,17 +56,17 @@ internal fun WaitingScreen(viewModel: WaitingViewModel) {
                 Column {
                     EasyDoneAppBar { Text("Waiting") }
                     val state = viewModel.state.collectAsState().value
-                    LazyColumn(
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         item {
                             val significantDays by derivedStateOf { state.tasks.keys }
                             val months = remember {
                                 val currentMonth = YearMonth.now()
                                 (0..(12 * 10)).map { currentMonth.plusMonths(it.toLong()) }
                             }
-                            LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            LazyRow(
+                                contentPadding = PaddingValues(16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
                                 items(months) { month ->
                                     CalendarMonth(month, significantDays)
                                 }
@@ -93,13 +93,15 @@ internal fun WaitingScreen(viewModel: WaitingViewModel) {
                                     }
                                     Text(
                                         text = dateText,
-                                        style = MaterialTheme.typography.h5
+                                        style = MaterialTheme.typography.h5,
+                                        modifier = Modifier.padding(horizontal = 16.dp)
                                     )
                                 }
                                 items(tasks) { task ->
                                     TaskCard(
                                         task = task,
                                         modifier = Modifier
+                                            .padding(horizontal = 16.dp)
                                             .fillMaxWidth()
                                             .clickable { viewModel.onTaskClick(task) }
                                     )
