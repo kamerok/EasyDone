@@ -15,7 +15,7 @@
                 android:scaleY="0.5">
                 <path
                     android:name="path"
-                    android:fillColor="#26a69a"
+                    android:fillColor="#5073F0"
                     android:pathData="M 32 0 C 23.516 0 15.371 3.374 9.373 9.373 C 3.374 15.371 0 23.516 0 32 C 0 40.484 3.374 48.629 9.373 54.627 C 15.371 60.626 23.516 64 32 64 C 40.484 64 48.629 60.626 54.627 54.627 C 60.626 48.629 64 40.484 64 32 C 64 23.516 60.626 15.371 54.627 9.373 C 48.629 3.374 40.484 0 32 0 Z"
                     android:strokeWidth="1" />
                 <path
@@ -27,7 +27,7 @@
                     android:name="path_2"
                     android:pathData="M 23.226 32.242 L 28.981 37.998 L 41.752 25.242"
                     android:strokeWidth="3.5"
-                    android:strokeColor="#26a69a" />
+                    android:strokeColor="#5073F0" />
             </group>
         </vector>
     </aapt:attr>
