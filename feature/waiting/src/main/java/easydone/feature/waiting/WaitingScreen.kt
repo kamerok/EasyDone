@@ -166,56 +166,47 @@ private fun CalendarMonth(
                 }
             }
             days.chunked(7).forEach { weekDays ->
-                CalendarWeek(weekDays.map { localDate ->
-                    CalendarDay(
-                        number = localDate.dayOfMonth,
-                        isEnabled = YearMonth.from(localDate) == month,
-                        isToday = localDate == LocalDate.now(),
-                        isAction = significantDays.contains(localDate)
-                    )
-                })
+                Row(horizontalArrangement = Arrangement.spacedBy(1.dp)) {
+                    weekDays.forEach { localDate ->
+                        CalendarDay(
+                            number = localDate.dayOfMonth,
+                            isEnabled = YearMonth.from(localDate) == month,
+                            isToday = localDate == LocalDate.now(),
+                            isAction = significantDays.contains(localDate)
+                        )
+                    }
+                }
             }
         }
     }
 }
 
-private data class CalendarDay(
-    val number: Int,
-    val isEnabled: Boolean,
-    val isToday: Boolean,
-    val isAction: Boolean
-)
-
-@Composable
-private fun CalendarWeek(
-    days: List<CalendarDay>
-) {
-    Row(horizontalArrangement = Arrangement.spacedBy(1.dp)) {
-        days.forEach { CalendarDay(it) }
-    }
-}
-
 @OptIn(ExperimentalUnitApi::class)
 @Composable
-private fun CalendarDay(day: CalendarDay) {
+private fun CalendarDay(
+    number: Int,
+    isEnabled: Boolean,
+    isToday: Boolean,
+    isAction: Boolean
+) {
     Surface(
-        color = if (day.isAction) MaterialTheme.colors.primary else Color.Transparent,
+        color = if (isAction) MaterialTheme.colors.primary else Color.Transparent,
         shape = CircleShape,
-        border = if (day.isToday) {
+        border = if (isToday) {
             BorderStroke(1.dp, MaterialTheme.colors.onSurface)
         } else {
             null
         },
         modifier = Modifier
             .size(16.dp)
-            .alpha(if (day.isEnabled) 1f else ContentAlpha.disabled)
+            .alpha(if (isEnabled) 1f else ContentAlpha.disabled)
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "${day.number}",
+                text = "$number",
                 fontSize = TextUnit(10f, TextUnitType.Sp),
                 fontWeight = FontWeight.Medium,
                 letterSpacing = TextUnit(0f, TextUnitType.Unspecified)
@@ -241,11 +232,11 @@ private fun MonthPreview() {
 @Composable
 private fun DayPreview() {
     Row {
-        CalendarDay(CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = false))
-        CalendarDay(CalendarDay(number = 10, isEnabled = true, isToday = true, isAction = false))
-        CalendarDay(CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = true))
-        CalendarDay(CalendarDay(number = 10, isEnabled = false, isToday = false, isAction = false))
-        CalendarDay(CalendarDay(number = 10, isEnabled = false, isToday = true, isAction = false))
-        CalendarDay(CalendarDay(number = 10, isEnabled = false, isToday = false, isAction = true))
+        CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = false)
+        CalendarDay(number = 10, isEnabled = true, isToday = true, isAction = false)
+        CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = true)
+        CalendarDay(number = 10, isEnabled = false, isToday = false, isAction = false)
+        CalendarDay(number = 10, isEnabled = false, isToday = true, isAction = false)
+        CalendarDay(number = 10, isEnabled = false, isToday = false, isAction = true)
     }
 }
