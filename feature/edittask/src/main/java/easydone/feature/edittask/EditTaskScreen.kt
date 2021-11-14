@@ -41,6 +41,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -109,6 +111,12 @@ internal fun EditTaskScreen(viewModel: EditTaskViewModel) {
 private fun EditTaskContent(viewModel: EditTaskViewModel) {
     val state = viewModel.state.collectAsState().value
     if (state is ContentState) {
+        val focusRequester = remember { FocusRequester() }
+        if (state.isCreate) {
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
+        }
         ScreenContent(
             isCreate = state.isCreate,
             topContent = {
@@ -120,7 +128,8 @@ private fun EditTaskContent(viewModel: EditTaskViewModel) {
                     TaskTitle(
                         text = state.title,
                         error = state.titleError,
-                        onChange = viewModel::onTitleChange
+                        onChange = viewModel::onTitleChange,
+                        modifier = Modifier.focusRequester(focusRequester)
                     )
                     TaskDescription(
                         text = state.description,
@@ -205,9 +214,10 @@ private fun TaskType(
 private fun TaskTitle(
     text: String,
     error: String?,
-    onChange: (String) -> Unit
+    onChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(modifier) {
         val isError = !error.isNullOrEmpty()
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
