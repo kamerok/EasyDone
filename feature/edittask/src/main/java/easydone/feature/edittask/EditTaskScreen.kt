@@ -43,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -215,7 +216,8 @@ private fun TaskTitle(
             isError = isError,
             label = { Text(stringResource(R.string.edit_task_title)) },
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Sentences
             )
         )
         if (isError) {
@@ -238,6 +240,9 @@ private fun TaskDescription(
         value = text,
         onValueChange = onDescriptionChange,
         label = { Text(stringResource(R.string.edit_task_description)) },
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences
+        ),
         modifier = Modifier.fillMaxWidth()
     )
 }
