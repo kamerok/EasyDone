@@ -88,6 +88,12 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
                 if (taskTemplate.description.isNotEmpty()) {
                     insertCreateDelta(changeId, EntityField.DESCRIPTION, taskTemplate.description)
                 }
+                insertCreateDelta(
+                    changeId,
+                    EntityField.MARKERS,
+                    EntityField.MARKERS.getMapper()
+                        .toString(Markers(taskTemplate.isUrgent, taskTemplate.isImportant))
+                )
             }
         }
     }
