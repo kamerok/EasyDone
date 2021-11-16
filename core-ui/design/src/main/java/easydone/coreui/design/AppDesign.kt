@@ -12,6 +12,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.filled.PriorityHigh
 import androidx.compose.material.icons.filled.Subject
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,11 +46,11 @@ fun AppTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colors = if (isSystemInDarkTheme()) {
             darkColors(
-                background = Color(0xFF2D3134),
+                background = Color(0xFF1C1C1C),
                 primary = primary,
                 onPrimary = Color.White,
                 onError = Color.White,
-                surface = Color(0xFF434343)
+                surface = Color(0xFF252525)
             )
         } else {
             lightColors(
@@ -127,26 +129,28 @@ fun TaskCard(
     task: UiTask,
     modifier: Modifier = Modifier
 ) {
-    Card(modifier = modifier) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Text(
-                text = task.title,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            if (task.hasDescription || task.isUrgent || task.isImportant) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    if (task.hasDescription) {
-                        IconText()
-                    }
-                    if (task.isImportant) {
-                        IconImportant()
-                    }
-                    if (task.isUrgent) {
-                        IconUrgent()
+    CompositionLocalProvider(LocalElevationOverlay provides null) {
+        Card(modifier = modifier) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(
+                    text = task.title,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (task.hasDescription || task.isUrgent || task.isImportant) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        if (task.hasDescription) {
+                            IconText()
+                        }
+                        if (task.isImportant) {
+                            IconImportant()
+                        }
+                        if (task.isUrgent) {
+                            IconUrgent()
+                        }
                     }
                 }
             }
