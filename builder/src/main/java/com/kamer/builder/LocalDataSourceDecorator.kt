@@ -4,7 +4,7 @@ import easydone.core.domain.LocalDataSource
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskDelta
 import easydone.core.domain.model.TaskTemplate
-import easydone.core.sandbox.InMemoryLocalDataSource
+import easydone.core.sandbox.SandboxLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlin.reflect.KClass
 
@@ -33,6 +33,6 @@ internal class LocalDataSourceDecorator(defaultSource: LocalDataSource) : LocalD
         override suspend fun deleteChange(id: Long) = source.deleteChange(id)
 
         fun switchToInMemoryDemoDatabase() {
-            source = InMemoryLocalDataSource()
+            source = SandboxLocalDataSource()
         }
     }
