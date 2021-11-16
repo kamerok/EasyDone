@@ -88,7 +88,9 @@ internal fun WaitingScreen(viewModel: WaitingViewModel) {
                                         if (period.months > 0) {
                                             append("${period.months}m ")
                                         }
-                                        append("${period.days}d")
+                                        if (period.days > 0) {
+                                            append("${period.days}d")
+                                        }
                                         append(")")
                                     }
                                     Text(

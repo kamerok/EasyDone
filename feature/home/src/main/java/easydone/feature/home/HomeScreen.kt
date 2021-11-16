@@ -152,7 +152,9 @@ private fun LazyListScope.waitingSection(
                         if (period.months > 0) {
                             append("${period.months}m ")
                         }
-                        append("${period.days}d")
+                        if (period.days > 0) {
+                            append("${period.days}d")
+                        }
                     }
                 }
                 Title("Up Next in $period")
