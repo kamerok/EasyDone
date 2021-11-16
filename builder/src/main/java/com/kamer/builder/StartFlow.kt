@@ -51,7 +51,10 @@ val Context.mappingsDataStore: DataStore<Preferences> by preferencesDataStore(
 
 object StartFlow {
 
-    fun start() {
+    fun start(isSandbox: Boolean) {
+        if (isSandbox) {
+            GlobalContext.get().get<LocalDataSourceDecorator>().switchToInMemoryDemoDatabase()
+        }
         runBlocking { startInitialFlow() }
     }
 
@@ -82,11 +85,13 @@ object StartFlow {
                 )
             }
             single { TrelloApi.build(debugInterceptor) }
-            single<LocalDataSource> {
+            single {
                 DatabaseLocalDataSource(
                     AndroidSqliteDriver(Database.Schema, application, "database.db")
                 )
             }
+            single { LocalDataSourceDecorator(get<DatabaseLocalDataSource>()) }
+            single<LocalDataSource> { get<LocalDataSourceDecorator>() }
             single { ActivityNavigator() }
             single<Navigator> { get<ActivityNavigator>() }
             single { DeepLinkResolver() }

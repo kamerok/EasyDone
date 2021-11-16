@@ -6,6 +6,8 @@ dependencies {
     implementation project(':core:database')
     implementation project(':core:domain')
     implementation project(':core:network')
+    implementation project(':core:sandbox')
+    implementation project(':core:strings')
 
     implementation project(':feature:edittask')
     implementation project(':feature:home')

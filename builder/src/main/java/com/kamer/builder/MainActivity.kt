@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
 
         ActivityHolder.setActivity(this)
         navigator.init(this, R.id.containerView)
-        if (savedInstanceState == null) StartFlow.start()
+        if (savedInstanceState == null) StartFlow.start(intent.action == ACTION_SANDBOX)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -62,5 +62,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
             controller.isAppearanceLightStatusBars = isLightSystemBars
             controller.isAppearanceLightNavigationBars = isLightSystemBars
         }
+    }
+
+    companion object {
+        private const val ACTION_SANDBOX = "easydone.action.SANDBOX"
     }
 }

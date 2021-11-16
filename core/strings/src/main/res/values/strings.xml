@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">EasyDone</string>
 
+    <string name="shortcut_create">Create task</string>
+    <string name="shortcut_sandbox">Demo</string>
+
     <string name="urgent">Urgent</string>
     <string name="important">Important</string>
 

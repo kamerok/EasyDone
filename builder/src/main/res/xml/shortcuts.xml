@@ -2,9 +2,19 @@
 <shortcuts
     xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
+        android:icon="@drawable/ic_slideshow"
+        android:shortcutId="sandbox"
+        android:shortcutShortLabel="@string/shortcut_sandbox">
+        <intent
+            android:action="easydone.action.SANDBOX"
+            android:targetClass="com.kamer.builder.MainActivity"
+            android:targetPackage="com.kamer.easydone" />
+        <categories android:name="android.shortcut.task" />
+    </shortcut>
+    <shortcut
         android:icon="@drawable/ic_create"
         android:shortcutId="create"
-        android:shortcutShortLabel="@string/create_shortcut">
+        android:shortcutShortLabel="@string/shortcut_create">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="com.kamer.builder.TransparentActivity"
