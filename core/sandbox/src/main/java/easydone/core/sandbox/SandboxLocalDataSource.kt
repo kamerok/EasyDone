@@ -28,7 +28,7 @@ class SandboxLocalDataSource : LocalDataSource {
             Task(
                 id = UUID.randomUUID().toString(),
                 type = Task.Type.Inbox,
-                title = "Spontaneous idea",
+                title = "Develop an app",
                 description = "",
                 markers = Markers(isUrgent = false, isImportant = false),
                 isDone = false
