@@ -58,7 +58,11 @@ fun AppTheme(content: @Composable () -> Unit) {
                 primary = primary
             )
         },
-        content = content
+        content = {
+            CompositionLocalProvider(LocalElevationOverlay provides null) {
+                content()
+            }
+        }
     )
 }
 
@@ -129,28 +133,26 @@ fun TaskCard(
     task: UiTask,
     modifier: Modifier = Modifier
 ) {
-    CompositionLocalProvider(LocalElevationOverlay provides null) {
-        Card(modifier = modifier) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text(
-                    text = task.title,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                if (task.hasDescription || task.isUrgent || task.isImportant) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        if (task.hasDescription) {
-                            IconText()
-                        }
-                        if (task.isImportant) {
-                            IconImportant()
-                        }
-                        if (task.isUrgent) {
-                            IconUrgent()
-                        }
+    Card(modifier = modifier) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text(
+                text = task.title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            if (task.hasDescription || task.isUrgent || task.isImportant) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    if (task.hasDescription) {
+                        IconText()
+                    }
+                    if (task.isImportant) {
+                        IconImportant()
+                    }
+                    if (task.isUrgent) {
+                        IconUrgent()
                     }
                 }
             }

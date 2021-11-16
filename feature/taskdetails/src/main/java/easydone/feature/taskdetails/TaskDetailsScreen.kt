@@ -21,7 +21,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -86,19 +85,17 @@ internal fun TaskDetailsScreen(
                 scope.launch { sheetState.hide() }
             }
 
-            CompositionLocalProvider(LocalElevationOverlay provides null) {
-                ModalBottomSheetLayout(
-                    sheetState = sheetState,
-                    sheetContent = {
-                        TypeSelector(
-                            type = selectorType,
-                            onTypeSelected = viewModel::onTypeSelected,
-                            modifier = Modifier.navigationBarsPadding()
-                        )
-                    },
-                    content = { TaskDetailsContent(viewModel) }
-                )
-            }
+            ModalBottomSheetLayout(
+                sheetState = sheetState,
+                sheetContent = {
+                    TypeSelector(
+                        type = selectorType,
+                        onTypeSelected = viewModel::onTypeSelected,
+                        modifier = Modifier.navigationBarsPadding()
+                    )
+                },
+                content = { TaskDetailsContent(viewModel) }
+            )
         }
     }
 }

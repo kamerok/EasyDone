@@ -21,7 +21,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -32,7 +31,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -90,18 +88,16 @@ internal fun EditTaskScreen(viewModel: EditTaskViewModel) {
                         .launchIn(this)
                 }
 
-                CompositionLocalProvider(LocalElevationOverlay provides null) {
-                    ModalBottomSheetLayout(
-                        sheetState = sheetState,
-                        sheetContent = {
-                            TypeSelector(
-                                type = selectorType,
-                                onTypeSelected = viewModel::onTypeSelected
-                            )
-                        },
-                        content = { EditTaskContent(viewModel) }
-                    )
-                }
+                ModalBottomSheetLayout(
+                    sheetState = sheetState,
+                    sheetContent = {
+                        TypeSelector(
+                            type = selectorType,
+                            onTypeSelected = viewModel::onTypeSelected
+                        )
+                    },
+                    content = { EditTaskContent(viewModel) }
+                )
             }
         }
     }
