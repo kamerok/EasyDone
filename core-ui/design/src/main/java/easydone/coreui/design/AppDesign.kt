@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -95,17 +97,19 @@ fun EasyDoneAppBar(
         title = title,
         navigationIcon = navigationIcon,
         actions = {
-            actions()
-            if (menu != null) {
-                var showMenu by remember { mutableStateOf(false) }
-                IconButton(onClick = { showMenu = !showMenu }) {
-                    Icon(Icons.Default.MoreVert, "")
-                }
-                DropdownMenu(
-                    expanded = showMenu,
-                    onDismissRequest = { showMenu = false },
-                ) {
-                    menu()
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                actions()
+                if (menu != null) {
+                    var showMenu by remember { mutableStateOf(false) }
+                    IconButton(onClick = { showMenu = !showMenu }) {
+                        Icon(Icons.Default.MoreVert, "")
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                    ) {
+                        menu()
+                    }
                 }
             }
         },
