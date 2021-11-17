@@ -106,7 +106,7 @@ class SandboxLocalDataSource : LocalDataSource {
 
     override suspend fun getChanges(): List<TaskDelta> = emptyList()
 
-    override fun observeChangesCount(): Flow<Long> = flowOf()
+    override fun observeChangesCount(): Flow<Long> = flowOf(0)
 
     override fun observeTasks(type: KClass<out Task.Type>): Flow<List<Task>> =
         state
