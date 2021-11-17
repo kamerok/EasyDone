@@ -25,7 +25,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import easydone.coreui.design.urgent
 import kotlinx.coroutines.launch
@@ -54,7 +54,9 @@ internal fun SyncButton(
             Icon(
                 imageVector = Icons.Default.Sync,
                 contentDescription = "",
-                modifier = Modifier.rotate(fraction.value * -180f)
+                modifier = Modifier.graphicsLayer {
+                    rotationZ = fraction.value * -180f
+                }
             )
             AnimatedVisibility(
                 visible = isIndicatorEnabled,
