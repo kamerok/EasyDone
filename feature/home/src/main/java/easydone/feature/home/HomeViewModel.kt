@@ -3,6 +3,7 @@ package easydone.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.Synchronizer
 import easydone.core.domain.model.Task
 import easydone.coreui.design.UiTask
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,18 +13,25 @@ import kotlinx.coroutines.flow.stateIn
 
 
 internal class HomeViewModel(
+    private val synchronizer: Synchronizer,
     repository: DomainRepository,
     private val navigator: HomeNavigator
 ) : ViewModel() {
 
     val state: StateFlow<State> =
         combine(
+            combine(
+                synchronizer.isSyncing(),
+                synchronizer.observeChanges()
+            ) { isSyncing, changes -> isSyncing to changes },
             repository.getTasks(Task.Type.Inbox::class),
             repository.getTasks(Task.Type.ToDo::class),
             repository.getTasks(Task.Type.Waiting::class),
             repository.getTasks(Task.Type.Maybe::class)
-        ) { inbox, todo, waiting, maybe ->
+        ) { (isSyncing, changesCount), inbox, todo, waiting, maybe ->
             State(
+                isSyncing = isSyncing,
+                hasChanges = changesCount > 0,
                 inboxCount = inbox.size,
                 todoTasks = todo.sortedWith(taskComparator).map { it.toUiTask() },
                 nextWaitingTask = waiting.minByOrNull { (it.type as Task.Type.Waiting).date }
@@ -35,6 +43,8 @@ internal class HomeViewModel(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = State(
+                isSyncing = false,
+                hasChanges = false,
                 inboxCount = 0,
                 todoTasks = emptyList(),
                 nextWaitingTask = null,
@@ -42,6 +52,10 @@ internal class HomeViewModel(
                 maybeTasks = emptyList()
             )
         )
+
+    init {
+        synchronizer.initiateSync()
+    }
 
     fun onAdd() {
         navigator.navigateToCreate()
@@ -61,6 +75,10 @@ internal class HomeViewModel(
 
     fun onSettings() {
         navigator.navigateToSettings()
+    }
+
+    fun onSync() {
+        synchronizer.initiateSync()
     }
 
     private fun Task.toUiTask() = UiTask(

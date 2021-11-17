@@ -22,14 +22,9 @@ class HomeFragment(
     private val viewModel: HomeViewModel by viewModels(factoryProducer = {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-                HomeViewModel(domainRepository, navigator) as T
+                HomeViewModel(synchronizer, domainRepository, navigator) as T
         }
     })
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        synchronizer.initiateSync()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
