@@ -94,6 +94,14 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
                     EntityField.MARKERS.getMapper()
                         .toString(Markers(taskTemplate.isUrgent, taskTemplate.isImportant))
                 )
+                val templateType = taskTemplate.type
+                if (templateType is Task.Type.Waiting) {
+                    insertCreateDelta(
+                        changeId,
+                        EntityField.DUE_DATE,
+                        EntityField.DUE_DATE.getMapper().toString(templateType.date)
+                    )
+                }
             }
         }
     }
