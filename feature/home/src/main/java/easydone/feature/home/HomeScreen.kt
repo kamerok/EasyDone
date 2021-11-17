@@ -29,7 +29,9 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,6 +59,25 @@ internal fun HomeScreen(viewModel: HomeViewModel) {
                         EasyDoneAppBar(
                             navigationIcon = null,
                             title = { Text(stringResource(R.string.app_name)) },
+                            actions = {
+                                val states = listOf(
+                                    false to false,
+                                    true to false,
+                                    false to true,
+                                    true to true
+                                )
+                                var currentIndex by remember { mutableStateOf(0) }
+                                SyncButton(
+                                    isInProgress = states[currentIndex].first,
+                                    isIndicatorEnabled = states[currentIndex].second
+                                ) {
+                                    if (currentIndex == 3) {
+                                        currentIndex = 0
+                                    } else {
+                                        currentIndex++
+                                    }
+                                }
+                            },
                             menu = {
                                 DropdownMenuItem(onClick = viewModel::onSettings) {
                                     Text(text = "Settings")
