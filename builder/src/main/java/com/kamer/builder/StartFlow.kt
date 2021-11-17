@@ -53,7 +53,8 @@ object StartFlow {
 
     fun start(isSandbox: Boolean) {
         if (isSandbox) {
-            GlobalContext.get().get<LocalDataSourceDecorator>().switchToInMemoryDemoDatabase()
+            GlobalContext.get().get<LocalDataSourceDecorator>().switchToSandbox()
+            GlobalContext.get().get<RemoteDataSourceDecorator>().switchToSandbox()
         }
         runBlocking { startInitialFlow() }
     }
@@ -76,7 +77,7 @@ object StartFlow {
             single {
                 AuthInfoHolder(DataStoreKeyValueStorage(get<Application>().prefsDataStore))
             }
-            single<RemoteDataSource> {
+            single {
                 TrelloRemoteDataSource(
                     api = get(),
                     apiKey = trelloApiKey,
@@ -84,6 +85,8 @@ object StartFlow {
                     idMappings = DataStoreKeyValueStorage(get<Application>().mappingsDataStore)
                 )
             }
+            single { RemoteDataSourceDecorator(get<TrelloRemoteDataSource>()) }
+            single<RemoteDataSource> { get<RemoteDataSourceDecorator>() }
             single { TrelloApi.build(debugInterceptor) }
             single {
                 DatabaseLocalDataSource(
