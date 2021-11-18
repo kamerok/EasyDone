@@ -1,90 +1,162 @@
 package easydone.feature.quickcreatetask
 
-import android.animation.ValueAnimator
 import android.os.Bundle
-import android.os.Handler
-import android.text.InputType
-import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
-import androidx.core.widget.doOnTextChanged
+import android.view.ViewGroup
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Card
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import easydone.core.domain.DomainRepository
-import easydone.coreui.utils.hideKeyboard
-import kotlinx.android.synthetic.main.fragment_quick_create_task.*
+import easydone.coreui.design.AppTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 class QuickCreateTaskFragment(
     private val repository: DomainRepository,
     private val navigator: QuickCreateTaskNavigator
-) : Fragment(R.layout.fragment_quick_create_task) {
+) : Fragment() {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.setOnClickListener { closeScreen() }
-        backgroundView.setOnClickListener { }
-        descriptionView.apply {
-            setOnEditorActionListener(object : TextView.OnEditorActionListener {
-                override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        saveTask()
-                        return true
+    @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setContent {
+            AppTheme {
+                val scope = rememberCoroutineScope()
+                val keyboardController = LocalSoftwareKeyboardController.current
+                val close: () -> Unit = remember {
+                    {
+                        scope.launch {
+                            keyboardController?.hide()
+                            delay(KEYBOARD_WAIT_DELAY)
+                            navigator.closeScreen()
+                        }
                     }
-                    return false
                 }
-            })
-            doOnTextChanged { _, _, _, _ -> updateCreateViewState() }
-            imeOptions = EditorInfo.IME_ACTION_DONE
-            setRawInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-        }
-        createView.setOnClickListener { saveTask() }
-        createView.alpha = 0f
-    }
-
-    private fun closeScreen() {
-        descriptionView.hideKeyboard()
-        //to prevent keyboard from blinking
-        Handler().postDelayed({
-            navigator.closeScreen()
-        }, KEYBOARD_WAIT_DELAY)
-    }
-
-    private fun updateCreateViewState() {
-        val isVisible = !descriptionView.text.isNullOrEmpty()
-        val targetValue = if (isVisible) 1f else 0f
-        if (createView.alpha != targetValue) {
-            ValueAnimator.ofFloat(createView.alpha, targetValue)
-                .apply {
-                    duration = SHOW_ADD_DURATION
-                    addUpdateListener { createView.alpha = it.animatedValue as Float }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) { close() }
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .padding(top = 72.dp, start = 32.dp, end = 32.dp)
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            //prevent click through
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {}
+                    ) {
+                        Box {
+                            var text by remember { mutableStateOf("") }
+                            val focusRequester = remember { FocusRequester() }
+                            val save: (String) -> Unit = remember {
+                                { text ->
+                                    scope.launch {
+                                        if (text.isNotEmpty()) {
+                                            repository.createTask(
+                                                title = text,
+                                                description = "",
+                                                skipInbox = false,
+                                                isUrgent = false,
+                                                isImportant = false
+                                            )
+                                        }
+                                        close()
+                                    }
+                                }
+                            }
+                            LaunchedEffect(Unit) {
+                                focusRequester.requestFocus()
+                            }
+                            Box(modifier = Modifier.padding(16.dp)) {
+                                if (text.isEmpty()) {
+                                    Text(
+                                        text = stringResource(R.string.quick_create_hint),
+                                        style = MaterialTheme.typography.body1,
+                                        color = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium)
+                                    )
+                                }
+                                BasicTextField(
+                                    value = text,
+                                    onValueChange = { text = it },
+                                    textStyle = MaterialTheme.typography.body1.copy(
+                                        color = LocalContentColor.current
+                                    ),
+                                    modifier = Modifier.focusRequester(focusRequester),
+                                    cursorBrush = SolidColor(MaterialTheme.colors.primary),
+                                    keyboardOptions = KeyboardOptions(
+                                        capitalization = KeyboardCapitalization.Sentences,
+                                        imeAction = ImeAction.Done
+                                    ),
+                                    keyboardActions = KeyboardActions(
+                                        onDone = { save(text) }
+                                    )
+                                )
+                            }
+                            AnimatedVisibility(
+                                visible = text.isNotEmpty(),
+                                modifier = Modifier.align(Alignment.BottomEnd)
+                            ) {
+                                IconButton(onClick = { save(text) }) {
+                                    Icon(Icons.Default.Send, "")
+                                }
+                            }
+                        }
+                    }
                 }
-                .start()
-        }
-    }
-
-    private fun saveTask() {
-        val title = descriptionView.text.toString()
-        if (title.isEmpty()) {
-            closeScreen()
-        } else {
-            lifecycleScope.launch {
-                repository.createTask(
-                    title = title,
-                    description = "",
-                    skipInbox = false,
-                    isUrgent = false,
-                    isImportant = false
-                )
-                closeScreen()
             }
         }
     }
 
     companion object {
         private const val KEYBOARD_WAIT_DELAY = 200L
-        private const val SHOW_ADD_DURATION = 100L
     }
 
 }

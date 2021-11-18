@@ -20,4 +20,6 @@
 
     <string name="settings_title">Settings</string>
 
+    <string name="quick_create_hint">What\'s new?</string>
+
 </resources>
