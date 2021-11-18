@@ -18,4 +18,6 @@
     <string name="task_details_action_move">Move</string>
     <string name="task_details_action_archive">Archive</string>
 
+    <string name="settings_title">Settings</string>
+
 </resources>
