@@ -5,8 +5,4 @@
 
     <color name="background">#ffffff</color>
 
-    <!--Text-->
-    <color name="text_main">#535353</color>
-    <color name="text_inactive">#808080</color>
-
 </resources>
