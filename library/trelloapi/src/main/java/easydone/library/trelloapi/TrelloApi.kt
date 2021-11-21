@@ -1,13 +1,16 @@
 package easydone.library.trelloapi
 
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import easydone.library.trelloapi.model.Card
 import easydone.library.trelloapi.model.NestedBoard
 import easydone.library.trelloapi.model.NestedBoards
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -52,6 +55,11 @@ interface TrelloApi {
     ): Card
 
     companion object {
+        private val json = Json {
+            ignoreUnknownKeys = true
+        }
+
+        @OptIn(ExperimentalSerializationApi::class)
         fun build(debugInterceptor: Interceptor?): TrelloApi = Retrofit.Builder()
             .baseUrl("https://trello.com/1/")
             .client(
@@ -66,7 +74,7 @@ interface TrelloApi {
                     }
                     .build()
             )
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(TrelloApi::class.java)
     }

@@ -28,12 +28,14 @@ object Versions {
     val junit = "4.12"
     val koin = "2.2.3"
     val kotlin = "1.5.31"
+    val kotlinxSerialization = "1.3.1"
     val lifecycle = "2.4.0"
     val markdown = "0.2.6"
     val material = "1.1.0-alpha08"
     val mockitoKotlin = "2.2.0"
     val recyclerView = "1.0.0"
     val retrofit = "2.9.0"
+    val retrofitKotlinxSerialization = "0.8.0"
     val retrofitLogging = "4.9.1"
     val savedState = "1.0.0"
     val soLoader = "0.10.1"
@@ -48,6 +50,7 @@ object Plugins {
     val gradleAndroid = "com.android.tools.build:gradle:${Versions.gradleAndroid}"
     val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:${Versions.gradleVersions}"
     val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
+    val kotlinxSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}"
     val sqlDelight = "com.squareup.sqldelight:gradle-plugin:${Versions.sqlDelight}"
 }
 
@@ -82,6 +85,7 @@ object Kotlin {
     val coroutinesAndorid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
     val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
     val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
+    val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinxSerialization}"
 }
 
 object Tools {
@@ -97,7 +101,7 @@ object Libraries {
     val koin = "io.insert-koin:koin-android:${Versions.koin}"
     val markdown = "com.github.jeziellago:compose-markdown:${Versions.markdown}"
     val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
-    val retrofitConverterGson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
+    val retrofitConverterKotlinx = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.retrofitKotlinxSerialization}"
     val retrofitLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.retrofitLogging}"
     val sqlDelightAndroid = "com.squareup.sqldelight:android-driver:${Versions.sqlDelight}"
     val sqlDelightCoroutines = "com.squareup.sqldelight:coroutines-extensions-jvm:${Versions.sqlDelight}"
