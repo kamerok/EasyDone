@@ -6,6 +6,8 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskTemplate
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,26 +33,27 @@ internal class EditTaskViewModel(
     private val eventChannel = Channel<Event>(Channel.UNLIMITED)
     private val actionChannel: Channel<Action> = Channel(capacity = Channel.UNLIMITED)
 
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val state: StateFlow<State> = flow {
         if (id != null) {
             emit(repository.getTask(id))
         } else {
-            emit(
-                Task(
-                    id = "",
-                    type = Task.Type.Inbox,
-                    title = "",
-                    description = "",
-                    markers = Markers(isUrgent = false, isImportant = false),
-                    isDone = false
-                )
-            )
+            emit(null)
         }
     }
         .flatMapConcat { originalTask ->
             actionChannel
                 .consumeAsFlow()
-                .scan(originalTask) { task, action -> reduce(originalTask, task, action) }
+                .scan(
+                    originalTask ?: Task(
+                        id = "",
+                        type = Task.Type.Inbox,
+                        title = "",
+                        description = "",
+                        markers = Markers(isUrgent = false, isImportant = false),
+                        isDone = false
+                    )
+                ) { task, action -> reduce(originalTask, task, action) }
                 .map { task ->
                     ContentState(
                         isCreate = id == null,
@@ -100,7 +103,7 @@ internal class EditTaskViewModel(
 
     //TODO: refactor around state
     private suspend fun reduce(
-        originalTask: Task,
+        originalTask: Task?,
         task: Task,
         action: Action
     ) = when (action) {
@@ -121,13 +124,13 @@ internal class EditTaskViewModel(
             markers = task.markers.copy(isImportant = !task.markers.isImportant)
         )
         is Action.Save -> {
-            if (task == originalTask && id != null) {
+            if (task == originalTask) {
                 navigator.close()
             } else {
-                if (task.title.isNotBlank()) {
-                    if (id != null) {
-                        repository.saveTask(task)
-                    } else {
+                if (task.title.isBlank()) {
+                    //todo: set error state
+                } else {
+                    if (originalTask == null) {
                         repository.createTask(
                             TaskTemplate(
                                 type = task.type,
@@ -137,6 +140,8 @@ internal class EditTaskViewModel(
                                 isImportant = task.markers.isImportant
                             )
                         )
+                    } else {
+                        repository.saveTask(task)
                     }
                     navigator.close()
                 }
