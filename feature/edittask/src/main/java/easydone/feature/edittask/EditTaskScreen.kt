@@ -57,6 +57,9 @@ import easydone.feature.selecttype.TypeSelector
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -118,7 +121,7 @@ private fun EditTaskContent(viewModel: EditTaskViewModel) {
             topContent = {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     TaskType(
-                        label = state.type,
+                        label = state.type.format(),
                         onClick = viewModel::onTypeClick
                     )
                     TaskTitle(
@@ -144,6 +147,28 @@ private fun EditTaskContent(viewModel: EditTaskViewModel) {
             }
         )
     }
+}
+
+//TODO: extract resources, reuse format logic
+private fun Task.Type.format() = when (this) {
+    is Task.Type.Inbox -> "INBOX"
+    is Task.Type.ToDo -> "TO-DO"
+    is Task.Type.Waiting -> "WAITING".plus(date.let {
+        val period = Period.between(LocalDate.now(), it)
+        val periodString = buildString {
+            if (period.years > 0) {
+                append("${period.years}y ")
+            }
+            if (period.months > 0) {
+                append("${period.months}m ")
+            }
+            if (period.days > 0) {
+                append("${period.days}d")
+            }
+        }
+        " until ${it.format(DateTimeFormatter.ofPattern("d MMM y"))} ($periodString)"
+    })
+    is Task.Type.Maybe -> "MAYBE"
 }
 
 @Composable

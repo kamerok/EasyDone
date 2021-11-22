@@ -15,13 +15,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
-import java.time.LocalDate
-import java.time.Period
-import java.time.format.DateTimeFormatter
 
 
 internal class EditTaskViewModel(
@@ -45,26 +41,16 @@ internal class EditTaskViewModel(
             actionChannel
                 .consumeAsFlow()
                 .scan(
-                    originalTask ?: Task(
-                        id = "",
-                        type = Task.Type.Inbox,
-                        title = "",
-                        description = "",
-                        markers = Markers(isUrgent = false, isImportant = false),
-                        isDone = false
-                    )
-                ) { task, action -> reduce(originalTask, task, action) }
-                .map { task ->
                     ContentState(
-                        isCreate = id == null,
-                        type = task.type.format(),
-                        title = task.title,
-                        titleError = if (task.title.isBlank()) "Should not be empty" else null,
-                        description = task.description,
-                        isUrgent = task.markers.isUrgent,
-                        isImportant = task.markers.isImportant
+                        isCreate = originalTask == null,
+                        type = originalTask?.type ?: Task.Type.Inbox,
+                        title = originalTask?.title ?: "",
+                        titleError = null,
+                        description = originalTask?.description ?: "",
+                        isUrgent = originalTask?.markers?.isUrgent ?: false,
+                        isImportant = originalTask?.markers?.isImportant ?: false
                     )
-                }
+                ) { state, action -> reduce(originalTask, state, action) }
         }
         .stateIn(
             scope = viewModelScope,
@@ -101,75 +87,65 @@ internal class EditTaskViewModel(
         actionChannel.trySend(Action.Save)
     }
 
-    //TODO: refactor around state
     private suspend fun reduce(
         originalTask: Task?,
-        task: Task,
+        state: ContentState,
         action: Action
-    ) = when (action) {
+    ): ContentState = when (action) {
         is Action.TypeClick -> {
-            eventChannel.trySend(OpenSelectType(task.type))
-            task
+            eventChannel.trySend(OpenSelectType(state.type))
+            state
         }
         is Action.TypeSelected -> {
             eventChannel.trySend(CloseSelectType)
-            task.copy(type = action.type)
+            state.copy(type = action.type)
         }
-        is Action.TitleChange -> task.copy(title = action.title)
-        is Action.DescriptionChange -> task.copy(description = action.description)
-        is Action.UrgentClick -> task.copy(
-            markers = task.markers.copy(isUrgent = !task.markers.isUrgent)
-        )
-        is Action.ImportantClick -> task.copy(
-            markers = task.markers.copy(isImportant = !task.markers.isImportant)
-        )
+        is Action.TitleChange -> state.copy(title = action.title, titleError = null)
+        is Action.DescriptionChange -> state.copy(description = action.description)
+        is Action.UrgentClick -> state.copy(isUrgent = !state.isUrgent)
+        is Action.ImportantClick -> state.copy(isImportant = !state.isImportant)
         is Action.Save -> {
-            if (task == originalTask) {
-                navigator.close()
+            if (state.title.isBlank()) {
+                //todo extract resources
+                state.copy(titleError = "Should not be empty")
             } else {
-                if (task.title.isBlank()) {
-                    //todo: set error state
+                val hasChanges =
+                    state.title != originalTask?.title ?: "" ||
+                            state.description != originalTask?.description ?: "" ||
+                            state.type != originalTask?.type ?: Task.Type.Inbox ||
+                            state.isUrgent != originalTask?.markers?.isUrgent ?: false ||
+                            state.isImportant != originalTask?.markers?.isImportant ?: false
+                if (!hasChanges) {
+                    navigator.close()
                 } else {
                     if (originalTask == null) {
                         repository.createTask(
                             TaskTemplate(
-                                type = task.type,
-                                title = task.title,
-                                description = task.description,
-                                isUrgent = task.markers.isUrgent,
-                                isImportant = task.markers.isImportant
+                                type = state.type,
+                                title = state.title,
+                                description = state.description,
+                                isUrgent = state.isUrgent,
+                                isImportant = state.isImportant
                             )
                         )
                     } else {
-                        repository.saveTask(task)
+                        repository.saveTask(
+                            originalTask.copy(
+                                type = state.type,
+                                title = state.title,
+                                description = state.description,
+                                markers = Markers(
+                                    isUrgent = state.isUrgent,
+                                    isImportant = state.isImportant
+                                )
+                            )
+                        )
                     }
                     navigator.close()
                 }
+                state
             }
-            task
         }
-    }
-
-    //TODO: extract resources, reuse format logic
-    private fun Task.Type.format() = when (this) {
-        is Task.Type.Inbox -> "INBOX"
-        is Task.Type.ToDo -> "TO-DO"
-        is Task.Type.Waiting -> "WAITING".plus(date.let {
-            val period = Period.between(LocalDate.now(), it)
-            val periodString = buildString {
-                if (period.years > 0) {
-                    append("${period.years}y ")
-                }
-                if (period.months > 0) {
-                    append("${period.months}m ")
-                }
-                if (period.days > 0) {
-                    append("${period.days}d")
-                }
-            }
-            " until ${it.format(DateTimeFormatter.ofPattern("d MMM y"))} ($periodString)"
-        })
-        is Task.Type.Maybe -> "MAYBE"
     }
 
     private sealed class Action {

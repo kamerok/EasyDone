@@ -8,7 +8,7 @@ internal object IdleState : State()
 
 internal data class ContentState(
     val isCreate: Boolean,
-    val type: String,
+    val type: Task.Type,
     val title: String,
     val titleError: String?,
     val description: String,
