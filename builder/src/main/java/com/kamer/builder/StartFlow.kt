@@ -59,8 +59,19 @@ object StartFlow {
         runBlocking { startInitialFlow() }
     }
 
-    fun startCreate() {
+    fun startQuickCreate() {
         GlobalContext.get().get<Navigator>().openScreen(QuickCreateTaskFragment::class.java)
+
+        //to start syncing
+        GlobalContext.get().get<Synchronizer>()
+    }
+
+    fun startCreate(sharedText: String) {
+        GlobalContext.get().get<Navigator>().openScreen(
+            fragmentClass = EditTaskFragment::class.java,
+            addToBackStack = false,
+            args = EditTaskFragment.shareArgs(sharedText)
+        )
 
         //to start syncing
         GlobalContext.get().get<Synchronizer>()
@@ -161,7 +172,7 @@ object StartFlow {
                             navigator.openScreen(
                                 fragmentClass = EditTaskFragment::class.java,
                                 addToBackStack = true,
-                                args = EditTaskFragment.createArgs(id)
+                                args = EditTaskFragment.editArgs(id)
                             )
                         }
 
@@ -176,7 +187,12 @@ object StartFlow {
                     get(),
                     object : EditTaskNavigator {
                         override fun close() {
-                            get<Navigator>().popScreen()
+                            val navigator = get<Navigator>()
+                            if (!navigator.isEmpty()) {
+                                navigator.popScreen()
+                            } else {
+                                ActivityHolder.getActivity().onBackPressed()
+                            }
                         }
                     }
                 )

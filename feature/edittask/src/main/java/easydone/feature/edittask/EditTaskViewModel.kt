@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.stateIn
 
 internal class EditTaskViewModel(
     private val id: String?,
+    private val sharedText: String?,
     private val repository: DomainRepository,
     private val navigator: EditTaskNavigator
 ) : ViewModel() {
@@ -46,7 +47,7 @@ internal class EditTaskViewModel(
                         type = originalTask?.type ?: Task.Type.Inbox,
                         title = originalTask?.title ?: "",
                         titleError = null,
-                        description = originalTask?.description ?: "",
+                        description = originalTask?.description ?: sharedText ?: "",
                         isUrgent = originalTask?.markers?.isUrgent ?: false,
                         isImportant = originalTask?.markers?.isImportant ?: false
                     )

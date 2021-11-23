@@ -21,7 +21,7 @@ class TransparentActivity : AppCompatActivity(R.layout.activity_container) {
         ActivityHolder.setActivity(this)
         navigator.init(this, R.id.containerView)
         if (savedInstanceState == null) {
-            StartFlow.startCreate()
+            StartFlow.startQuickCreate()
         }
     }
 

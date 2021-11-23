@@ -19,11 +19,12 @@ class EditTaskFragment(
 ) : Fragment() {
 
     private val id: String? by lazy { arguments?.getString(TASK_ID) }
+    private val sharedText: String? by lazy { arguments?.getString(SHARED_TEXT) }
 
     private val viewModel: EditTaskViewModel by viewModels(factoryProducer = {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-                EditTaskViewModel(id, repository, navigator) as T
+                EditTaskViewModel(id, sharedText, repository, navigator) as T
         }
     })
 
@@ -39,8 +40,11 @@ class EditTaskFragment(
 
     companion object {
         private const val TASK_ID = "task_id"
+        private const val SHARED_TEXT = "shared_text"
 
-        fun createArgs(taskId: String): Bundle = bundleOf(TASK_ID to taskId)
+        fun editArgs(taskId: String): Bundle = bundleOf(TASK_ID to taskId)
+
+        fun shareArgs(text: String): Bundle = bundleOf(SHARED_TEXT to text)
     }
 
 }
