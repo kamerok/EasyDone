@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
         hideSystemUI()
 
         super.onCreate(savedInstanceState)
-        window.setBackgroundDrawableResource(R.color.background)
 
         ActivityHolder.setActivity(this)
         navigator.init(this, R.id.containerView)
