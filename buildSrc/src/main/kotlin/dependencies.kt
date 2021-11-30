@@ -20,7 +20,7 @@ object Versions {
     val dataStore = "1.0.0"
     val desugar = "1.1.5"
     val firebase = "17.2.1"
-    val flipper = "0.117.0"
+    val flipper = "0.122.0"
     val fragment = "1.3.6"
     val googleServices = "4.3.2"
     val gradleAndroid = "7.0.2"
