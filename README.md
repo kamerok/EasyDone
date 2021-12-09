@@ -1,7 +1,44 @@
 **Disclaimer:** *Code and design of this project are far from perfect. It's just something to simplify routine tasks.* 
 
 # EasyDone
-![Quick Add](demo/quick_add.png) ![Home Dark](demo/home_dark.png) ![Home Light](demo/home_light.png)
+<p float="left">
+  <img src="demo/dark/quick_add.png" width="240" />
+  <img src="demo/dark/home.png" width="240" /> 
+  <img src="demo/dark/task_details.png" width="240" />
+</p>
+<details>
+  <summary>More screenshots</summary>
+  
+  <p float="left">
+    <img src="demo/dark/quick_add.png" width="240" />
+    <img src="demo/light/quick_add.png" width="240" />
+  </p>
+  <p float="left">
+  <img src="demo/dark/home.png" width="240" />
+  <img src="demo/light/home.png" width="240" />
+  </p>
+  <p float="left">
+  <img src="demo/dark/task_details.png" width="240" />
+  <img src="demo/light/task_details.png" width="240" />
+  </p>
+  <p float="left">
+  <img src="demo/dark/inbox.png" width="240" />
+  <img src="demo/light/inbox.png" width="240" />  
+  </p>
+  <p float="left">
+  <img src="demo/dark/task_edit.png" width="240" />
+  <img src="demo/light/task_edit.png" width="240" /> 
+  </p>
+  <p float="left">
+  <img src="demo/dark/task_move.png" width="240" /> 
+  <img src="demo/light/task_move.png" width="240" />
+  </p>
+  <p float="left">
+  <img src="demo/dark/waiting.png" width="240" />
+  <img src="demo/light/waiting.png" width="240" />
+  </p>
+  
+</details>
 
 # License
 
