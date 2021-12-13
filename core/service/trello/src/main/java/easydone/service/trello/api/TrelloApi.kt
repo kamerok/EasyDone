@@ -1,9 +1,9 @@
-package easydone.library.trelloapi
+package easydone.service.trello.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import easydone.library.trelloapi.model.Card
-import easydone.library.trelloapi.model.NestedBoard
-import easydone.library.trelloapi.model.NestedBoards
+import easydone.service.trello.api.model.Card
+import easydone.service.trello.api.model.NestedBoard
+import easydone.service.trello.api.model.NestedBoards
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor

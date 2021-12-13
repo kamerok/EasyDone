@@ -13,8 +13,6 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.LocalDataSource
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.Synchronizer
-import easydone.core.network.AuthInfoHolder
-import easydone.core.network.TrelloRemoteDataSource
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.home.HomeFragment
@@ -32,7 +30,9 @@ import easydone.feature.waiting.WaitingFragment
 import easydone.feature.waiting.WaitingNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
-import easydone.library.trelloapi.TrelloApi
+import easydone.service.trello.api.TrelloApi
+import easydone.service.trello.AuthInfoHolder
+import easydone.service.trello.TrelloRemoteDataSource
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import org.koin.android.ext.koin.androidContext

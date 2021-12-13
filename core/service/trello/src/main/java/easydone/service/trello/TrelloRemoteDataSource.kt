@@ -1,13 +1,13 @@
-package easydone.core.network
+package easydone.service.trello
 
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskDelta
 import easydone.library.keyvalue.KeyValueStorage
-import easydone.library.trelloapi.TrelloApi
-import easydone.library.trelloapi.model.Card
-import easydone.library.trelloapi.model.NestedBoard
+import easydone.service.trello.api.TrelloApi
+import easydone.service.trello.api.model.Card
+import easydone.service.trello.api.model.NestedBoard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

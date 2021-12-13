@@ -3,9 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 dependencies {
-    implementation project(':core:network')
+    implementation project(':core:service:trello')
     implementation project(':library:navigation')
-    implementation project(':library:trelloapi')
     implementation project(':feature:login')
     implementation project(':feature:selectboard')
 

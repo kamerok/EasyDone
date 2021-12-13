@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 
 
 dependencies {
-    implementation project(":library:trelloapi")
+    implementation project(":core:service:trello")
 
     implementation Android.appCompat
     implementation Android.browser

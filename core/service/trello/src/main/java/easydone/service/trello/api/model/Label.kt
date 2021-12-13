@@ -1,4 +1,4 @@
-package easydone.library.trelloapi.model
+package easydone.service.trello.api.model
 
 import kotlinx.serialization.Serializable
 

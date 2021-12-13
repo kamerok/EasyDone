@@ -1,4 +1,4 @@
-package easydone.core.network
+package easydone.service.trello
 
 import easydone.library.keyvalue.KeyValueStorage
 
