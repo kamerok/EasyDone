@@ -12,17 +12,15 @@ import easydone.feature.selectboard.BoardUiModel
 import easydone.feature.selectboard.SelectBoardFragment
 import easydone.library.navigation.FragmentManagerNavigator
 import easydone.library.navigation.Navigator
+import easydone.service.trello.TrelloRemoteDataSource
 import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.api.model.Board
-import easydone.service.trello.AuthInfoHolder
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class SetupFragment(
-    private val authInfoHolder: AuthInfoHolder,
+    private val trelloRemoteDataSource: TrelloRemoteDataSource,
     private val trelloApi: TrelloApi,
     private val trelloApiKey: String,
     private val tokenFlow: Flow<String>,
@@ -92,9 +90,7 @@ class SetupFragment(
         )
     }
 
-    private suspend fun saveData(token: String, boardId: String) = withContext(Dispatchers.IO) {
-        authInfoHolder.putToken(token)
-        authInfoHolder.putBoardId(boardId)
-    }
+    private suspend fun saveData(token: String, boardId: String) =
+        trelloRemoteDataSource.connect(token, boardId)
 
 }

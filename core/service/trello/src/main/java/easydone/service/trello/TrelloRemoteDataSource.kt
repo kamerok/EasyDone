@@ -19,9 +19,11 @@ import java.util.UUID
 class TrelloRemoteDataSource(
     private val api: TrelloApi,
     private val apiKey: String,
-    private val authInfoHolder: AuthInfoHolder,
+    prefs: KeyValueStorage,
     private val idMappings: KeyValueStorage
 ) : RemoteDataSource {
+
+    private val authInfoHolder: AuthInfoHolder = AuthInfoHolder(prefs)
 
     private val syncMutex = Mutex(false)
 
@@ -109,6 +111,11 @@ class TrelloRemoteDataSource(
 
     override suspend fun disconnect() {
         authInfoHolder.clear()
+    }
+
+    suspend fun connect(token: String, boardId: String) = withContext(Dispatchers.IO) {
+        authInfoHolder.putToken(token)
+        authInfoHolder.putBoardId(boardId)
     }
 
     private suspend fun rememberDataAnchors(board: NestedBoard) {

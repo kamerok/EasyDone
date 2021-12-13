@@ -30,7 +30,6 @@ import easydone.feature.waiting.WaitingFragment
 import easydone.feature.waiting.WaitingNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
-import easydone.service.trello.AuthInfoHolder
 import easydone.service.trello.TrelloRemoteDataSource
 import easydone.service.trello.api.TrelloApi
 import kotlinx.coroutines.runBlocking
@@ -86,13 +85,10 @@ object StartFlow {
             single { DomainRepository(get()) }
             single { Synchronizer(get(), get()) }
             single {
-                AuthInfoHolder(DataStoreKeyValueStorage(get<Application>().prefsDataStore))
-            }
-            single {
                 TrelloRemoteDataSource(
                     api = get(),
                     apiKey = trelloApiKey,
-                    authInfoHolder = get(),
+                    prefs = DataStoreKeyValueStorage(get<Application>().prefsDataStore),
                     idMappings = DataStoreKeyValueStorage(get<Application>().mappingsDataStore)
                 )
             }

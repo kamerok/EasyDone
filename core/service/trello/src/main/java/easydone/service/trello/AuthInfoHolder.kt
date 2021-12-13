@@ -3,7 +3,7 @@ package easydone.service.trello
 import easydone.library.keyvalue.KeyValueStorage
 
 
-class AuthInfoHolder(private val storage: KeyValueStorage) {
+internal class AuthInfoHolder(private val storage: KeyValueStorage) {
 
     suspend fun getToken(): String? = storage.getString(TOKEN)
 

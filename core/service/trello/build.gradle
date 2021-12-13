@@ -3,7 +3,7 @@ apply plugin: 'kotlinx-serialization'
 
 
 dependencies {
-    implementation project(':core:domain')
+    api project(':core:domain')
     implementation project(':library:keyvalue')
 
     implementation Kotlin.coroutinesCore
