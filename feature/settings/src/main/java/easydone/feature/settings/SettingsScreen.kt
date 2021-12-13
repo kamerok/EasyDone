@@ -15,15 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
+import easydone.core.domain.RemoteDataSource
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
-import easydone.service.trello.AuthInfoHolder
 import kotlinx.coroutines.launch
 
 
 @Composable
 internal fun SettingScreen(
-    authInfoHolder: AuthInfoHolder,
+    remoteDataSource: RemoteDataSource,
     navigator: SettingsNavigator
 ) {
     AppTheme {
@@ -39,7 +39,7 @@ internal fun SettingScreen(
                         Button(
                             onClick = {
                                 scope.launch {
-                                    authInfoHolder.clear()
+                                    remoteDataSource.disconnect()
                                     navigator.navigateToSetup()
                                 }
                             }

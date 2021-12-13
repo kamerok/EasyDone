@@ -30,9 +30,9 @@ import easydone.feature.waiting.WaitingFragment
 import easydone.feature.waiting.WaitingNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
-import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.AuthInfoHolder
 import easydone.service.trello.TrelloRemoteDataSource
+import easydone.service.trello.api.TrelloApi
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import org.koin.android.ext.koin.androidContext
@@ -233,10 +233,10 @@ object StartFlow {
     }
 
     private suspend fun startInitialFlow() {
-        val authInfoHolder: AuthInfoHolder = GlobalContext.get().get()
+        val remoteDataSource: RemoteDataSource = GlobalContext.get().get()
         val navigator: Navigator = GlobalContext.get().get()
         navigator.clearStack()
-        if (authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null) {
+        if (remoteDataSource.isConnected()) {
             startMainFlow(navigator)
         } else {
             startSetupFlow(navigator)

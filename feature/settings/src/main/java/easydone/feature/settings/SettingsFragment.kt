@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import easydone.service.trello.AuthInfoHolder
+import easydone.core.domain.RemoteDataSource
 
 
 class SettingsFragment(
-    private val authInfoHolder: AuthInfoHolder,
+    private val remoteDataSource: RemoteDataSource,
     private val navigator: SettingsNavigator
 ) : Fragment() {
 
@@ -20,7 +20,7 @@ class SettingsFragment(
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setContent {
-            SettingScreen(authInfoHolder, navigator)
+            SettingScreen(remoteDataSource, navigator)
         }
     }
 

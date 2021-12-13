@@ -7,7 +7,11 @@ import easydone.core.domain.model.TaskDelta
 
 class SandboxRemoteDataSource : RemoteDataSource {
 
+    override suspend fun isConnected(): Boolean = true
+
     override suspend fun getAllTasks(): List<Task> = emptyList()
 
     override suspend fun syncTaskDelta(delta: TaskDelta) {}
+
+    override suspend fun disconnect() {}
 }

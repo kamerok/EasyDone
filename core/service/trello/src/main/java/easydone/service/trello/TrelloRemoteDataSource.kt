@@ -25,6 +25,9 @@ class TrelloRemoteDataSource(
 
     private val syncMutex = Mutex(false)
 
+    override suspend fun isConnected(): Boolean =
+        authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null
+
     override suspend fun getAllTasks(): List<Task> = withContext(Dispatchers.IO) {
         val boardId = authInfoHolder.getBoardId()!!
         val token = authInfoHolder.getToken()!!
@@ -102,6 +105,10 @@ class TrelloRemoteDataSource(
                 }
             }
         }
+    }
+
+    override suspend fun disconnect() {
+        authInfoHolder.clear()
     }
 
     private suspend fun rememberDataAnchors(board: NestedBoard) {

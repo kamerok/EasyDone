@@ -68,11 +68,19 @@ class SynchronizerTest {
     }
 
     object ErrorRemoteDataSource : RemoteDataSource {
+        override suspend fun isConnected(): Boolean {
+            throw Exception("sample error")
+        }
+
         override suspend fun getAllTasks(): List<Task> {
             throw Exception("sample error")
         }
 
         override suspend fun syncTaskDelta(delta: TaskDelta) {
+            throw Exception("sample error")
+        }
+
+        override suspend fun disconnect() {
             throw Exception("sample error")
         }
     }
@@ -83,6 +91,8 @@ class SynchronizerTest {
         var invokeCount: Int = 0
             private set
         private val waiter = Waiter()
+
+        override suspend fun isConnected(): Boolean = true
 
         fun completeWaitingCoroutines() = waiter.notify()
 
@@ -95,6 +105,8 @@ class SynchronizerTest {
         }
 
         override suspend fun syncTaskDelta(delta: TaskDelta) {}
+
+        override suspend fun disconnect() {}
     }
 
     object ImmediateLocalDataSource : LocalDataSource {
