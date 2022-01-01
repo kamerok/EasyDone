@@ -58,12 +58,8 @@ class AppWidget : AppWidgetProvider() {
                     setTextViewText(R.id.important_text, importantCount.toString())
                     setTextViewText(R.id.no_flags_text, noFlagsCount.toString())
 
+                    setOnClickPendingIntent(android.R.id.background, startMainActivityIntent)
                     setOnClickPendingIntent(R.id.inbox_text, startMainActivityInboxIntent)
-                    setOnClickPendingIntent(R.id.app_name_text, startMainActivityIntent)
-                    setOnClickPendingIntent(R.id.urgent_important_text, startMainActivityIntent)
-                    setOnClickPendingIntent(R.id.urgent_text, startMainActivityIntent)
-                    setOnClickPendingIntent(R.id.important_text, startMainActivityIntent)
-                    setOnClickPendingIntent(R.id.no_flags_text, startMainActivityIntent)
                     setOnClickPendingIntent(R.id.add_view, startTransparentActivityIntent)
                 }
 
