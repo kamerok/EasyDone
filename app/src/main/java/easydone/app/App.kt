@@ -18,5 +18,6 @@ class App : Application() {
             Timber.plant(LogcatTree())
         }
         StartFlow.initDependencies(this, BuildConfig.TRELLO_API_KEY, debugInterceptor)
+        StartFlow.startWidgetUpdates()
     }
 }

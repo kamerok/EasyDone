@@ -1,7 +1,10 @@
 package com.kamer.builder
 
 import android.app.Application
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
@@ -13,6 +16,7 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.LocalDataSource
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.Synchronizer
+import easydone.core.domain.model.Task
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.home.HomeFragment
@@ -32,6 +36,10 @@ import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.service.trello.TrelloRemoteDataSource
 import easydone.service.trello.api.TrelloApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import org.koin.android.ext.koin.androidContext
@@ -50,12 +58,12 @@ val Context.mappingsDataStore: DataStore<Preferences> by preferencesDataStore(
 
 object StartFlow {
 
-    fun start(isSandbox: Boolean) {
+    fun start(isSandbox: Boolean, isInboxDeeplink: Boolean) {
         if (isSandbox) {
             GlobalContext.get().get<LocalDataSourceDecorator>().switchToSandbox()
             GlobalContext.get().get<RemoteDataSourceDecorator>().switchToSandbox()
         }
-        runBlocking { startInitialFlow() }
+        runBlocking { startInitialFlow(isInboxDeeplink) }
     }
 
     fun startQuickCreate() {
@@ -228,12 +236,31 @@ object StartFlow {
         }
     }
 
-    private suspend fun startInitialFlow() {
+    fun startWidgetUpdates() {
+        val repo = GlobalContext.get().get<DomainRepository>()
+        val context = GlobalContext.get().get<Context>()
+        repo.getTasks(Task.Type.ToDo::class)
+            .combine(repo.getTasks(Task.Type.Inbox::class)) { _, _ ->
+                true
+            }
+            .onEach {
+                val intent = Intent(context, AppWidget::class.java).apply {
+                    action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                }
+                val ids: IntArray = AppWidgetManager.getInstance(context)
+                    .getAppWidgetIds(ComponentName(context, AppWidget::class.java))
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                context.sendBroadcast(intent)
+            }
+            .launchIn(GlobalScope)
+    }
+
+    private suspend fun startInitialFlow(isInboxDeeplink: Boolean = false) {
         val remoteDataSource: RemoteDataSource = GlobalContext.get().get()
         val navigator: Navigator = GlobalContext.get().get()
         navigator.clearStack()
         if (remoteDataSource.isConnected()) {
-            startMainFlow(navigator)
+            startMainFlow(navigator, isInboxDeeplink)
         } else {
             startSetupFlow(navigator)
         }
@@ -243,7 +270,14 @@ object StartFlow {
         navigator.openScreen(SetupFragment::class.java)
     }
 
-    private fun startMainFlow(navigator: Navigator) = navigator.openScreen(HomeFragment::class.java)
+    private fun startMainFlow(
+        navigator: Navigator,
+        isInboxDeeplink: Boolean = false
+    ) = if (isInboxDeeplink) {
+        navigator.setupScreenStack(HomeFragment::class.java, InboxFragment::class.java)
+    } else {
+        navigator.openScreen(HomeFragment::class.java)
+    }
 
     private fun startViewTask(id: String, navigator: Navigator) =
         navigator.openScreen(

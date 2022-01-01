@@ -10,6 +10,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import easydone.feature.inbox.InboxFragment
 import org.koin.android.ext.android.inject
 
 
@@ -28,12 +29,20 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
 
         ActivityHolder.setActivity(this)
         navigator.init(this, R.id.containerView)
-        if (savedInstanceState == null) StartFlow.start(intent.action == ACTION_SANDBOX)
+        if (savedInstanceState == null) StartFlow.start(
+            intent.action == ACTION_SANDBOX,
+            intent.getBooleanExtra("inbox", false)
+        )
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        Handler().postDelayed({
+        //check inbox deeplink
+        if (intent.getBooleanExtra("inbox", false)) {
+            navigator.clearStack()
+            navigator.openScreen(InboxFragment::class.java, true)
+        }
+        Handler(mainLooper).postDelayed({
             deepLinkResolver.resolveIntent(intent)
         }, 2000)
     }
