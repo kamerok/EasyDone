@@ -37,6 +37,22 @@ class FragmentManagerNavigator(
             if (addToBackStack) addToBackStack(null)
         }
 
+    override fun setupScreenStack(vararg fragmentClasses: Class<out Fragment>) {
+        fragmentManager.commit {
+            replace(containerId, fragmentClasses.first(), null)
+        }
+        fragmentClasses.drop(1).forEach { clazz ->
+            fragmentManager.commit {
+                setCustomAnimations(
+                    0, 0,
+                    R.anim.overlay_close_enter, R.anim.overlay_close_exit
+                )
+                replace(containerId, clazz, null)
+                addToBackStack(null)
+            }
+        }
+    }
+
     override fun isEmpty(): Boolean = fragmentManager.backStackEntryCount == 0
 
     override fun popScreen() {

@@ -11,6 +11,7 @@ interface Navigator {
         addToBackStack: Boolean = false,
         args: Bundle? = null
     )
+    fun setupScreenStack(vararg fragmentClasses: Class<out Fragment>)
 
     fun isEmpty(): Boolean
     fun popScreen()
