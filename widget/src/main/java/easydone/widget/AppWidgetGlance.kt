@@ -1,6 +1,7 @@
-package com.kamer.builder
+package easydone.widget
 
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.util.TypedValue
 import androidx.compose.runtime.Composable
@@ -50,6 +51,15 @@ private val SMALL_BOX = DpSize(48.dp, 48.dp)
 private val ROW = DpSize(200.dp, 48.dp)
 private val BIG_BOX = DpSize(200.dp, 200.dp)
 
+private val mainActivityComponent = ComponentName(
+    "com.kamer.easydone",
+    "com.kamer.builder.MainActivity"
+)
+private val transparentActivityComponent = ComponentName(
+    "com.kamer.easydone",
+    "com.kamer.builder.TransparentActivity"
+)
+
 class AppWidgetGlance(private val state: State<WidgetState>) : GlanceAppWidget() {
 
     override val sizeMode: SizeMode = SizeMode.Responsive(
@@ -81,7 +91,7 @@ private fun SmallWidget(state: State<WidgetState>) {
             .size(SMALL_BOX.width, SMALL_BOX.height)
             .background(colorBackground)
             .appWidgetBackground()
-            .clickable(actionStartActivity<MainActivity>())
+            .clickable(actionStartActivity(mainActivityComponent))
     ) {
         InboxIcon(count = state.value.inboxCount)
     }
@@ -102,7 +112,7 @@ private fun RowWidget(state: State<WidgetState>) {
             .size(ROW.width, ROW.height)
             .background(colorBackground)
             .appWidgetBackground()
-            .clickable(actionStartActivity<MainActivity>())
+            .clickable(actionStartActivity(mainActivityComponent))
     )
 }
 
@@ -121,7 +131,7 @@ private fun BigWidget(state: State<WidgetState>) {
             .size(BIG_BOX.width, BIG_BOX.height)
             .background(colorBackground)
             .appWidgetBackground()
-            .clickable(actionStartActivity<MainActivity>())
+            .clickable(actionStartActivity(mainActivityComponent))
     ) {
         TopRow(
             state,
@@ -201,7 +211,8 @@ private fun TopRow(
             GlanceModifier
                 .defaultWeight()
                 .clickable(
-                    actionStartActivity<MainActivity>(
+                    actionStartActivity(
+                        mainActivityComponent,
                         actionParametersOf(ActionParameters.Key<Boolean>("inbox") to true)
                     )
                 )
@@ -219,7 +230,7 @@ private fun TopRow(
             contentDescription = "",
             modifier = GlanceModifier
                 .defaultWeight()
-                .clickable(actionStartActivity<TransparentActivity>())
+                .clickable(actionStartActivity(transparentActivityComponent))
         )
     }
 }

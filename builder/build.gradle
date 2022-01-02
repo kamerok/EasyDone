@@ -1,17 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-android {
-    buildFeatures {
-        compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion Versions.compose
-    }
-}
-
 dependencies {
+    implementation project(':widget')
+
     implementation project(':core:database')
     implementation project(':core:domain')
     implementation project(':core:sandbox')
@@ -35,7 +27,6 @@ dependencies {
     implementation Android.appCompat
     implementation Android.dataStorePrefs
     implementation Android.fragment
-    implementation Android.glance
     implementation Android.savedState
     implementation Android.splash
     implementation Libraries.koin
