@@ -244,11 +244,11 @@ object StartFlow {
                 true
             }
             .onEach {
-                val intent = Intent(context, AppWidget::class.java).apply {
+                val intent = Intent(context, AppWidgetReceiver::class.java).apply {
                     action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
                 }
                 val ids: IntArray = AppWidgetManager.getInstance(context)
-                    .getAppWidgetIds(ComponentName(context, AppWidget::class.java))
+                    .getAppWidgetIds(ComponentName(context, AppWidgetReceiver::class.java))
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
                 context.sendBroadcast(intent)
             }

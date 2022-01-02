@@ -4,7 +4,7 @@
 
     <application>
         <receiver
-            android:name=".AppWidget"
+            android:name=".AppWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
