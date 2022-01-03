@@ -76,6 +76,12 @@ fun TypeSelector(
         )
         Divider()
         TypeSelectorItem(
+            isSelected = type == Task.Type.Project,
+            typeText = "Project",
+            onClick = { onTypeSelected(Task.Type.Project) }
+        )
+        Divider()
+        TypeSelectorItem(
             isSelected = type == Task.Type.Maybe,
             typeText = "Maybe",
             onClick = { onTypeSelected(Task.Type.Maybe) }

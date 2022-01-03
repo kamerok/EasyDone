@@ -16,6 +16,7 @@ data class Task(
         object Inbox : Type()
         object ToDo : Type()
         data class Waiting(val date: LocalDate) : Type()
+        object Project : Type()
         object Maybe : Type()
     }
 

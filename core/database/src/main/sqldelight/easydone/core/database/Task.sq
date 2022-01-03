@@ -22,6 +22,11 @@ FROM task
 WHERE id = ?
 LIMIT 1;
 
+selectAll:
+SELECT *
+FROM task
+WHERE is_done = 0;
+
 selectByType:
 SELECT *
 FROM task

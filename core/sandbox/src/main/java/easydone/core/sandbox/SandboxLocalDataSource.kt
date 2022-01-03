@@ -51,6 +51,14 @@ class SandboxLocalDataSource : LocalDataSource {
             ),
             Task(
                 id = UUID.randomUUID().toString(),
+                type = Task.Type.Project,
+                title = "Health checkup",
+                description = "",
+                markers = Markers(isUrgent = false, isImportant = true),
+                isDone = false
+            ),
+            Task(
+                id = UUID.randomUUID().toString(),
                 type = Task.Type.Waiting(LocalDate.now().plusDays(17)),
                 title = "Pay rent",
                 description = "",
@@ -107,6 +115,11 @@ class SandboxLocalDataSource : LocalDataSource {
     override suspend fun getChanges(): List<TaskDelta> = emptyList()
 
     override fun observeChangesCount(): Flow<Long> = flowOf(0)
+
+    override fun observeTasks(): Flow<List<Task>> =
+        state
+            .map { it.filter { task -> !task.isDone } }
+            .distinctUntilChanged()
 
     override fun observeTasks(type: KClass<out Task.Type>): Flow<List<Task>> =
         state

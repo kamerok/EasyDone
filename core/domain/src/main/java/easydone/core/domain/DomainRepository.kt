@@ -8,6 +8,8 @@ import kotlin.reflect.KClass
 
 class DomainRepository(private val localDataSource: LocalDataSource) {
 
+    fun getAllTasks(): Flow<List<Task>> = localDataSource.observeTasks()
+
     fun getTasks(type: KClass<out Task.Type>): Flow<List<Task>> = localDataSource.observeTasks(type)
 
     suspend fun getTask(id: String): Task = localDataSource.getTask(id)

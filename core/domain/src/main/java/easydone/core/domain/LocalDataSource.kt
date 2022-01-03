@@ -13,6 +13,8 @@ interface LocalDataSource {
 
     fun observeChangesCount(): Flow<Long>
 
+    fun observeTasks(): Flow<List<Task>>
+
     fun observeTasks(type: KClass<out Task.Type>): Flow<List<Task>>
 
     fun observeTask(id: String): Flow<Task>

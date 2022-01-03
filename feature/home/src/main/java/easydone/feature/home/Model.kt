@@ -11,5 +11,6 @@ internal data class State(
     val todoTasks: List<UiTask>,
     val nextWaitingTask: Pair<UiTask, LocalDate>?,
     val waitingCount: Int,
+    val projectTasks: List<UiTask>,
     val maybeTasks: List<UiTask>
 )

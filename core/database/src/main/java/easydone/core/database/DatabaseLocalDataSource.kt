@@ -51,6 +51,12 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
     override fun observeChangesCount(): Flow<Long> =
         changesQueries.selectChangesCount().asFlow().map { it.executeAsOne() }
 
+    override fun observeTasks(): Flow<List<Task>> =
+        taskQueries.selectAll()
+            .asFlow()
+            .map { it.executeAsList() }
+            .map { dbTasks -> dbTasks.map { it.toTask() } }
+
     override fun observeTasks(type: KClass<out Task.Type>): Flow<List<Task>> =
         taskQueries.selectByType(getDbType(type))
             .asFlow()
@@ -194,6 +200,7 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
             Task.Type.Inbox::class -> DbTaskType.INBOX
             Task.Type.ToDo::class -> DbTaskType.TO_DO
             Task.Type.Waiting::class -> DbTaskType.WAITING
+            Task.Type.Project::class -> DbTaskType.PROJECT
             Task.Type.Maybe::class -> DbTaskType.MAYBE
             else -> throw IllegalArgumentException("Unknown type")
         }
@@ -232,5 +239,6 @@ private fun DbTaskType.toType(date: LocalDate?): Task.Type = when (this) {
     DbTaskType.INBOX -> Task.Type.Inbox
     DbTaskType.TO_DO -> Task.Type.ToDo
     DbTaskType.WAITING -> Task.Type.Waiting(requireNotNull(date))
+    DbTaskType.PROJECT -> Task.Type.Project
     DbTaskType.MAYBE -> Task.Type.Maybe
 }

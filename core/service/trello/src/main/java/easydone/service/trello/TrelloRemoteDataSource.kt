@@ -40,6 +40,7 @@ class TrelloRemoteDataSource(
                 it.idList == authInfoHolder.getTodoListId() ||
                         it.idList == authInfoHolder.getInboxListId() ||
                         it.idList == authInfoHolder.getWaitingListId() ||
+                        it.idList == authInfoHolder.getProjectsListId() ||
                         it.idList == authInfoHolder.getMaybeListId()
             }
             .map { card ->
@@ -56,6 +57,7 @@ class TrelloRemoteDataSource(
                         requireNotNull(card.due)
                             .let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME) }
                     )
+                    authInfoHolder.getProjectsListId() -> Task.Type.Project
                     authInfoHolder.getMaybeListId() -> Task.Type.Maybe
                     else -> Task.Type.ToDo
                 }
@@ -131,6 +133,9 @@ class TrelloRemoteDataSource(
         if (authInfoHolder.getMaybeListId().isNullOrEmpty()) {
             authInfoHolder.putMaybeListId(board.lists[3].id)
         }
+        if (authInfoHolder.getProjectsListId().isNullOrEmpty()) {
+            authInfoHolder.putProjectsListId(board.lists[4].id)
+        }
         if (authInfoHolder.getUrgentLabelId().isNullOrEmpty()) {
             authInfoHolder.putUrgentLabelId(board.labels.find { it.name == "Urgent" }!!.id)
         }
@@ -144,6 +149,7 @@ class TrelloRemoteDataSource(
             is Task.Type.Inbox -> authInfoHolder.getInboxListId()!!
             is Task.Type.ToDo -> authInfoHolder.getTodoListId()!!
             is Task.Type.Waiting -> authInfoHolder.getWaitingListId()!!
+            is Task.Type.Project -> authInfoHolder.getProjectsListId()!!
             is Task.Type.Maybe -> authInfoHolder.getMaybeListId()!!
         }
     }

@@ -114,6 +114,8 @@ class SynchronizerTest {
 
         override fun observeChangesCount(): Flow<Long> = flowOf()
 
+        override fun observeTasks(): Flow<List<Task>> = flowOf()
+
         override fun observeTasks(type: KClass<out Task.Type>): Flow<List<Task>> = flowOf()
 
         override fun observeTask(id: String): Flow<Task> = flowOf()

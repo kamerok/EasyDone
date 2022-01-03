@@ -9,30 +9,32 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.reflect.KClass
 
 internal class LocalDataSourceDecorator(defaultSource: LocalDataSource) : LocalDataSource {
-        private var source: LocalDataSource = defaultSource
+    private var source: LocalDataSource = defaultSource
 
-        override suspend fun getChanges(): List<TaskDelta> = source.getChanges()
+    override suspend fun getChanges(): List<TaskDelta> = source.getChanges()
 
-        override fun observeChangesCount(): Flow<Long> = source.observeChangesCount()
+    override fun observeChangesCount(): Flow<Long> = source.observeChangesCount()
 
-        override fun observeTasks(type: KClass<out Task.Type>): Flow<List<Task>> =
-            source.observeTasks(type)
+    override fun observeTasks(): Flow<List<Task>> = source.observeTasks()
 
-        override fun observeTask(id: String): Flow<Task> = source.observeTask(id)
+    override fun observeTasks(type: KClass<out Task.Type>): Flow<List<Task>> =
+        source.observeTasks(type)
 
-        override suspend fun getTask(id: String): Task = source.getTask(id)
+    override fun observeTask(id: String): Flow<Task> = source.observeTask(id)
 
-        override suspend fun createTask(taskTemplate: TaskTemplate) =
-            source.createTask(taskTemplate)
+    override suspend fun getTask(id: String): Task = source.getTask(id)
 
-        override suspend fun updateTask(task: Task) = source.updateTask(task)
+    override suspend fun createTask(taskTemplate: TaskTemplate) =
+        source.createTask(taskTemplate)
 
-        override suspend fun refreshData(tasks: List<Task>, updatedTasks: List<Task>) =
-            source.refreshData(tasks, updatedTasks)
+    override suspend fun updateTask(task: Task) = source.updateTask(task)
 
-        override suspend fun deleteChange(id: Long) = source.deleteChange(id)
+    override suspend fun refreshData(tasks: List<Task>, updatedTasks: List<Task>) =
+        source.refreshData(tasks, updatedTasks)
 
-        fun switchToSandbox() {
-            source = SandboxLocalDataSource()
-        }
+    override suspend fun deleteChange(id: Long) = source.deleteChange(id)
+
+    fun switchToSandbox() {
+        source = SandboxLocalDataSource()
     }
+}

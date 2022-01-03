@@ -168,6 +168,7 @@ private fun Task.Type.format() = when (this) {
         }
         " until ${it.format(DateTimeFormatter.ofPattern("d MMM y"))} ($periodString)"
     })
+    is Task.Type.Project -> "PROJECT"
     is Task.Type.Maybe -> "MAYBE"
 }
 

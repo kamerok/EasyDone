@@ -25,6 +25,10 @@ internal class AuthInfoHolder(private val storage: KeyValueStorage) {
 
     suspend fun putWaitingListId(id: String) = storage.putString(WAITING_LIST_ID, id)
 
+    suspend fun getProjectsListId(): String? = storage.getString(PROJECTS_LIST_ID)
+
+    suspend fun putProjectsListId(id: String) = storage.putString(PROJECTS_LIST_ID, id)
+
     suspend fun getMaybeListId(): String? = storage.getString(MAYBE_LIST_ID)
 
     suspend fun putMaybeListId(id: String) = storage.putString(MAYBE_LIST_ID, id)
@@ -46,6 +50,7 @@ internal class AuthInfoHolder(private val storage: KeyValueStorage) {
         private const val TO_DO_LIST_ID = "todo_list_id"
         private const val WAITING_LIST_ID = "waiting_list_id"
         private const val MAYBE_LIST_ID = "maybe_list_id"
+        private const val PROJECTS_LIST_ID = "projects_list_id"
         private const val URGENT_LABEL_ID = "urgent_label_id"
         private const val IMPORTANT_LABEL_ID = "important_label_id"
     }

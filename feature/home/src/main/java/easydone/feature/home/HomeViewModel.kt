@@ -24,20 +24,28 @@ internal class HomeViewModel(
                 synchronizer.isSyncing(),
                 synchronizer.observeChanges()
             ) { isSyncing, changes -> isSyncing to changes },
-            repository.getTasks(Task.Type.Inbox::class),
-            repository.getTasks(Task.Type.ToDo::class),
-            repository.getTasks(Task.Type.Waiting::class),
-            repository.getTasks(Task.Type.Maybe::class)
-        ) { (isSyncing, changesCount), inbox, todo, waiting, maybe ->
+            repository.getAllTasks()
+        ) { (isSyncing, changesCount), tasks ->
+            val waitingTasks = tasks.filter { it.type is Task.Type.Waiting }
             State(
                 isSyncing = isSyncing,
                 hasChanges = changesCount > 0,
-                inboxCount = inbox.size,
-                todoTasks = todo.sortedWith(taskComparator).map { it.toUiTask() },
-                nextWaitingTask = waiting.minByOrNull { (it.type as Task.Type.Waiting).date }
+                inboxCount = tasks.count { it.type == Task.Type.Inbox },
+                todoTasks = tasks
+                    .filter { it.type == Task.Type.ToDo }
+                    .sortedWith(taskComparator)
+                    .map { it.toUiTask() },
+                nextWaitingTask = waitingTasks.minByOrNull { (it.type as Task.Type.Waiting).date }
                     ?.let { it.toUiTask() to (it.type as Task.Type.Waiting).date },
-                waitingCount = waiting.size,
-                maybeTasks = maybe.sortedWith(taskComparator).map { it.toUiTask() }
+                waitingCount = waitingTasks.size,
+                projectTasks = tasks
+                    .filter { it.type == Task.Type.Project }
+                    .sortedWith(taskComparator)
+                    .map { it.toUiTask() },
+                maybeTasks = tasks
+                    .filter { it.type == Task.Type.Maybe }
+                    .sortedWith(taskComparator)
+                    .map { it.toUiTask() }
             )
         }.stateIn(
             scope = viewModelScope,
@@ -49,6 +57,7 @@ internal class HomeViewModel(
                 todoTasks = emptyList(),
                 nextWaitingTask = null,
                 waitingCount = 0,
+                projectTasks = emptyList(),
                 maybeTasks = emptyList()
             )
         )

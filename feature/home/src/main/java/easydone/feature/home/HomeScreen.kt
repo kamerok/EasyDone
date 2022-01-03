@@ -90,6 +90,10 @@ internal fun HomeScreen(viewModel: HomeViewModel) {
                                 onTaskClick = viewModel::onTaskClick,
                                 onMore = viewModel::onWaitingMore
                             )
+                            projectsSection(
+                                tasks = state.projectTasks,
+                                onTaskClick = viewModel::onTaskClick
+                            )
                             maybeSection(
                                 tasks = state.maybeTasks,
                                 onTaskClick = viewModel::onTaskClick
@@ -191,6 +195,19 @@ private fun LazyListScope.maybeSection(
 ) {
     if (tasks.isNotEmpty()) {
         titleItem("Maybe")
+        taskItems(
+            tasks = tasks,
+            onClick = onTaskClick
+        )
+    }
+}
+
+private fun LazyListScope.projectsSection(
+    tasks: List<UiTask>,
+    onTaskClick: (UiTask) -> Unit
+) {
+    if (tasks.isNotEmpty()) {
+        titleItem("Projects")
         taskItems(
             tasks = tasks,
             onClick = onTaskClick
