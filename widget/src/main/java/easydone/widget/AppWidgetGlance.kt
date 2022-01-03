@@ -256,8 +256,8 @@ class AppWidgetReceiver : GlanceAppWidgetReceiver() {
             WidgetState(
                 inboxCount = repository.getTasks(Task.Type.Inbox::class).first().size,
                 urgentImportantCount = tasks.count { it.markers.isUrgent && it.markers.isImportant },
-                urgentCount = tasks.count { it.markers.isUrgent },
-                importantCount = tasks.count { it.markers.isImportant },
+                urgentCount = tasks.count { it.markers.isUrgent && !it.markers.isImportant },
+                importantCount = tasks.count { it.markers.isImportant && !it.markers.isUrgent },
                 noFlagsCount = tasks.count { !it.markers.isImportant && !it.markers.isUrgent }
             )
 
