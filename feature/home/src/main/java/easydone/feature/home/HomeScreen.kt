@@ -84,15 +84,15 @@ internal fun HomeScreen(viewModel: HomeViewModel) {
                                 tasks = state.todoTasks,
                                 onTaskClick = viewModel::onTaskClick
                             )
+                            projectsSection(
+                                tasks = state.projectTasks,
+                                onTaskClick = viewModel::onTaskClick
+                            )
                             waitingSection(
                                 nextWaitingTask = state.nextWaitingTask,
                                 waitingCount = state.waitingCount,
                                 onTaskClick = viewModel::onTaskClick,
                                 onMore = viewModel::onWaitingMore
-                            )
-                            projectsSection(
-                                tasks = state.projectTasks,
-                                onTaskClick = viewModel::onTaskClick
                             )
                             maybeSection(
                                 tasks = state.maybeTasks,
@@ -212,6 +212,7 @@ private fun LazyListScope.projectsSection(
             tasks = tasks,
             onClick = onTaskClick
         )
+        sectionSpaceItem()
     }
 }
 
