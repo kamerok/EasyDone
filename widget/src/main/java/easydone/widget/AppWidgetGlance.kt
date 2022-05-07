@@ -3,18 +3,30 @@ package easydone.widget
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.Rect
+import android.graphics.RectF
+import android.graphics.Typeface
 import android.util.TypedValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.glance.BitmapImageProvider
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
@@ -34,12 +46,12 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.text.FontStyle
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
-import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
@@ -69,15 +81,15 @@ class AppWidgetGlance(private val state: State<WidgetState>) : GlanceAppWidget()
     @Composable
     override fun Content() {
         when (LocalSize.current) {
-            SMALL_BOX -> SmallWidget(state)
-            ROW -> RowWidget(state)
-            BIG_BOX -> BigWidget(state)
+            SMALL_BOX -> SmallWidget(state.value)
+            ROW -> RowWidget(state.value)
+            BIG_BOX -> BigWidget(state.value)
         }
     }
 }
 
 @Composable
-private fun SmallWidget(state: State<WidgetState>) {
+private fun SmallWidget(state: WidgetState) {
     val context = LocalContext.current
     val colorBackground by derivedStateOf {
         val typedValue = TypedValue()
@@ -93,12 +105,12 @@ private fun SmallWidget(state: State<WidgetState>) {
             .appWidgetBackground()
             .clickable(actionStartActivity(mainActivityComponent))
     ) {
-        InboxIcon(count = state.value.inboxCount)
+        InboxIcon(count = state.inboxCount)
     }
 }
 
 @Composable
-private fun RowWidget(state: State<WidgetState>) {
+private fun RowWidget(state: WidgetState) {
     val context = LocalContext.current
     val colorBackground by derivedStateOf {
         val typedValue = TypedValue()
@@ -118,7 +130,7 @@ private fun RowWidget(state: State<WidgetState>) {
 
 @OptIn(ExperimentalUnitApi::class)
 @Composable
-private fun BigWidget(state: State<WidgetState>) {
+private fun BigWidget(state: WidgetState) {
     val context = LocalContext.current
     val colorBackground by derivedStateOf {
         val typedValue = TypedValue()
@@ -137,47 +149,128 @@ private fun BigWidget(state: State<WidgetState>) {
             state,
             modifier = GlanceModifier
                 .fillMaxWidth()
+                .height(40.dp)
                 .padding(top = 8.dp)
         )
-        val rowVerticalAlignment = Alignment.CenterVertically
-        val rowModifier = GlanceModifier.defaultWeight().fillMaxWidth()
-        val textStyle = TextStyle(
-            textAlign = TextAlign.Center,
-            fontSize = TextUnit(32f, TextUnitType.Sp),
-            fontWeight = FontWeight.Bold
-        )
-        Row(
-            verticalAlignment = rowVerticalAlignment,
-            modifier = rowModifier
-        ) {
-            Text(
-                text = "${state.value.urgentImportantCount}",
-                style = textStyle,
-                modifier = GlanceModifier.defaultWeight()
-            )
-            Text(
-                text = "${state.value.urgentCount}",
-                style = textStyle,
-                modifier = GlanceModifier.defaultWeight()
-            )
-        }
-        Row(
-            verticalAlignment = rowVerticalAlignment,
-            modifier = rowModifier,
-        ) {
-            Text(
-                text = "${state.value.importantCount}",
-                style = textStyle,
-                modifier = GlanceModifier.defaultWeight()
-            )
-            Text(
-                text = "${state.value.noFlagsCount}",
-                style = textStyle,
-                modifier = GlanceModifier.defaultWeight()
-            )
+        Box {
+            val bitmap = remember {
+                Bitmap.createBitmap(
+                    200.dp.toPx.toInt(),
+                    160.dp.toPx.toInt(),
+                    Bitmap.Config.ARGB_8888
+                ).also {
+                    Canvas(it).apply {
+                        val padding = 8.dp.toPx
+                        val lineWidth = 2.dp.toPx
+                        val arrowheadLength = 10.dp.toPx
+                        val arrowheadWidth = 8.dp.toPx
+                        val linePaint = Paint().apply {
+                            color = Color.Gray.toArgb()
+                            strokeWidth = lineWidth
+                        }
+                        val guidelineTextPaint = Paint().apply {
+                            color = Color.Gray.toArgb()
+                            textSize = 35f
+                            textAlign = Paint.Align.CENTER
+                        }
+                        val numberTextPaint = Paint().apply {
+                            color = Color.DarkGray.toArgb()
+                            textSize = 90f
+                            textAlign = Paint.Align.CENTER
+                            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                        }
+
+                        val boxHeight = height.toFloat() - padding * 2 - guidelineTextPaint.textSize
+                        val startOffset = (width - boxHeight) / 2
+
+                        val contentBox = RectF(
+                            startOffset,
+                            padding,
+                            startOffset + boxHeight,
+                            padding + boxHeight
+                        )
+
+                        run {
+                            val text = "IMPORTANCE"
+                            save()
+                            translate(contentBox.left, contentBox.bottom)
+                            drawLine(0f, -contentBox.height() + arrowheadLength, 0f, 0f, linePaint)
+                            rotate(-90f, 0f, 0f)
+                            val arrowhead = Path().apply {
+                                moveTo(contentBox.width(), 0f)
+                                lineTo(contentBox.width() - arrowheadLength, -arrowheadWidth / 2)
+                                lineTo(contentBox.width() - arrowheadLength, arrowheadWidth / 2)
+                                lineTo(contentBox.width(), 0f)
+                            }
+                            drawPath(arrowhead, linePaint)
+                            drawText(
+                                text,
+                                contentBox.height() / 2f,
+                                -lineWidth * 2,
+                                guidelineTextPaint
+                            )
+                            restore()
+                        }
+
+                        run {
+                            val text = "URGENCY"
+                            save()
+                            translate(contentBox.left, contentBox.bottom)
+                            drawLine(0f, 0f, contentBox.width() - arrowheadLength, 0f, linePaint)
+                            val arrowhead = Path().apply {
+                                moveTo(contentBox.width(), 0f)
+                                lineTo(contentBox.width() - arrowheadLength, -arrowheadWidth / 2)
+                                lineTo(contentBox.width() - arrowheadLength, arrowheadWidth / 2)
+                                lineTo(contentBox.width(), 0f)
+                            }
+                            drawPath(arrowhead, linePaint)
+                            drawText(
+                                text,
+                                contentBox.width() / 2f,
+                                guidelineTextPaint.textSize,
+                                guidelineTextPaint
+                            )
+                            restore()
+                        }
+
+                        val innerBox = RectF(
+                            contentBox.left + contentBox.width() / 4,
+                            contentBox.top + contentBox.height() / 4,
+                            contentBox.left + contentBox.width() / 4 * 3,
+                            contentBox.top + contentBox.height() / 4 * 3
+                        )
+
+                        fun drawNumber(number: Int, x: Float, y: Float) {
+                            val text = "$number"
+                            val textBounds = Rect().apply {
+                                numberTextPaint.getTextBounds(text, 0, text.length, this)
+                            }
+                            drawText(
+                                text,
+                                x,
+                                y + textBounds.height() / 2,
+                                numberTextPaint
+                            )
+                        }
+
+                        drawNumber(state.importantCount, innerBox.left, innerBox.top)
+                        drawNumber(state.urgentCount, innerBox.right, innerBox.bottom)
+                        drawNumber(state.noFlagsCount, innerBox.left, innerBox.bottom)
+                        drawNumber(state.urgentImportantCount, innerBox.right, innerBox.top)
+                    }
+                }
+            }
+            Image(provider = BitmapImageProvider(bitmap), contentDescription = null)
         }
     }
 }
+
+private val Dp.toPx
+    get() = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this.value,
+        Resources.getSystem().displayMetrics
+    )
 
 @Composable
 private fun InboxIcon(
@@ -197,7 +290,7 @@ private fun InboxIcon(
 @OptIn(ExperimentalUnitApi::class)
 @Composable
 private fun TopRow(
-    state: State<WidgetState>,
+    state: WidgetState,
     modifier: GlanceModifier = GlanceModifier
 ) {
     val context = LocalContext.current
@@ -207,7 +300,7 @@ private fun TopRow(
         modifier = modifier
     ) {
         InboxIcon(
-            state.value.inboxCount,
+            state.inboxCount,
             GlanceModifier
                 .defaultWeight()
                 .clickable(
