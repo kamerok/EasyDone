@@ -160,60 +160,67 @@ private fun BigWidget(state: WidgetState) {
                     Bitmap.Config.ARGB_8888
                 ).also {
                     Canvas(it).apply {
-                        val padding = 8.dp.toPx
+                        val padding = 16.dp.toPx
                         val lineWidth = 2.dp.toPx
+                        val guidelineTextMargin = 4.dp.toPx
                         val arrowheadLength = 10.dp.toPx
                         val arrowheadWidth = 8.dp.toPx
+                        val guidelinePaint = Color.Gray.copy(alpha = 0.6f).toArgb()
                         val linePaint = Paint().apply {
-                            color = Color.Gray.toArgb()
+                            color = guidelinePaint
                             strokeWidth = lineWidth
                         }
                         val guidelineTextPaint = Paint().apply {
-                            color = Color.Gray.toArgb()
+                            color = guidelinePaint
                             textSize = 35f
                             textAlign = Paint.Align.CENTER
                         }
                         val numberTextPaint = Paint().apply {
-                            color = Color.DarkGray.toArgb()
+                            color = Color.DarkGray.copy(alpha = 0.7f).toArgb()
                             textSize = 90f
                             textAlign = Paint.Align.CENTER
                             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                         }
 
-                        val boxHeight = height.toFloat() - padding * 2 - guidelineTextPaint.textSize
-                        val startOffset = (width - boxHeight) / 2
+                        val boxHeight =
+                            height.toFloat() - padding * 2 - guidelineTextPaint.textSize - guidelineTextMargin
+                        val startOffset =
+                            padding + guidelineTextPaint.textSize + guidelineTextMargin
 
                         val contentBox = RectF(
                             startOffset,
                             padding,
-                            startOffset + boxHeight,
+                            width - padding - guidelineTextPaint.textSize,
                             padding + boxHeight
                         )
 
                         run {
-                            val text = "IMPORTANCE"
+                            val text = "URGENCY"
                             save()
                             translate(contentBox.left, contentBox.bottom)
                             drawLine(0f, -contentBox.height() + arrowheadLength, 0f, 0f, linePaint)
                             rotate(-90f, 0f, 0f)
                             val arrowhead = Path().apply {
-                                moveTo(contentBox.width(), 0f)
-                                lineTo(contentBox.width() - arrowheadLength, -arrowheadWidth / 2)
-                                lineTo(contentBox.width() - arrowheadLength, arrowheadWidth / 2)
-                                lineTo(contentBox.width(), 0f)
+                                moveTo(contentBox.height(), 0f)
+                                lineTo(contentBox.height() - arrowheadLength, -arrowheadWidth / 2)
+                                lineTo(contentBox.height() - arrowheadLength, arrowheadWidth / 2)
+                                lineTo(contentBox.height(), 0f)
                             }
                             drawPath(arrowhead, linePaint)
                             drawText(
                                 text,
                                 contentBox.height() / 2f,
-                                -lineWidth * 2,
+                                -guidelineTextMargin,
                                 guidelineTextPaint
                             )
                             restore()
                         }
 
                         run {
-                            val text = "URGENCY"
+                            val text = "IMPORTANCE"
+                            val textBounds = Rect().apply {
+                                guidelineTextPaint.getTextBounds(text, 0, text.length, this)
+                            }
                             save()
                             translate(contentBox.left, contentBox.bottom)
                             drawLine(0f, 0f, contentBox.width() - arrowheadLength, 0f, linePaint)
@@ -227,17 +234,18 @@ private fun BigWidget(state: WidgetState) {
                             drawText(
                                 text,
                                 contentBox.width() / 2f,
-                                guidelineTextPaint.textSize,
+                                guidelineTextMargin + textBounds.height(),
                                 guidelineTextPaint
                             )
                             restore()
                         }
 
+                        val parts = 3.5f
                         val innerBox = RectF(
-                            contentBox.left + contentBox.width() / 4,
-                            contentBox.top + contentBox.height() / 4,
-                            contentBox.left + contentBox.width() / 4 * 3,
-                            contentBox.top + contentBox.height() / 4 * 3
+                            contentBox.left + contentBox.width() / parts,
+                            contentBox.top + contentBox.height() / parts,
+                            contentBox.left + contentBox.width() / parts * (parts - 1),
+                            contentBox.top + contentBox.height() / parts * (parts - 1)
                         )
 
                         fun drawNumber(number: Int, x: Float, y: Float) {
@@ -253,8 +261,8 @@ private fun BigWidget(state: WidgetState) {
                             )
                         }
 
-                        drawNumber(state.importantCount, innerBox.left, innerBox.top)
-                        drawNumber(state.urgentCount, innerBox.right, innerBox.bottom)
+                        drawNumber(state.urgentCount, innerBox.left, innerBox.top)
+                        drawNumber(state.importantCount, innerBox.right, innerBox.bottom)
                         drawNumber(state.noFlagsCount, innerBox.left, innerBox.bottom)
                         drawNumber(state.urgentImportantCount, innerBox.right, innerBox.top)
                     }
