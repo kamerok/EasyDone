@@ -61,7 +61,7 @@ import org.koin.core.context.GlobalContext
 
 private val SMALL_BOX = DpSize(48.dp, 48.dp)
 private val ROW = DpSize(200.dp, 48.dp)
-private val BIG_BOX = DpSize(200.dp, 200.dp)
+private val BIG_BOX = DpSize(200.dp, 215.dp)
 
 private val mainActivityComponent = ComponentName(
     "com.kamer.easydone",
@@ -145,18 +145,19 @@ private fun BigWidget(state: WidgetState) {
             .appWidgetBackground()
             .clickable(actionStartActivity(mainActivityComponent))
     ) {
+        val topRowHeight = 40.dp
         TopRow(
             state,
             modifier = GlanceModifier
                 .fillMaxWidth()
-                .height(40.dp)
+                .height(topRowHeight)
                 .padding(top = 8.dp)
         )
         Box {
             val bitmap = remember {
                 Bitmap.createBitmap(
-                    200.dp.toPx.toInt(),
-                    160.dp.toPx.toInt(),
+                    BIG_BOX.width.toPx.toInt(),
+                    (BIG_BOX.height - topRowHeight).toPx.toInt(),
                     Bitmap.Config.ARGB_8888
                 ).also {
                     Canvas(it).apply {
@@ -165,6 +166,8 @@ private fun BigWidget(state: WidgetState) {
                         val guidelineTextMargin = 4.dp.toPx
                         val arrowheadLength = 10.dp.toPx
                         val arrowheadWidth = 8.dp.toPx
+                        val boxSize = 48.dp.toPx
+                        val boxCorners = 8.dp.toPx
                         val guidelinePaint = Color.Gray.copy(alpha = 0.6f).toArgb()
                         val linePaint = Paint().apply {
                             color = guidelinePaint
@@ -180,6 +183,9 @@ private fun BigWidget(state: WidgetState) {
                             textSize = 90f
                             textAlign = Paint.Align.CENTER
                             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                        }
+                        val boxPaint = Paint().apply {
+                            color = Color.LightGray.copy(alpha = 0.7f).toArgb()
                         }
 
                         val boxHeight =
@@ -240,12 +246,12 @@ private fun BigWidget(state: WidgetState) {
                             restore()
                         }
 
-                        val parts = 3.5f
+                        val distanceFromCenter = 4.dp.toPx + boxSize / 2
                         val innerBox = RectF(
-                            contentBox.left + contentBox.width() / parts,
-                            contentBox.top + contentBox.height() / parts,
-                            contentBox.left + contentBox.width() / parts * (parts - 1),
-                            contentBox.top + contentBox.height() / parts * (parts - 1)
+                            contentBox.centerX() - distanceFromCenter,
+                            contentBox.centerY() - distanceFromCenter,
+                            contentBox.centerX() + distanceFromCenter,
+                            contentBox.centerY() + distanceFromCenter
                         )
 
                         fun drawNumber(number: Int, x: Float, y: Float) {
@@ -253,6 +259,15 @@ private fun BigWidget(state: WidgetState) {
                             val textBounds = Rect().apply {
                                 numberTextPaint.getTextBounds(text, 0, text.length, this)
                             }
+                            drawRoundRect(
+                                x - boxSize / 2,
+                                y - boxSize / 2,
+                                x + boxSize / 2,
+                                y + boxSize / 2,
+                                boxCorners,
+                                boxCorners,
+                                boxPaint
+                            )
                             drawText(
                                 text,
                                 x,
