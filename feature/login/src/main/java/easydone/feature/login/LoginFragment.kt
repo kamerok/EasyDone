@@ -14,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import com.kamer.login.R
 import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.api.model.Board
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -22,13 +21,13 @@ import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
-    private lateinit var listener: (String, List<easydone.service.trello.api.model.Board>) -> Unit
-    private lateinit var api: easydone.service.trello.api.TrelloApi
+    private lateinit var listener: (String, List<Board>) -> Unit
+    private lateinit var api: TrelloApi
     private lateinit var apiKey: String
     private lateinit var tokenProvider: TokenProvider
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        loginButton.setOnClickListener {
+        view.findViewById<View>(R.id.loginButton).setOnClickListener {
             val customTabsIntent = CustomTabsIntent.Builder()
                 .setShowTitle(true)
                 .build()
@@ -66,13 +65,13 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
     }
 
-    private fun successLogin(token: String, boards: List<easydone.service.trello.api.model.Board>) {
+    private fun successLogin(token: String, boards: List<Board>) {
         listener(token, boards)
     }
 
     data class Dependencies(
-        val loginListener: (String, List<easydone.service.trello.api.model.Board>) -> Unit,
-        val api: easydone.service.trello.api.TrelloApi,
+        val loginListener: (String, List<Board>) -> Unit,
+        val api: TrelloApi,
         val apiKey: String,
         val tokenProvider: TokenProvider
     )

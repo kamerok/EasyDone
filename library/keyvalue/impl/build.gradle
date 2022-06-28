@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+android {
+    namespace "easydone.library.keyvalue.sharedprefs"
+}
 
 dependencies {
     implementation project(':library:keyvalue')

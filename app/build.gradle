@@ -6,6 +6,7 @@ apply from: rootProject.file('gradle/apply-credential-properties.gradle')
 android {
     defaultConfig {
         applicationId "com.kamer.easydone"
+        namespace "com.kamer.easydone"
         versionCode 1
         versionName "1.0"
     }

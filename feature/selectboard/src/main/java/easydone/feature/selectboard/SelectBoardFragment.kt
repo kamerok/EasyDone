@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.kamer.selectboard.R
-import kotlinx.android.synthetic.main.fragment_select_board.*
 
 
 class SelectBoardFragment : Fragment(R.layout.fragment_select_board) {
@@ -17,7 +17,7 @@ class SelectBoardFragment : Fragment(R.layout.fragment_select_board) {
     private val adapter by lazy { BoardsAdapter { listener(it) } }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerView.adapter = adapter
+        view.findViewById<RecyclerView>(R.id.recyclerView).adapter = adapter
         adapter.setData(boards)
 
         view.setOnApplyWindowInsetsListener { v, insets ->

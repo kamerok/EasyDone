@@ -3,10 +3,9 @@ package easydone.feature.selectboard
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kamer.selectboard.R
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_board.*
 
 
 internal class BoardsAdapter(
@@ -35,14 +34,16 @@ internal class BoardsAdapter(
     }
 
     class ViewHolder(
-        override val containerView: View,
+        val view: View,
         private val listener: (String) -> Unit
-    ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+    ) : RecyclerView.ViewHolder(view) {
+
+        private val nameView = view.findViewById<TextView>(R.id.nameView)
 
         private var item: BoardUiModel? = null
 
         init {
-            containerView.setOnClickListener { item?.run { listener(this.id) } }
+            view.setOnClickListener { item?.run { listener(this.id) } }
         }
 
         fun bind(item: BoardUiModel) {

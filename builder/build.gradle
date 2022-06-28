@@ -1,6 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+android {
+    namespace "com.kamer.builder"
+}
+
 dependencies {
     implementation project(':widget')
 

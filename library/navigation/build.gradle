@@ -1,6 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+android {
+    namespace "easydone.library.navigation"
+}
+
 dependencies {
     implementation Android.fragment
 }
