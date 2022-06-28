@@ -24,7 +24,7 @@ object Versions {
     val fragment = "1.3.6"
     val glance = "1.0.0-alpha01"
     val googleServices = "4.3.2"
-    val gradleAndroid = "7.0.2"
+    val gradleAndroid = "7.2.1"
     val gradleVersions = "0.39.0"
     val junit = "4.12"
     val koin = "2.2.3"
