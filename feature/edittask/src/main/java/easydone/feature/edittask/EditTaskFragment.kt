@@ -8,8 +8,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import easydone.core.domain.DomainRepository
 
 
@@ -22,9 +22,10 @@ class EditTaskFragment(
     private val sharedText: String? by lazy { arguments?.getString(SHARED_TEXT) }
 
     private val viewModel: EditTaskViewModel by viewModels(factoryProducer = {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-                EditTaskViewModel(id, sharedText, repository, navigator) as T
+        viewModelFactory {
+            initializer {
+                EditTaskViewModel(id, sharedText, repository, navigator)
+            }
         }
     })
 

@@ -1,7 +1,7 @@
 package com.kamer.builder
 
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -42,30 +42,24 @@ class ActivityNavigator : Navigator {
     }
 
     fun init(activity: AppCompatActivity, containerId: Int) {
+        val fragmentManager = activity.supportFragmentManager
         val activityNavigator =
-            FragmentManagerNavigator(activity.supportFragmentManager, containerId)
+            FragmentManagerNavigator(fragmentManager, containerId)
         navigator = activityNavigator
         activity.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
                     Lifecycle.Event.ON_START -> navigator = activityNavigator
                     Lifecycle.Event.ON_STOP -> navigator = null
+                    else -> Unit
                 }
             }
         })
-        activity.onBackPressedDispatcher.addCallback(
-            activity,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (!isEmpty()) {
-                        navigator?.popScreen()
-                    } else {
-                        isEnabled = false
-                        activity.onBackPressed()
-                        isEnabled = true
-                    }
-                }
-            }
-        )
+        val backPressCallback = activity.onBackPressedDispatcher.addCallback(activity, false) {
+            navigator?.popScreen()
+        }
+        fragmentManager.addOnBackStackChangedListener {
+            backPressCallback.isEnabled = !isEmpty()
+        }
     }
 }

@@ -13,7 +13,7 @@ class DeepLinkResolver {
     fun resolveIntent(intent: Intent) {
         if (intent.data?.host == "auth") {
             val token = intent.data?.fragment?.substringAfter('=') ?: ""
-            tokenChannel.offer(token)
+            tokenChannel.trySend(token)
         }
     }
 

@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import easydone.core.domain.DomainRepository
 
 
@@ -18,9 +18,10 @@ class InboxFragment(
 ) : Fragment() {
 
     private val viewModel: InboxViewModel by viewModels(factoryProducer = {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-                InboxViewModel(repository, navigator) as T
+        viewModelFactory {
+            initializer {
+                InboxViewModel(repository, navigator)
+            }
         }
     })
 

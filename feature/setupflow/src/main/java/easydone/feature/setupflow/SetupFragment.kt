@@ -3,6 +3,7 @@ package easydone.feature.setupflow
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.kamer.setupflow.R
@@ -32,31 +33,24 @@ class SetupFragment(
     }
 
     private var isLogin = true
+    private var backCallback: OnBackPressedCallback? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        backCallback = requireActivity().onBackPressedDispatcher.addCallback(this, false) {
+            startLogin()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         startLogin()
     }
 
-    override fun onResume() {
-        super.onResume()
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (!isLogin) {
-                        startLogin()
-                    } else {
-                        isEnabled = false
-                        requireActivity().onBackPressed()
-                        isEnabled = true
-                    }
-                }
-            })
-    }
-
     private fun startLogin() {
         isLogin = true
+        backCallback?.isEnabled = false
+
         localNavigator.openScreen(
             LoginFragment.create(
                 LoginFragment.Dependencies(
@@ -75,6 +69,8 @@ class SetupFragment(
 
     private fun startSelectBoard(token: String, boards: List<Board>) {
         isLogin = false
+        backCallback?.isEnabled = true
+        
         localNavigator.openScreen(
             SelectBoardFragment.create(
                 SelectBoardFragment.Dependencies(
