@@ -48,12 +48,12 @@ object Versions {
 }
 
 object Plugins {
-    val googleServices = "com.google.gms:google-services:${Versions.googleServices}"
-    val gradleAndroid = "com.android.tools.build:gradle:${Versions.gradleAndroid}"
-    val gradleVersions = "com.github.ben-manes:gradle-versions-plugin:${Versions.gradleVersions}"
-    val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
-    val kotlinxSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}"
-    val sqlDelight = "com.squareup.sqldelight:gradle-plugin:${Versions.sqlDelight}"
+    val googleServices = "com.google.gms.google-services"
+    val gradleAndroid = "com.android.application"
+    val gradleVersions = "com.github.ben-manes.versions"
+    val kotlin = "org.jetbrains.kotlin.android"
+    val kotlinxSerialization = "org.jetbrains.kotlin.plugin.serialization"
+    val sqlDelight = "com.squareup.sqldelight"
 }
 
 object Android {

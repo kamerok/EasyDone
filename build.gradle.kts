@@ -1,26 +1,10 @@
-buildscript {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-    }
-    dependencies {
-        classpath(Plugins.gradleAndroid)
-        classpath(Plugins.gradleVersions)
-        classpath(Plugins.kotlin)
-        classpath(Plugins.kotlinxSerialization)
-        classpath(Plugins.sqlDelight)
-        classpath(Plugins.googleServices)
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
-        maven(url = "https://jitpack.io")
-    }
+plugins {
+    id(Plugins.googleServices) version(Versions.googleServices) apply false
+    id(Plugins.gradleAndroid) version(Versions.gradleAndroid) apply false
+    id(Plugins.gradleVersions) version(Versions.gradleVersions)
+    id(Plugins.kotlin) version(Versions.kotlin) apply false
+    id(Plugins.kotlinxSerialization) version(Versions.kotlin) apply false
+    id(Plugins.sqlDelight) version(Versions.sqlDelight) apply false
 }
 
 subprojects {
@@ -42,5 +26,5 @@ task<Delete>("clean") {
 
 apply {
     from(rootProject.file("gradle/dependency_graph.gradle"))
-    from(rootProject.file("gradle/dependency_updates.gradle"))
+    from(rootProject.file("gradle/dependency_updates_settings.gradle"))
 }
