@@ -110,7 +110,6 @@ object Libraries {
     val sqlDelightCoroutines = "com.squareup.sqldelight:coroutines-extensions-jvm:${Versions.sqlDelight}"
     val timberAndroid = "com.jakewharton.timber:timber-android:${Versions.timber}"
     val timberJdk = "com.jakewharton.timber:timber-jdk:${Versions.timber}"
-    val timber = arrayOf(timberAndroid, timberJdk)
 }
 
 object Tests {
