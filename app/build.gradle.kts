@@ -4,10 +4,6 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-apply {
-    from(rootProject.file("gradle/apply-credential-properties.gradle"))
-}
-
 android {
     namespace = "com.kamer.easydone"
 
