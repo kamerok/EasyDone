@@ -7,19 +7,6 @@ plugins {
     id(Plugins.sqlDelight) version(Versions.sqlDelight) apply false
 }
 
-subprojects {
-    afterEvaluate {
-        (extensions.findByName("android") as? com.android.build.gradle.BaseExtension)?.apply {
-            compileSdkVersion(Config.compileSdk)
-
-            defaultConfig {
-                minSdk = Config.minSdk
-                targetSdk = Config.targetSdk
-            }
-        }
-    }
-}
-
 task<Delete>("clean") {
     delete(rootProject.buildDir)
 }

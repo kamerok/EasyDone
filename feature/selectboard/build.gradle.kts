@@ -1,6 +1,5 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
+    id("easydone.android.library")
 }
 
 android {

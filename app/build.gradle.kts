@@ -7,7 +7,10 @@ plugins {
 android {
     namespace = "com.kamer.easydone"
 
+    compileSdk = Config.compileSdk
     defaultConfig {
+        minSdk = Config.minSdk
+        targetSdk = Config.targetSdk
         applicationId = "com.kamer.easydone"
         versionCode = 1
         versionName = "1.0"

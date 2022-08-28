@@ -1,18 +1,9 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
+    id("easydone.android.library.compose")
 }
 
 android {
     namespace = "com.kamer.home"
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompiler
-    }
 }
 
 dependencies {
