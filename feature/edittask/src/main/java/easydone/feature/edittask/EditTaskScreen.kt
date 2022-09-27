@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,9 +47,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.statusBarsPadding
 import easydone.core.domain.model.Task
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
@@ -66,42 +65,40 @@ import java.time.format.DateTimeFormatter
 @Composable
 internal fun EditTaskScreen(viewModel: EditTaskViewModel) {
     AppTheme {
-        ProvideWindowInsets(windowInsetsAnimationsEnabled = false) {
-            FullscreenContent {
-                val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-                val scope = rememberCoroutineScope()
+        FullscreenContent {
+            val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+            val scope = rememberCoroutineScope()
 
-                BackHandler(enabled = sheetState.isVisible) {
-                    scope.launch { sheetState.hide() }
-                }
-
-                var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
-
-                LaunchedEffect(viewModel) {
-                    viewModel.events
-                        .onEach {
-                            when (it) {
-                                is OpenSelectType -> {
-                                    selectorType = it.currentType
-                                    sheetState.show()
-                                }
-                                is CloseSelectType -> sheetState.hide()
-                            }
-                        }
-                        .launchIn(this)
-                }
-
-                ModalBottomSheetLayout(
-                    sheetState = sheetState,
-                    sheetContent = {
-                        TypeSelector(
-                            type = selectorType,
-                            onTypeSelected = viewModel::onTypeSelected
-                        )
-                    },
-                    content = { EditTaskContent(viewModel) }
-                )
+            BackHandler(enabled = sheetState.isVisible) {
+                scope.launch { sheetState.hide() }
             }
+
+            var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
+
+            LaunchedEffect(viewModel) {
+                viewModel.events
+                    .onEach {
+                        when (it) {
+                            is OpenSelectType -> {
+                                selectorType = it.currentType
+                                sheetState.show()
+                            }
+                            is CloseSelectType -> sheetState.hide()
+                        }
+                    }
+                    .launchIn(this)
+            }
+
+            ModalBottomSheetLayout(
+                sheetState = sheetState,
+                sheetContent = {
+                    TypeSelector(
+                        type = selectorType,
+                        onTypeSelected = viewModel::onTypeSelected
+                    )
+                },
+                content = { EditTaskContent(viewModel) }
+            )
         }
     }
 }
@@ -183,7 +180,7 @@ private fun FullscreenContent(
             //to draw under paddings
             .background(MaterialTheme.colors.background)
             .statusBarsPadding()
-            .navigationBarsWithImePadding()
+            .imePadding()
     ) {
         content()
     }

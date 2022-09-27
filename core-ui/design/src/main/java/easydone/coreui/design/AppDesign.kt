@@ -86,10 +86,11 @@ fun IconText(modifier: Modifier = Modifier) {
 
 @Composable
 fun EasyDoneAppBar(
+    modifier: Modifier = Modifier,
     navigationIcon: @Composable (() -> Unit)? = { DefaultBackIcon() },
     actions: @Composable RowScope.() -> Unit = {},
     menu: @Composable (ColumnScope.() -> Unit)? = null,
-    title: @Composable () -> Unit
+    title: @Composable () -> Unit,
 ) {
     TopAppBar(
         elevation = 0.dp,
@@ -113,6 +114,7 @@ fun EasyDoneAppBar(
                 }
             }
         },
+        modifier = modifier
     )
 }
 

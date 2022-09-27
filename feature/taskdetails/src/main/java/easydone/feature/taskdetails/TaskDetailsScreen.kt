@@ -1,7 +1,6 @@
 package easydone.feature.taskdetails
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,9 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.systemBarsPadding
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import easydone.core.domain.model.Task
 import easydone.coreui.design.AppTheme
@@ -63,47 +61,45 @@ internal fun TaskDetailsScreen(
     viewModel: TaskDetailsViewModel
 ) {
     AppTheme {
-        ProvideWindowInsets {
-            val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-            val scope = rememberCoroutineScope()
+        val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+        val scope = rememberCoroutineScope()
 
-            var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
-            LaunchedEffect(viewModel) {
-                viewModel.events
-                    .onEach {
-                        when (it) {
-                            is SelectType -> {
-                                selectorType = it.currentType
-                                sheetState.show()
-                            }
+        var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
+        LaunchedEffect(viewModel) {
+            viewModel.events
+                .onEach {
+                    when (it) {
+                        is SelectType -> {
+                            selectorType = it.currentType
+                            sheetState.show()
                         }
                     }
-                    .launchIn(this)
-            }
-
-            BackHandler(enabled = sheetState.isVisible) {
-                scope.launch { sheetState.hide() }
-            }
-
-            ModalBottomSheetLayout(
-                sheetState = sheetState,
-                sheetContent = {
-                    TypeSelector(
-                        type = selectorType,
-                        onTypeSelected = viewModel::onTypeSelected,
-                        modifier = Modifier.navigationBarsPadding()
-                    )
-                },
-                content = { TaskDetailsContent(viewModel) }
-            )
+                }
+                .launchIn(this)
         }
+
+        BackHandler(enabled = sheetState.isVisible) {
+            scope.launch { sheetState.hide() }
+        }
+
+        ModalBottomSheetLayout(
+            sheetState = sheetState,
+            sheetContent = {
+                TypeSelector(
+                    type = selectorType,
+                    onTypeSelected = viewModel::onTypeSelected,
+                    modifier = Modifier.navigationBarsPadding()
+                )
+            },
+            content = { TaskDetailsContent(viewModel) }
+        )
     }
 }
 
 @Composable
 private fun TaskDetailsContent(viewModel: TaskDetailsViewModel) {
     FullscreenContent {
-        Column {
+        Column(modifier = Modifier.systemBarsPadding()) {
             EasyDoneAppBar(
                 title = {
                     Text(stringResource(R.string.task_details_screen_title))
@@ -137,11 +133,7 @@ private fun FullscreenContent(
 ) {
     Surface(
         color = MaterialTheme.colors.background,
-        modifier = Modifier
-            .fillMaxSize()
-            //to draw under paddings
-            .background(MaterialTheme.colors.background)
-            .systemBarsPadding()
+        modifier = Modifier.fillMaxSize()
     ) {
         content()
     }

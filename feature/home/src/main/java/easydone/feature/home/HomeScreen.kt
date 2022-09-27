@@ -1,7 +1,6 @@
 package easydone.feature.home
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -36,8 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.systemBarsPadding
 import com.kamer.home.R
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
@@ -50,65 +48,64 @@ import java.time.Period
 @Composable
 internal fun HomeScreen(viewModel: HomeViewModel) {
     AppTheme {
-        ProvideWindowInsets {
-            FullscreenContent {
-                Box {
-                    Column {
-                        val state by viewModel.state.collectAsState()
+        FullscreenContent {
+            Box {
+                Column {
+                    val state by viewModel.state.collectAsState()
 
-                        EasyDoneAppBar(
-                            navigationIcon = null,
-                            title = { Text(stringResource(R.string.app_name)) },
-                            actions = {
-                                SyncButton(
-                                    isInProgress = state.isSyncing,
-                                    isIndicatorEnabled = state.hasChanges,
-                                    onClick = viewModel::onSync
-                                )
-                            },
-                            menu = {
-                                DropdownMenuItem(onClick = viewModel::onSettings) {
-                                    Text(text = "Settings")
-                                }
+                    EasyDoneAppBar(
+                        navigationIcon = null,
+                        title = { Text(stringResource(R.string.app_name)) },
+                        actions = {
+                            SyncButton(
+                                isInProgress = state.isSyncing,
+                                isIndicatorEnabled = state.hasChanges,
+                                onClick = viewModel::onSync
+                            )
+                        },
+                        menu = {
+                            DropdownMenuItem(onClick = viewModel::onSettings) {
+                                Text(text = "Settings")
                             }
+                        },
+                        modifier = Modifier.statusBarsPadding()
+                    )
+                    LazyColumn(
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        inboxSection(
+                            inboxCount = state.inboxCount,
+                            onSort = viewModel::onSort
                         )
-                        LazyColumn(
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            inboxSection(
-                                inboxCount = state.inboxCount,
-                                onSort = viewModel::onSort
-                            )
-                            todoSection(
-                                tasks = state.todoTasks,
-                                onTaskClick = viewModel::onTaskClick
-                            )
-                            projectsSection(
-                                tasks = state.projectTasks,
-                                onTaskClick = viewModel::onTaskClick
-                            )
-                            waitingSection(
-                                nextWaitingTask = state.nextWaitingTask,
-                                waitingCount = state.waitingCount,
-                                onTaskClick = viewModel::onTaskClick,
-                                onMore = viewModel::onWaitingMore
-                            )
-                            maybeSection(
-                                tasks = state.maybeTasks,
-                                onTaskClick = viewModel::onTaskClick
-                            )
-                            fabSpaceItem()
-                        }
+                        todoSection(
+                            tasks = state.todoTasks,
+                            onTaskClick = viewModel::onTaskClick
+                        )
+                        projectsSection(
+                            tasks = state.projectTasks,
+                            onTaskClick = viewModel::onTaskClick
+                        )
+                        waitingSection(
+                            nextWaitingTask = state.nextWaitingTask,
+                            waitingCount = state.waitingCount,
+                            onTaskClick = viewModel::onTaskClick,
+                            onMore = viewModel::onWaitingMore
+                        )
+                        maybeSection(
+                            tasks = state.maybeTasks,
+                            onTaskClick = viewModel::onTaskClick
+                        )
+                        fabSpaceItem()
                     }
-                    FloatingActionButton(
-                        backgroundColor = MaterialTheme.colors.primary,
-                        onClick = viewModel::onAdd,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(16.dp)
-                    ) { Icon(Icons.Default.Add, "") }
                 }
+                FloatingActionButton(
+                    backgroundColor = MaterialTheme.colors.primary,
+                    onClick = viewModel::onAdd,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp)
+                ) { Icon(Icons.Default.Add, "") }
             }
         }
     }
@@ -248,11 +245,7 @@ private fun FullscreenContent(
 ) {
     Surface(
         color = MaterialTheme.colors.background,
-        modifier = Modifier
-            .fillMaxSize()
-            //to draw under paddings
-            .background(MaterialTheme.colors.background)
-            .systemBarsPadding()
+        modifier = Modifier.fillMaxSize()
     ) {
         content()
     }

@@ -1,17 +1,19 @@
 package easydone.feature.waiting
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -35,8 +37,6 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.systemBarsPadding
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.TaskCard
@@ -51,65 +51,68 @@ import java.time.format.DateTimeFormatter
 @Composable
 internal fun WaitingScreen(viewModel: WaitingViewModel) {
     AppTheme {
-        ProvideWindowInsets {
-            FullscreenContent {
-                Column {
-                    EasyDoneAppBar { Text("Waiting") }
-                    val state = viewModel.state.collectAsState().value
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        item {
-                            val significantDays by derivedStateOf { state.tasks.keys }
-                            val months = remember {
-                                val currentMonth = YearMonth.now()
-                                (0..(12 * 10)).map { currentMonth.plusMonths(it.toLong()) }
-                            }
-                            LazyRow(
-                                contentPadding = PaddingValues(16.dp),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                items(months) { month ->
-                                    CalendarMonth(month, significantDays)
-                                }
+        FullscreenContent {
+            Column {
+                EasyDoneAppBar(modifier = Modifier.statusBarsPadding()) {
+                    Text("Waiting")
+                }
+                val state = viewModel.state.collectAsState().value
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    item {
+                        val significantDays by derivedStateOf { state.tasks.keys }
+                        val months = remember {
+                            val currentMonth = YearMonth.now()
+                            (0..(12 * 10)).map { currentMonth.plusMonths(it.toLong()) }
+                        }
+                        LazyRow(
+                            contentPadding = PaddingValues(16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            items(months) { month ->
+                                CalendarMonth(month, significantDays)
                             }
                         }
-                        //TODO: reuse format logic
-                        val formatter = DateTimeFormatter.ofPattern("d MMM y")
-                        state.tasks.entries
-                            .sortedBy { it.key }
-                            .forEach { (date, tasks) ->
-                                item {
-                                    val period = Period.between(LocalDate.now(), date)
-                                    val dateText = buildString {
-                                        append(formatter.format(date))
-                                        append(" (")
-                                        if (period.years > 0) {
-                                            append("${period.years}y ")
-                                        }
-                                        if (period.months > 0) {
-                                            append("${period.months}m ")
-                                        }
-                                        if (period.days > 0) {
-                                            append("${period.days}d")
-                                        }
-                                        append(")")
-                                    }
-                                    Text(
-                                        text = dateText,
-                                        style = MaterialTheme.typography.h5,
-                                        modifier = Modifier.padding(horizontal = 16.dp)
-                                    )
-                                }
-                                items(tasks) { task ->
-                                    TaskCard(
-                                        task = task,
-                                        modifier = Modifier
-                                            .padding(horizontal = 16.dp)
-                                            .fillMaxWidth()
-                                            .clickable { viewModel.onTaskClick(task) }
-                                    )
-                                }
-                            }
                     }
+                    //TODO: reuse format logic
+                    val formatter = DateTimeFormatter.ofPattern("d MMM y")
+                    state.tasks.entries
+                        .sortedBy { it.key }
+                        .forEach { (date, tasks) ->
+                            item {
+                                val period = Period.between(LocalDate.now(), date)
+                                val dateText = buildString {
+                                    append(formatter.format(date))
+                                    append(" (")
+                                    if (period.years > 0) {
+                                        append("${period.years}y ")
+                                    }
+                                    if (period.months > 0) {
+                                        append("${period.months}m ")
+                                    }
+                                    if (period.days > 0) {
+                                        append("${period.days}d")
+                                    }
+                                    append(")")
+                                }
+                                Text(
+                                    text = dateText,
+                                    style = MaterialTheme.typography.h5,
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+                            }
+                            items(tasks) { task ->
+                                TaskCard(
+                                    task = task,
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .fillMaxWidth()
+                                        .clickable { viewModel.onTaskClick(task) }
+                                )
+                            }
+                            item {
+                                Spacer(modifier = Modifier.navigationBarsPadding())
+                            }
+                        }
                 }
             }
         }
@@ -122,17 +125,12 @@ private fun FullscreenContent(
 ) {
     Surface(
         color = MaterialTheme.colors.background,
-        modifier = Modifier
-            .fillMaxSize()
-            //to draw under paddings
-            .background(MaterialTheme.colors.background)
-            .systemBarsPadding()
+        modifier = Modifier.fillMaxSize()
     ) {
         content()
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 @Composable
 private fun CalendarMonth(
     month: YearMonth,
