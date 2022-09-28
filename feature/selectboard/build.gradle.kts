@@ -1,5 +1,5 @@
 plugins {
-    id("easydone.android.library")
+    id("easydone.android.library.compose")
 }
 
 android {
@@ -7,7 +7,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":core-ui:design"))
+
     implementation(Android.appCompat)
+    implementation(Android.composeTooling)
     implementation(Android.core)
-    implementation(Android.recyclerView)
 }

@@ -2,30 +2,52 @@ package easydone.feature.selectboard
 
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.updatePadding
+import android.view.ViewGroup
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
-import com.kamer.selectboard.R
+import easydone.coreui.design.AppTheme
 
 
-class SelectBoardFragment : Fragment(R.layout.fragment_select_board) {
+class SelectBoardFragment : Fragment() {
 
     private lateinit var boards: List<BoardUiModel>
     private lateinit var listener: (String) -> Unit
 
-    private val adapter by lazy { BoardsAdapter { listener(it) } }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<RecyclerView>(R.id.recyclerView).adapter = adapter
-        adapter.setData(boards)
-
-        view.setOnApplyWindowInsetsListener { v, insets ->
-            v.updatePadding(
-                top = insets.systemWindowInsetTop,
-                bottom = insets.systemWindowInsetBottom
-            )
-            insets.consumeSystemWindowInsets()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setContent {
+            AppTheme {
+                LazyColumn(modifier = Modifier.systemBarsPadding()) {
+                    items(boards) { board ->
+                        BoardItem(
+                            board = board,
+                            onClick = { listener(board.id) }
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.navigationBarsPadding())
+                    }
+                }
+            }
         }
     }
 
@@ -41,4 +63,30 @@ class SelectBoardFragment : Fragment(R.layout.fragment_select_board) {
         }
     }
 
+}
+
+@Composable
+private fun BoardItem(board: BoardUiModel, onClick: () -> Unit) {
+    Text(
+        text = board.name,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(8.dp)
+    )
+}
+
+@Preview(widthDp = 100, heightDp = 100, showBackground = true)
+@Composable
+private fun BoardPreview() {
+    AppTheme {
+        Column {
+            BoardItem(board = BoardUiModel("id", "name")) {
+
+            }
+            BoardItem(board = BoardUiModel("id", "name")) {
+
+            }
+        }
+    }
 }
