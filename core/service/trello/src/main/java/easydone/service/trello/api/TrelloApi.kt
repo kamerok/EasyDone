@@ -48,6 +48,7 @@ interface TrelloApi {
         @Query("idList") listId: String,
         @Query("name") name: String,
         @Query("desc") desc: String?,
+        @Query("due") due: String?,
         @Query("pos") pos: String = "bottom",
         @Query("key") apiKey: String,
         @Query("token") token: String,

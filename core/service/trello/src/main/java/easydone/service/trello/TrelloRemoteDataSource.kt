@@ -85,13 +85,7 @@ class TrelloRemoteDataSource(
                         name = delta.title,
                         desc = delta.description,
                         closed = delta.isDone,
-                        due = delta.type?.let { type ->
-                            if (type is Task.Type.Waiting) {
-                                type.date.format(DateTimeFormatter.ISO_DATE)
-                            } else {
-                                ""
-                            }
-                        },
+                        due = delta.getDueDate(),
                         listId = delta.type?.let { getListId(it) },
                         idLabels = labels
                     )
@@ -100,6 +94,7 @@ class TrelloRemoteDataSource(
                         listId = getListId(delta.type!!),
                         name = delta.title!!,
                         desc = delta.description,
+                        due = delta.getDueDate(),
                         apiKey = apiKey,
                         token = authInfoHolder.getToken()!!,
                         idLabels = labels
@@ -110,6 +105,15 @@ class TrelloRemoteDataSource(
             }
         }
     }
+
+    private fun TaskDelta.getDueDate(): String? =
+        type?.let { type ->
+            if (type is Task.Type.Waiting) {
+                type.date.format(DateTimeFormatter.ISO_DATE)
+            } else {
+                ""
+            }
+        }
 
     override suspend fun disconnect() {
         authInfoHolder.clear()
