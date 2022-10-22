@@ -17,4 +17,5 @@ dependencies {
 
     testImplementation(Tests.junit)
     testImplementation(Tests.assertk)
+    testImplementation(Libraries.sqlDelightMemory)
 }

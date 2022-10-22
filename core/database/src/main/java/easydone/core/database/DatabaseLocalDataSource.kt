@@ -1,7 +1,5 @@
 package easydone.core.database
 
-import com.squareup.sqldelight.EnumColumnAdapter
-import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import easydone.core.database.model.ChangeEntry
 import easydone.core.database.model.DbTaskType
@@ -22,16 +20,14 @@ import kotlin.reflect.KClass
 import easydone.core.database.Task as DbTask
 
 
-class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
+class DatabaseLocalDataSource(private val database: Database) : LocalDataSource {
 
-    private val database: Database = Database(
-        driver,
-        Change.Adapter(EnumColumnAdapter()),
-        Delta.Adapter(EnumColumnAdapter()),
-        DbTask.Adapter(EnumColumnAdapter(), DateColumnAdapter)
-    ).apply { pragmaQueries.forceForeignKeys() }
     private val taskQueries = database.taskQueries
     private val changesQueries = database.changesQueries
+
+    init {
+        database.pragmaQueries.forceForeignKeys()
+    }
 
     override suspend fun getChanges(): List<TaskDelta> = withContext(Dispatchers.IO) {
         changesQueries.selectChanges().executeAsList()
@@ -167,7 +163,7 @@ class DatabaseLocalDataSource(driver: SqlDriver) : LocalDataSource {
 
             fun <T : Any> writeDelta(field: EntityField, getField: Task.() -> T?) {
                 val mapper = field.getMapper()
-                val previousValue = mapper.toString(oldTask.getField())
+                val previousValue = oldTask.getField()?.let { mapper.toString(it) }
                 val newValue = mapper.toString(task.getField())
                 if (newValue == previousValue) return
                 val oldDelta = selectDelta(changeId, field).executeAsOneOrNull()

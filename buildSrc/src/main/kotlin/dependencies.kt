@@ -101,6 +101,7 @@ object Libraries {
     val retrofitLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.retrofitLogging}"
     val sqlDelightAndroid = "com.squareup.sqldelight:android-driver:${Versions.sqlDelight}"
     val sqlDelightCoroutines = "com.squareup.sqldelight:coroutines-extensions-jvm:${Versions.sqlDelight}"
+    val sqlDelightMemory = "com.squareup.sqldelight:sqlite-driver:${Versions.sqlDelight}"
     val timberAndroid = "com.jakewharton.timber:timber-android:${Versions.timber}"
     val timberJdk = "com.jakewharton.timber:timber-jdk:${Versions.timber}"
 }

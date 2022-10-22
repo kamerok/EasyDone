@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import easydone.core.database.Database
+import easydone.core.database.DatabaseFactory
 import easydone.core.database.DatabaseLocalDataSource
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.LocalDataSource
@@ -106,7 +107,9 @@ object StartFlow {
             single { TrelloApi.build(debugInterceptor) }
             single {
                 DatabaseLocalDataSource(
-                    AndroidSqliteDriver(Database.Schema, application, "database.db")
+                    DatabaseFactory.create(
+                        AndroidSqliteDriver(Database.Schema, application, "database.db")
+                    )
                 )
             }
             single { LocalDataSourceDecorator(get<DatabaseLocalDataSource>()) }

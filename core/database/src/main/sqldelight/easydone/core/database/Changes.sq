@@ -40,6 +40,11 @@ SELECT *
 FROM delta
 WHERE change_id = ? AND field = ?;
 
+selectAllDelta:
+SELECT *
+FROM delta
+WHERE change_id = ?;
+
 selectDeltaCount:
 SELECT count()
 FROM delta
