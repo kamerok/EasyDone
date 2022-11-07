@@ -6,7 +6,6 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskTemplate
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -18,11 +17,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
+import java.io.Serializable
 
 
 internal class EditTaskViewModel(
-    private val id: String?,
-    private val sharedText: String?,
+    private val args: Args,
     private val repository: DomainRepository,
     private val navigator: EditTaskNavigator
 ) : ViewModel() {
@@ -30,10 +29,10 @@ internal class EditTaskViewModel(
     private val eventChannel = Channel<Event>(Channel.UNLIMITED)
     private val actionChannel: Channel<Action> = Channel(capacity = Channel.UNLIMITED)
 
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    @OptIn(FlowPreview::class)
     val state: StateFlow<State> = flow {
-        if (id != null) {
-            emit(repository.getTask(id))
+        if (args is Args.Edit) {
+            emit(repository.getTask(args.id))
         } else {
             emit(null)
         }
@@ -47,7 +46,8 @@ internal class EditTaskViewModel(
                         type = originalTask?.type ?: Task.Type.Inbox,
                         title = originalTask?.title ?: "",
                         titleError = null,
-                        description = originalTask?.description ?: sharedText ?: "",
+                        description = originalTask?.description ?: (args as? Args.Create)?.title
+                        ?: "",
                         isUrgent = originalTask?.markers?.isUrgent ?: false,
                         isImportant = originalTask?.markers?.isImportant ?: false
                     )
@@ -157,5 +157,13 @@ internal class EditTaskViewModel(
         object UrgentClick : Action()
         object ImportantClick : Action()
         object Save : Action()
+    }
+
+    internal sealed class Args : Serializable {
+        data class Create(
+            val title: String = ""
+        ) : Args()
+
+        data class Edit(val id: String) : Args()
     }
 }
