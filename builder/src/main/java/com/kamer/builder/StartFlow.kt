@@ -79,7 +79,7 @@ object StartFlow {
         GlobalContext.get().get<Navigator>().openScreen(
             fragmentClass = EditTaskFragment::class.java,
             addToBackStack = false,
-            args = EditTaskFragment.shareArgs(sharedText)
+            args = EditTaskFragment.createArgs(sharedText)
         )
 
         //to start syncing
@@ -291,7 +291,11 @@ object StartFlow {
         )
 
     private fun startCreateTask(navigator: Navigator) =
-        navigator.openScreen(EditTaskFragment::class.java, true)
+        navigator.openScreen(
+            EditTaskFragment::class.java,
+            true,
+            EditTaskFragment.createArgs(type = Task.Type.ToDo)
+        )
 
     private fun startSettings(navigator: Navigator) =
         navigator.openScreen(SettingsFragment::class.java, true)

@@ -43,7 +43,7 @@ internal class EditTaskViewModel(
                 .scan(
                     ContentState(
                         isCreate = originalTask == null,
-                        type = originalTask?.type ?: Task.Type.Inbox,
+                        type = originalTask?.type ?: (args as? Args.Create)?.type ?: Task.Type.Inbox,
                         title = originalTask?.title ?: "",
                         titleError = null,
                         description = originalTask?.description ?: (args as? Args.Create)?.title
@@ -161,7 +161,8 @@ internal class EditTaskViewModel(
 
     internal sealed class Args : Serializable {
         data class Create(
-            val title: String = ""
+            val title: String = "",
+            val type: Task.Type = Task.Type.Inbox
         ) : Args()
 
         data class Edit(val id: String) : Args()

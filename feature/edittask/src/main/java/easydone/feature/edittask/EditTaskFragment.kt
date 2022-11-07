@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.model.Task
 
 
 class EditTaskFragment(
@@ -46,7 +47,10 @@ class EditTaskFragment(
 
         fun editArgs(taskId: String): Bundle = bundleOf(ARGS to EditTaskViewModel.Args.Edit(taskId))
 
-        fun shareArgs(text: String): Bundle = bundleOf(ARGS to EditTaskViewModel.Args.Create(text))
+        fun createArgs(
+            text: String = "",
+            type: Task.Type = Task.Type.Inbox
+        ): Bundle = bundleOf(ARGS to EditTaskViewModel.Args.Create(text, type))
     }
 
 }
