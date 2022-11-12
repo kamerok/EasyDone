@@ -45,9 +45,9 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
+import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
-import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.text.FontStyle
 import androidx.glance.text.FontWeight
@@ -128,7 +128,6 @@ private fun RowWidget(state: WidgetState) {
     )
 }
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
 private fun BigWidget(state: WidgetState) {
     val context = LocalContext.current
@@ -145,13 +144,12 @@ private fun BigWidget(state: WidgetState) {
             .appWidgetBackground()
             .clickable(actionStartActivity(mainActivityComponent))
     ) {
-        val topRowHeight = 40.dp
+        val topRowHeight = 48.dp
         TopRow(
             state,
             modifier = GlanceModifier
                 .fillMaxWidth()
                 .height(topRowHeight)
-                .padding(top = 8.dp)
         )
         Box {
             val bitmap = remember {
@@ -326,6 +324,7 @@ private fun TopRow(
             state.inboxCount,
             GlanceModifier
                 .defaultWeight()
+                .fillMaxHeight()
                 .clickable(
                     actionStartActivity(
                         mainActivityComponent,
@@ -341,13 +340,19 @@ private fun TopRow(
                 fontWeight = FontWeight.Bold
             )
         )
-        Image(
-            provider = ImageProvider(R.drawable.ic_create),
-            contentDescription = "",
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = GlanceModifier
                 .defaultWeight()
+                .fillMaxHeight()
                 .clickable(actionStartActivity(transparentActivityComponent))
-        )
+        ) {
+            Image(
+                provider = ImageProvider(R.drawable.ic_create),
+                contentDescription = "",
+                modifier = GlanceModifier.size(24.dp)
+            )
+        }
     }
 }
 
