@@ -17,6 +17,8 @@ object Versions {
     val constraintLayout = "2.1.4"
     val core = "1.9.0"
     val coroutines = "1.6.4"
+    val crashlytics = "18.3.2"
+    val crashlyticsPlugin = "2.9.2"
     val dataStore = "1.0.0"
     val desugar = "1.1.5"
     val firebase = "21.1.1"
@@ -45,6 +47,7 @@ object Versions {
 }
 
 object Plugins {
+    val crashlytics = "com.google.firebase.crashlytics"
     val googleServices = "com.google.gms.google-services"
     val gradleAndroid = "com.android.application"
     val gradleVersions = "com.github.ben-manes.versions"
@@ -87,6 +90,7 @@ object Kotlin {
 }
 
 object Tools {
+    val crashlytics = "com.google.firebase:firebase-crashlytics-ktx:${Versions.crashlytics}"
     val firebase = "com.google.firebase:firebase-core:${Versions.firebase}"
     val soLoader = "com.facebook.soloader:soloader:${Versions.soLoader}"
     val flipper = "com.facebook.flipper:flipper:${Versions.flipper}"

@@ -1,5 +1,6 @@
 plugins {
     id(Plugins.googleServices) version(Versions.googleServices) apply false
+    id(Plugins.crashlytics) version(Versions.crashlyticsPlugin) apply false
     id(Plugins.gradleAndroid) version(Versions.gradleAndroid) apply false
     id(Plugins.gradleVersions) version(Versions.gradleVersions)
     id(Plugins.kotlin) version(Versions.kotlin) apply false
