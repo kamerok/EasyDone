@@ -3,12 +3,10 @@ package easydone.feature.home
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +19,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -44,68 +43,65 @@ import easydone.coreui.design.UiTask
 import java.time.LocalDate
 import java.time.Period
 
-
 @Composable
 internal fun HomeScreen(viewModel: HomeViewModel) {
     AppTheme {
-        FullscreenContent {
-            Box {
-                Column {
-                    val state by viewModel.state.collectAsState()
-
-                    EasyDoneAppBar(
-                        navigationIcon = null,
-                        title = { Text(stringResource(R.string.app_name)) },
-                        actions = {
-                            SyncButton(
-                                isInProgress = state.isSyncing,
-                                isIndicatorEnabled = state.hasChanges,
-                                onClick = viewModel::onSync
-                            )
-                        },
-                        menu = {
-                            DropdownMenuItem(onClick = viewModel::onSettings) {
-                                Text(text = "Settings")
-                            }
-                        },
-                        modifier = Modifier.statusBarsPadding()
-                    )
-                    LazyColumn(
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        inboxSection(
-                            inboxCount = state.inboxCount,
-                            onSort = viewModel::onSort
+        val state by viewModel.state.collectAsState()
+        Scaffold(
+            topBar = {
+                EasyDoneAppBar(
+                    navigationIcon = null,
+                    title = { Text(stringResource(R.string.app_name)) },
+                    actions = {
+                        SyncButton(
+                            isInProgress = state.isSyncing,
+                            isIndicatorEnabled = state.hasChanges,
+                            onClick = viewModel::onSync
                         )
-                        todoSection(
-                            tasks = state.todoTasks,
-                            onTaskClick = viewModel::onTaskClick
-                        )
-                        projectsSection(
-                            tasks = state.projectTasks,
-                            onTaskClick = viewModel::onTaskClick
-                        )
-                        waitingSection(
-                            nextWaitingTask = state.nextWaitingTask,
-                            waitingCount = state.waitingCount,
-                            onTaskClick = viewModel::onTaskClick,
-                            onMore = viewModel::onWaitingMore
-                        )
-                        maybeSection(
-                            tasks = state.maybeTasks,
-                            onTaskClick = viewModel::onTaskClick
-                        )
-                        fabSpaceItem()
-                    }
-                }
+                    },
+                    menu = {
+                        DropdownMenuItem(onClick = viewModel::onSettings) {
+                            Text(text = "Settings")
+                        }
+                    },
+                    modifier = Modifier.statusBarsPadding()
+                )
+            },
+            floatingActionButton = {
                 FloatingActionButton(
                     backgroundColor = MaterialTheme.colors.primary,
-                    onClick = viewModel::onAdd,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp)
+                    onClick = viewModel::onAdd
                 ) { Icon(Icons.Default.Add, "") }
+            }
+        ) { padding ->
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(padding)
+            ) {
+                inboxSection(
+                    inboxCount = state.inboxCount,
+                    onSort = viewModel::onSort
+                )
+                todoSection(
+                    tasks = state.todoTasks,
+                    onTaskClick = viewModel::onTaskClick
+                )
+                projectsSection(
+                    tasks = state.projectTasks,
+                    onTaskClick = viewModel::onTaskClick
+                )
+                waitingSection(
+                    nextWaitingTask = state.nextWaitingTask,
+                    waitingCount = state.waitingCount,
+                    onTaskClick = viewModel::onTaskClick,
+                    onMore = viewModel::onWaitingMore
+                )
+                maybeSection(
+                    tasks = state.maybeTasks,
+                    onTaskClick = viewModel::onTaskClick
+                )
+                fabSpaceItem()
             }
         }
     }
@@ -237,18 +233,6 @@ private fun LazyListScope.sectionSpaceItem() {
 
 private fun LazyListScope.fabSpaceItem() {
     item { Spacer(modifier = Modifier.height(56.dp)) }
-}
-
-@Composable
-private fun FullscreenContent(
-    content: @Composable () -> Unit
-) {
-    Surface(
-        color = MaterialTheme.colors.background,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        content()
-    }
 }
 
 @Composable
