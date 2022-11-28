@@ -111,23 +111,23 @@ internal class EditTaskViewModel(
                 state.copy(titleError = "Should not be empty")
             } else {
                 val hasChanges =
-                    state.title != originalTask?.title ?: "" ||
-                            state.description != originalTask?.description ?: "" ||
-                            state.type != originalTask?.type ?: Task.Type.Inbox ||
-                            state.isUrgent != originalTask?.markers?.isUrgent ?: false ||
-                            state.isImportant != originalTask?.markers?.isImportant ?: false
+                    state.title != (originalTask?.title ?: "") ||
+                            state.description != (originalTask?.description ?: "") ||
+                            state.type != (originalTask?.type ?: Task.Type.Inbox) ||
+                            state.isUrgent != (originalTask?.markers?.isUrgent ?: false) ||
+                            state.isImportant != (originalTask?.markers?.isImportant ?: false)
                 if (!hasChanges) {
                     navigator.close()
                 } else {
                     if (originalTask == null) {
                         repository.createTask(
-                            TaskTemplate(
+                            TaskTemplate.create(
                                 type = state.type,
                                 title = state.title,
                                 description = state.description,
                                 isUrgent = state.isUrgent,
                                 isImportant = state.isImportant
-                            )
+                            ).getOrThrow()
                         )
                     } else {
                         repository.saveTask(

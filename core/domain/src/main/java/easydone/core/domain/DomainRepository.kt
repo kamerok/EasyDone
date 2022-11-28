@@ -26,27 +26,7 @@ class DomainRepository(private val localDataSource: LocalDataSource) {
         localDataSource.updateTask(task.copy(isDone = true))
     }
 
-    suspend fun createTask(
-        title: String,
-        description: String,
-        skipInbox: Boolean,
-        isUrgent: Boolean,
-        isImportant: Boolean
-    ) {
-        if (title.isEmpty()) throw IllegalArgumentException("title should not be empty")
-        localDataSource.createTask(
-            TaskTemplate(
-                type = if (skipInbox) Task.Type.ToDo else Task.Type.Inbox,
-                title = title,
-                description = description,
-                isUrgent = isUrgent,
-                isImportant = isImportant
-            )
-        )
-    }
-
     suspend fun createTask(template: TaskTemplate) {
-        if (template.title.isEmpty()) throw IllegalArgumentException("title should not be empty")
         localDataSource.createTask(template)
     }
 

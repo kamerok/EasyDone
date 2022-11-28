@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -45,6 +44,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.model.Task
+import easydone.core.domain.model.TaskTemplate
 import easydone.coreui.design.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -55,7 +56,7 @@ class QuickCreateTaskFragment(
     private val navigator: QuickCreateTaskNavigator
 ) : Fragment() {
 
-    @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -99,14 +100,14 @@ class QuickCreateTaskFragment(
                             val save: (String) -> Unit = remember {
                                 { text ->
                                     scope.launch {
-                                        if (text.isNotEmpty()) {
-                                            repository.createTask(
-                                                title = text,
-                                                description = "",
-                                                skipInbox = false,
-                                                isUrgent = false,
-                                                isImportant = false
-                                            )
+                                        TaskTemplate.create(
+                                            type = Task.Type.Inbox,
+                                            title = text,
+                                            description = "",
+                                            isUrgent = false,
+                                            isImportant = false
+                                        ).onSuccess {
+                                            repository.createTask(it)
                                         }
                                         close()
                                     }
