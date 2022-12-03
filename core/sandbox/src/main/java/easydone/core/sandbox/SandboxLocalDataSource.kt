@@ -67,6 +67,14 @@ class SandboxLocalDataSource : LocalDataSource {
             ),
             Task(
                 id = UUID.randomUUID().toString(),
+                type = Task.Type.Waiting(LocalDate.now().plusDays(17)),
+                title = "Pay electricity",
+                description = "",
+                markers = Markers(isUrgent = false, isImportant = false),
+                isDone = false
+            ),
+            Task(
+                id = UUID.randomUUID().toString(),
                 type = Task.Type.Waiting(LocalDate.now().plusDays(29)),
                 title = "Take cat to the vet",
                 description = "",

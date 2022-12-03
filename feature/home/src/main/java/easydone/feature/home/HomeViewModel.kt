@@ -35,8 +35,18 @@ internal class HomeViewModel(
                     .filter { it.type == Task.Type.ToDo }
                     .sortedWith(taskComparator)
                     .map { it.toUiTask() },
-                nextWaitingTask = waitingTasks.minByOrNull { (it.type as Task.Type.Waiting).date }
-                    ?.let { it.toUiTask() to (it.type as Task.Type.Waiting).date },
+                nextWaitingTasks = if (waitingTasks.isNotEmpty()) {
+                    val (date, nextTasks) = waitingTasks
+                        .groupBy { (it.type as Task.Type.Waiting).date }
+                        .entries
+                        .minBy { it.key }
+                    NextWaitingTasks(
+                        date = date,
+                        tasks = nextTasks.map { it.toUiTask() }
+                    )
+                } else {
+                    null
+                },
                 waitingCount = waitingTasks.size,
                 projectTasks = tasks
                     .filter { it.type == Task.Type.Project }
@@ -55,7 +65,7 @@ internal class HomeViewModel(
                 hasChanges = false,
                 inboxCount = 0,
                 todoTasks = emptyList(),
-                nextWaitingTask = null,
+                nextWaitingTasks = null,
                 waitingCount = 0,
                 projectTasks = emptyList(),
                 maybeTasks = emptyList()

@@ -3,6 +3,7 @@ package easydone.feature.home
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -92,7 +93,7 @@ internal fun HomeScreen(viewModel: HomeViewModel) {
                     onTaskClick = viewModel::onTaskClick
                 )
                 waitingSection(
-                    nextWaitingTask = state.nextWaitingTask,
+                    nextWaitingTasks = state.nextWaitingTasks,
                     waitingCount = state.waitingCount,
                     onTaskClick = viewModel::onTaskClick,
                     onMore = viewModel::onWaitingMore
@@ -136,43 +137,45 @@ private fun LazyListScope.todoSection(
 }
 
 private fun LazyListScope.waitingSection(
-    nextWaitingTask: Pair<UiTask, LocalDate>?,
+    nextWaitingTasks: NextWaitingTasks?,
     waitingCount: Int,
     onTaskClick: (UiTask) -> Unit,
     onMore: () -> Unit
 ) {
-    if (nextWaitingTask != null) {
+    if (nextWaitingTasks != null) {
         item {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                val period = remember(nextWaitingTask) {
-                    //TODO: reuse format logic
-                    val period = Period.between(LocalDate.now(), nextWaitingTask.second)
-                    buildString {
-                        if (period.years > 0) {
-                            append("${period.years}y ")
-                        }
-                        if (period.months > 0) {
-                            append("${period.months}m ")
-                        }
-                        if (period.days > 0) {
-                            append("${period.days}d")
-                        }
+            val period = remember(nextWaitingTasks) {
+                //TODO: reuse format logic
+                val period = Period.between(LocalDate.now(), nextWaitingTasks.date)
+                buildString {
+                    if (period.years > 0) {
+                        append("${period.years}y ")
+                    }
+                    if (period.months > 0) {
+                        append("${period.months}m ")
+                    }
+                    if (period.days > 0) {
+                        append("${period.days}d")
                     }
                 }
-                Title("Up Next in $period")
-                TaskCard(
-                    task = nextWaitingTask.first,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onTaskClick(nextWaitingTask.first) }
-                )
-                if (waitingCount > 1) {
+            }
+            Title("Up Next in $period")
+        }
+        items(nextWaitingTasks.tasks, key = { it.id }) { task ->
+            TaskCard(
+                task = task,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onTaskClick(task) }
+            )
+        }
+        item {
+            if (waitingCount > nextWaitingTasks.tasks.size) {
+                Box(modifier = Modifier.fillMaxWidth()) {
                     MoreButton(
-                        count = waitingCount - 1,
+                        count = waitingCount - nextWaitingTasks.tasks.size,
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally),
+                            .align(Alignment.Center),
                         onClick = onMore
                     )
                 }
@@ -217,7 +220,7 @@ private fun LazyListScope.taskItems(
     tasks: List<UiTask>,
     onClick: (UiTask) -> Unit
 ) {
-    items(tasks) { task ->
+    items(tasks, key = { it.id }) { task ->
         TaskCard(
             task = task,
             modifier = Modifier
