@@ -1,5 +1,6 @@
 package easydone.core.domain.model
 
+import java.io.Serializable
 import java.time.LocalDate
 
 
@@ -12,7 +13,7 @@ data class Task(
     val isDone: Boolean
 ) {
 
-    sealed class Type {
+    sealed class Type: Serializable {
         object Inbox : Type()
         object ToDo : Type()
         data class Waiting(val date: LocalDate) : Type()
