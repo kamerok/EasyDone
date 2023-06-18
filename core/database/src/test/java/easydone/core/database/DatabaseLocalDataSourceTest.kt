@@ -29,13 +29,13 @@ class DatabaseLocalDataSourceTest {
     @Test
     fun `Create simple todo task`() = runBlocking {
         dataSource.createTask(
-            TaskTemplate(
+            TaskTemplate.create(
                 type = ToDo,
                 title = "Test",
                 description = "Task",
                 isImportant = false,
                 isUrgent = false
-            )
+            ).getOrThrow()
         )
 
         val dbTask = taskQueries.selectAll().executeAsOne()
@@ -66,13 +66,13 @@ class DatabaseLocalDataSourceTest {
     @Test
     fun `Create waiting task`() = runBlocking {
         dataSource.createTask(
-            TaskTemplate(
+            TaskTemplate.create(
                 type = Type.Waiting(LocalDate.of(2022, Month.AUGUST, 22)),
                 title = "Test",
                 description = "Task",
                 isImportant = false,
                 isUrgent = false
-            )
+            ).getOrThrow()
         )
 
         val dbTask = taskQueries.selectAll().executeAsOne()
