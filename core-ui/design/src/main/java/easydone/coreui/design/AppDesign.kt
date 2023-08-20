@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 
 private val primary = Color(0xFF5073F0)
 val urgent = Color(0xFFF3BE00)
-private val important = Color(0xFFE14B4B)
+val important = Color(0xFFE14B4B)
 
 @Composable
 fun AppTheme(content: @Composable () -> Unit) {

@@ -55,6 +55,8 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
+import easydone.coreui.design.important
+import easydone.coreui.design.urgent
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.GlobalContext
@@ -182,8 +184,14 @@ private fun BigWidget(state: WidgetState) {
                             textAlign = Paint.Align.CENTER
                             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                         }
-                        val boxPaint = Paint().apply {
+                        val boxPaintDefault = Paint().apply {
                             color = Color.LightGray.copy(alpha = 0.7f).toArgb()
+                        }
+                        val boxPaintMediumPriority = Paint().apply {
+                            color = urgent.copy(alpha = 0.7f).toArgb()
+                        }
+                        val boxPaintHighPriority = Paint().apply {
+                            color = important.copy(alpha = 0.7f).toArgb()
                         }
 
                         val boxHeight =
@@ -252,7 +260,7 @@ private fun BigWidget(state: WidgetState) {
                             contentBox.centerY() + distanceFromCenter
                         )
 
-                        fun drawNumber(number: Int, x: Float, y: Float) {
+                        fun drawNumber(number: Int, x: Float, y: Float, boxPaint: Paint) {
                             val text = "$number"
                             val textBounds = Rect().apply {
                                 numberTextPaint.getTextBounds(text, 0, text.length, this)
@@ -274,10 +282,42 @@ private fun BigWidget(state: WidgetState) {
                             )
                         }
 
-                        drawNumber(state.urgentCount, innerBox.left, innerBox.top)
-                        drawNumber(state.importantCount, innerBox.right, innerBox.bottom)
-                        drawNumber(state.noFlagsCount, innerBox.left, innerBox.bottom)
-                        drawNumber(state.urgentImportantCount, innerBox.right, innerBox.top)
+                        drawNumber(
+                            number = state.urgentCount,
+                            x = innerBox.left,
+                            y = innerBox.top,
+                            boxPaint = if (state.urgentCount > 0) {
+                                boxPaintMediumPriority
+                            } else {
+                                boxPaintDefault
+                            }
+                        )
+                        drawNumber(
+                            number = state.importantCount,
+                            x = innerBox.right,
+                            y = innerBox.bottom,
+                            boxPaint = if (state.importantCount > 0) {
+                                boxPaintMediumPriority
+                            } else {
+                                boxPaintDefault
+                            }
+                        )
+                        drawNumber(
+                            number = state.noFlagsCount,
+                            x = innerBox.left,
+                            y = innerBox.bottom,
+                            boxPaint = boxPaintDefault
+                        )
+                        drawNumber(
+                            number = state.urgentImportantCount,
+                            x = innerBox.right,
+                            y = innerBox.top,
+                            boxPaint = if (state.urgentImportantCount > 0) {
+                                boxPaintHighPriority
+                            } else {
+                                boxPaintDefault
+                            }
+                        )
                     }
                 }
             }
