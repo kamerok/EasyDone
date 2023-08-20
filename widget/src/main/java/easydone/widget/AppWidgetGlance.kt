@@ -343,8 +343,14 @@ private fun InboxIcon(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        Image(ImageProvider(R.drawable.ic_inbox), "")
-        Text("$count")
+        val isInboxFilled = count > 0
+        Image(
+            ImageProvider(if (isInboxFilled) R.drawable.ic_inbox_filled else R.drawable.ic_inbox),
+            ""
+        )
+        if (isInboxFilled) {
+            Text("$count")
+        }
     }
 }
 
