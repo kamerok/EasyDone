@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import easydone.core.domain.model.Task
+import easydone.core.strings.R
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.IconImportant

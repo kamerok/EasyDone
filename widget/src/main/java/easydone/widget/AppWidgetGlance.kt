@@ -55,6 +55,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
+import easydone.core.strings.R as stringsR
 import easydone.coreui.design.important
 import easydone.coreui.design.urgent
 import kotlinx.coroutines.flow.first
@@ -379,7 +380,7 @@ private fun TopRow(
                 )
         )
         Text(
-            text = context.getString(R.string.app_name),
+            text = context.getString(stringsR.string.app_name),
             style = TextStyle(
                 fontSize = TextUnit(18f, TextUnitType.Sp),
                 fontStyle = FontStyle.Italic,

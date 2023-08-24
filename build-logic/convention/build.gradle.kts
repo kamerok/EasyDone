@@ -6,7 +6,7 @@ group = "easydone.buildlogic"
 
 dependencies {
     compileOnly("com.android.tools.build:gradle:7.3.0")
-    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
 }
 
 gradlePlugin {

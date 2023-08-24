@@ -1,9 +1,9 @@
 @file:Suppress("MayBeConstant")
 
 object Config {
-    val compileSdk = 33
+    val compileSdk = 34
     val minSdk = 28
-    val targetSdk = 33
+    val targetSdk = 34
 }
 
 object Versions {
@@ -12,8 +12,8 @@ object Versions {
     val appCompat = "1.5.1"
     val assertk = "0.25"
     val browser = "1.4.0"
-    val compose = "1.3.1"
-    val composeCompiler = "1.3.2"
+    val compose = "1.5.0"
+    val composeCompiler = "1.5.2"
     val constraintLayout = "2.1.4"
     val core = "1.9.0"
     val coroutines = "1.6.4"
@@ -26,11 +26,11 @@ object Versions {
     val fragment = "1.5.3"
     val glance = "1.0.0-alpha01"
     val googleServices = "4.3.14"
-    val gradleAndroid = "7.3.0"
+    val gradleAndroid = "8.1.1"
     val gradleVersions = "0.42.0"
     val junit = "4.13.2"
     val koin = "2.2.3"
-    val kotlin = "1.7.20"
+    val kotlin = "1.9.0"
     val kotlinxSerialization = "1.4.0"
     val lifecycle = "2.5.1"
     val markdown = "0.3.0"

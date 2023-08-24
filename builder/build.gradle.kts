@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":core:sandbox"))
     implementation(project(":core:service:trello"))
     implementation(project(":core:strings"))
+    implementation(project(":core-ui:design"))
 
     implementation(project(":feature:edittask"))
     implementation(project(":feature:home"))

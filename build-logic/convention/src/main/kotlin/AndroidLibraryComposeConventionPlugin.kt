@@ -17,7 +17,7 @@ class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
                 }
 
                 composeOptions {
-                    kotlinCompilerExtensionVersion = "1.3.2"
+                    kotlinCompilerExtensionVersion = "1.5.2"
                 }
             }
         }

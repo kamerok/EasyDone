@@ -46,10 +46,10 @@ import androidx.fragment.app.Fragment
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskTemplate
+import easydone.core.strings.R
 import easydone.coreui.design.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 class QuickCreateTaskFragment(
     private val repository: DomainRepository,

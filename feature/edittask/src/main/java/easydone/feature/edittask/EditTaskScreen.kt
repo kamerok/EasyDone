@@ -48,6 +48,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import easydone.core.domain.model.Task
+import easydone.core.strings.R
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.IconImportant
