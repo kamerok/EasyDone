@@ -8,10 +8,10 @@ object Config {
 
 object Versions {
     val accompanist = "0.25.1"
-    val activityCompose = "1.6.0"
-    val appCompat = "1.5.1"
+    val activityCompose = "1.7.2"
+    val appCompat = "1.6.1"
     val assertk = "0.25"
-    val browser = "1.4.0"
+    val browser = "1.6.0"
     val compose = "1.5.0"
     val composeCompiler = "1.5.2"
     val constraintLayout = "2.1.4"
@@ -40,7 +40,7 @@ object Versions {
     val retrofitLogging = "4.10.0"
     val savedState = "1.0.0"
     val soLoader = "0.10.4"
-    val splash = "1.0.0"
+    val splash = "1.0.1"
     val sqlDelight = "1.5.4"
     val timber = "5.0.0-SNAPSHOT"
     val viewModel = "2.2.0"
