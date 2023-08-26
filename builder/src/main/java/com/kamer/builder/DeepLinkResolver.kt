@@ -1,22 +1,21 @@
 package com.kamer.builder
 
 import android.content.Intent
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 
 class DeepLinkResolver {
 
-    private val tokenChannel = BroadcastChannel<String>(1)
+    private val tokenSharedFlow = MutableSharedFlow<String>(extraBufferCapacity = 1)
 
     fun resolveIntent(intent: Intent) {
         if (intent.data?.host == "auth") {
             val token = intent.data?.fragment?.substringAfter('=') ?: ""
-            tokenChannel.trySend(token)
+            tokenSharedFlow.tryEmit(token)
         }
     }
 
-    fun observeToken(): Flow<String> = tokenChannel.asFlow()
+    fun observeToken(): Flow<String> = tokenSharedFlow
 
 }
