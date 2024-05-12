@@ -7,10 +7,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:domain"))
-    implementation(project(":core:strings"))
-    implementation(project(":core-ui:design"))
-    implementation(project(":feature:selecttype"))
+    implementation(projects.core.domain)
+    implementation(projects.core.strings)
+    implementation(projects.coreUi.design)
+    implementation(projects.feature.selecttype)
 
     implementation(Android.accompanistInsets)
     implementation(Android.activityCompose)

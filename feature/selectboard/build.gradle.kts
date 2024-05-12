@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core-ui:design"))
+    implementation(projects.coreUi.design)
 
     implementation(Android.appCompat)
     implementation(Android.composeTooling)

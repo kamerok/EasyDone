@@ -10,7 +10,7 @@ sqldelight {
 }
 
 dependencies {
-    implementation(project(":core:domain"))
+    implementation(projects.core.domain)
 
     implementation(Kotlin.coroutinesCore)
     implementation(Libraries.sqlDelightCoroutines)

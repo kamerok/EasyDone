@@ -7,9 +7,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:domain"))
-    implementation(project(":core:strings"))
-    implementation(project(":core-ui:design"))
+    implementation(projects.core.domain)
+    implementation(projects.core.strings)
+    implementation(projects.coreUi.design)
 
     implementation(Android.glance)
     implementation(Libraries.koin)

@@ -5,8 +5,8 @@ plugins {
 
 
 dependencies {
-    api(project(":core:domain"))
-    implementation(project(":library:keyvalue"))
+    api(projects.core.domain)
+    implementation(projects.library.keyvalue)
 
     implementation(Kotlin.coroutinesCore)
     implementation(Kotlin.serialization)

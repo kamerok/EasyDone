@@ -7,10 +7,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:service:trello"))
-    implementation(project(":library:navigation"))
-    implementation(project(":feature:login"))
-    implementation(project(":feature:selectboard"))
+    implementation(projects.core.service.trello)
+    implementation(projects.library.navigation)
+    implementation(projects.feature.login)
+    implementation(projects.feature.selectboard)
 
     implementation(Android.appCompat)
     implementation(Android.core)

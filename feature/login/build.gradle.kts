@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:service:trello"))
+    implementation(projects.core.service.trello)
 
     implementation(Android.appCompat)
     implementation(Android.browser)

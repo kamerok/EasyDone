@@ -7,10 +7,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:domain"))
-    implementation(project(":core:strings"))
-    implementation(project(":core:utils"))
-    implementation(project(":core-ui:design"))
+    implementation(projects.core.domain)
+    implementation(projects.core.strings)
+    implementation(projects.core.utils)
+    implementation(projects.coreUi.design)
 
     implementation(Android.accompanistInsets)
     implementation(Android.appCompat)
