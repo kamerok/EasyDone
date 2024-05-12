@@ -9,7 +9,7 @@ plugins {
 }
 
 task<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(layout.buildDirectory)
 }
 
 apply {
