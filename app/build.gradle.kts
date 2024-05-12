@@ -65,8 +65,8 @@ android {
 dependencies {
     coreLibraryDesugaring(Android.desugar)
 
-    implementation(project(":builder"))
-    implementation(project(":core-ui:design"))
+    implementation(projects.builder)
+    implementation(projects.coreUi.design)
 
     implementation(Android.appCompat)
     implementation(Android.splash)
