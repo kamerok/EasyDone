@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.os.BundleCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,8 +21,9 @@ class EditTaskFragment(
 ) : Fragment() {
 
     private val args: EditTaskViewModel.Args by lazy {
-        arguments?.getSerializable(ARGS) as? EditTaskViewModel.Args
-            ?: EditTaskViewModel.Args.Create()
+        arguments?.let {
+            BundleCompat.getSerializable(it, ARGS, EditTaskViewModel.Args::class.java)
+        } ?: EditTaskViewModel.Args.Create()
     }
 
     private val viewModel: EditTaskViewModel by viewModels(factoryProducer = {

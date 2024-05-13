@@ -15,7 +15,7 @@ object Versions {
     val compose = "1.5.0"
     val composeCompiler = "1.5.13"
     val constraintLayout = "2.1.4"
-    val core = "1.9.0"
+    val core = "1.13.1"
     val coroutines = "1.8.1"
     val crashlytics = "18.4.1"
     val crashlyticsPlugin = "2.9.9"
