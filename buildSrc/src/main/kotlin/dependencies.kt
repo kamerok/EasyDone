@@ -8,12 +8,12 @@ object Config {
 
 object Versions {
     val accompanist = "0.25.1"
-    val activityCompose = "1.7.2"
+    val activityCompose = "1.9.0"
     val appCompat = "1.6.1"
     val assertk = "0.28.1"
     val browser = "1.6.0"
     val compose = "1.5.0"
-    val composeCompiler = "1.5.13"
+    val composeCompiler = "1.5.14"
     val constraintLayout = "2.1.4"
     val core = "1.13.1"
     val coroutines = "1.8.1"
