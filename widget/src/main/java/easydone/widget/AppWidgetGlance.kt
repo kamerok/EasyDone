@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.glance.BitmapImageProvider
+import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
@@ -40,6 +40,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.appWidgetBackground
+import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -55,12 +56,12 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
-import easydone.core.strings.R as stringsR
 import easydone.coreui.design.important
 import easydone.coreui.design.urgent
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.GlobalContext
+import easydone.core.strings.R as stringsR
 
 private val SMALL_BOX = DpSize(48.dp, 48.dp)
 private val ROW = DpSize(200.dp, 48.dp)
@@ -81,12 +82,13 @@ class AppWidgetGlance(private val state: State<WidgetState>) : GlanceAppWidget()
         setOf(SMALL_BOX, ROW, BIG_BOX)
     )
 
-    @Composable
-    override fun Content() {
-        when (LocalSize.current) {
-            SMALL_BOX -> SmallWidget(state.value)
-            ROW -> RowWidget(state.value)
-            BIG_BOX -> BigWidget(state.value)
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            when (LocalSize.current) {
+                SMALL_BOX -> SmallWidget(state.value)
+                ROW -> RowWidget(state.value)
+                BIG_BOX -> BigWidget(state.value)
+            }
         }
     }
 }
@@ -94,11 +96,13 @@ class AppWidgetGlance(private val state: State<WidgetState>) : GlanceAppWidget()
 @Composable
 private fun SmallWidget(state: WidgetState) {
     val context = LocalContext.current
-    val colorBackground by derivedStateOf {
-        val typedValue = TypedValue()
-        val theme = context.theme
-        theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
-        Color(typedValue.data)
+    val colorBackground by remember {
+        derivedStateOf {
+            val typedValue = TypedValue()
+            val theme = context.theme
+            theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+            Color(typedValue.data)
+        }
     }
     Box(
         contentAlignment = Alignment.Center,
@@ -115,11 +119,13 @@ private fun SmallWidget(state: WidgetState) {
 @Composable
 private fun RowWidget(state: WidgetState) {
     val context = LocalContext.current
-    val colorBackground by derivedStateOf {
-        val typedValue = TypedValue()
-        val theme = context.theme
-        theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
-        Color(typedValue.data)
+    val colorBackground by remember {
+        derivedStateOf {
+            val typedValue = TypedValue()
+            val theme = context.theme
+            theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+            Color(typedValue.data)
+        }
     }
     TopRow(
         state = state,
@@ -134,11 +140,13 @@ private fun RowWidget(state: WidgetState) {
 @Composable
 private fun BigWidget(state: WidgetState) {
     val context = LocalContext.current
-    val colorBackground by derivedStateOf {
-        val typedValue = TypedValue()
-        val theme = context.theme
-        theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
-        Color(typedValue.data)
+    val colorBackground by remember {
+        derivedStateOf {
+            val typedValue = TypedValue()
+            val theme = context.theme
+            theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+            Color(typedValue.data)
+        }
     }
     Column(
         modifier = GlanceModifier
@@ -322,7 +330,7 @@ private fun BigWidget(state: WidgetState) {
                     }
                 }
             }
-            Image(provider = BitmapImageProvider(bitmap), contentDescription = null)
+            Image(provider = ImageProvider(bitmap), contentDescription = null)
         }
     }
 }
