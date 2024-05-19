@@ -11,7 +11,7 @@ object Versions {
     val activityCompose = "1.9.0"
     val appCompat = "1.6.1"
     val assertk = "0.28.1"
-    val browser = "1.6.0"
+    val browser = "1.8.0"
     val compose = "1.5.0"
     val composeCompiler = "1.5.14"
     val constraintLayout = "2.1.4"
