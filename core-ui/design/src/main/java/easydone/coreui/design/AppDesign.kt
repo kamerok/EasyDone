@@ -20,11 +20,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Subject
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PriorityHigh
-import androidx.compose.material.icons.filled.Subject
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -80,7 +80,7 @@ fun IconImportant(modifier: Modifier = Modifier) {
 
 @Composable
 fun IconText(modifier: Modifier = Modifier) {
-    Icon(Icons.Default.Subject, "", modifier = modifier)
+    Icon(Icons.AutoMirrored.Default.Subject, "", modifier = modifier)
 }
 
 
@@ -122,7 +122,7 @@ fun EasyDoneAppBar(
 private fun DefaultBackIcon() {
     val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     IconButton(onClick = { dispatcher?.onBackPressed() }) {
-        Icon(Icons.Default.ArrowBack, "")
+        Icon(Icons.AutoMirrored.Default.ArrowBack, "")
     }
 }
 

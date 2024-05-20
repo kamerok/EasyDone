@@ -12,7 +12,6 @@ dependencies {
     implementation(projects.core.utils)
     implementation(projects.coreUi.design)
 
-    implementation(Android.accompanistInsets)
     implementation(Android.appCompat)
     implementation(Android.composeAnimation)
     implementation(Android.composeIcons)

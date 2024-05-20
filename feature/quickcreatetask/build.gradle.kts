@@ -11,7 +11,6 @@ dependencies {
     implementation(projects.core.strings)
     implementation(projects.coreUi.design)
 
-    implementation(Android.accompanistInsets)
     implementation(Android.appCompat)
     implementation(Android.composeTooling)
     implementation(Android.core)

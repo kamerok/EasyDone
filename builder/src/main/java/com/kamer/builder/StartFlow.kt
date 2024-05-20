@@ -38,6 +38,7 @@ import easydone.library.navigation.Navigator
 import easydone.service.trello.TrelloRemoteDataSource
 import easydone.service.trello.api.TrelloApi
 import easydone.widget.AppWidgetReceiver
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -199,7 +200,7 @@ object StartFlow {
                             if (!navigator.isEmpty()) {
                                 navigator.popScreen()
                             } else {
-                                ActivityHolder.getActivity().onBackPressed()
+                                ActivityHolder.getActivity().onBackPressedDispatcher.onBackPressed()
                             }
                         }
                     }
@@ -240,6 +241,7 @@ object StartFlow {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun startWidgetUpdates() {
         val repo = GlobalContext.get().get<DomainRepository>()
         val context = GlobalContext.get().get<Context>()

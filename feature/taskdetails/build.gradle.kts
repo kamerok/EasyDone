@@ -12,7 +12,6 @@ dependencies {
     implementation(projects.coreUi.design)
     implementation(projects.feature.selecttype)
 
-    implementation(Android.accompanistInsets)
     implementation(Android.activityCompose)
     implementation(Android.appCompat)
     implementation(Android.composeTooling)

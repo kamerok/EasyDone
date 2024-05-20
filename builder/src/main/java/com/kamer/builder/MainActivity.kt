@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 

@@ -23,7 +23,7 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -56,7 +55,6 @@ class QuickCreateTaskFragment(
     private val navigator: QuickCreateTaskNavigator
 ) : Fragment() {
 
-    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -146,7 +144,7 @@ class QuickCreateTaskFragment(
                                 modifier = Modifier.align(Alignment.BottomEnd)
                             ) {
                                 IconButton(onClick = { save(text) }) {
-                                    Icon(Icons.Default.Send, "")
+                                    Icon(Icons.AutoMirrored.Default.Send, "")
                                 }
                             }
                         }

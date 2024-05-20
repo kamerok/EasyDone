@@ -13,8 +13,6 @@ dependencies {
     implementation(projects.feature.selecttype)
 
     implementation(Android.accompanistAppCompat)
-    implementation(Android.accompanistInsets)
-    implementation(Android.accompanistInsetsUi)
     implementation(Android.activityCompose)
     implementation(Android.appCompat)
     implementation(Android.composeTooling)

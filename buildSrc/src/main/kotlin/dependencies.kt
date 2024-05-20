@@ -58,8 +58,6 @@ object Plugins {
 
 object Android {
     val accompanistAppCompat = "com.google.accompanist:accompanist-appcompat-theme:${Versions.accompanist}"
-    val accompanistInsets = "com.google.accompanist:accompanist-insets:${Versions.accompanist}"
-    val accompanistInsetsUi = "com.google.accompanist:accompanist-insets-ui:${Versions.accompanist}"
     val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
     val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
     val browser = "androidx.browser:browser:${Versions.browser}"

@@ -6,7 +6,7 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Markers
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskTemplate
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,7 +29,7 @@ internal class EditTaskViewModel(
     private val eventChannel = Channel<Event>(Channel.UNLIMITED)
     private val actionChannel: Channel<Action> = Channel(capacity = Channel.UNLIMITED)
 
-    @OptIn(FlowPreview::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<State> = flow {
         if (args is Args.Edit) {
             emit(repository.getTask(args.id))
