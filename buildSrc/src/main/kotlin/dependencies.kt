@@ -7,7 +7,6 @@ object Config {
 }
 
 object Versions {
-    val accompanist = "0.25.1"
     val activityCompose = "1.9.0"
     val appCompat = "1.6.1"
     val assertk = "0.28.1"
@@ -57,7 +56,6 @@ object Plugins {
 }
 
 object Android {
-    val accompanistAppCompat = "com.google.accompanist:accompanist-appcompat-theme:${Versions.accompanist}"
     val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
     val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
     val browser = "androidx.browser:browser:${Versions.browser}"
