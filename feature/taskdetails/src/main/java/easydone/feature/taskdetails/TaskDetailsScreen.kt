@@ -1,5 +1,6 @@
 package easydone.feature.taskdetails
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -182,7 +185,10 @@ private fun TaskContent(state: State) {
             )
         }
         if (state.description.isNotEmpty()) {
-            MarkdownText(markdown = state.description)
+            MarkdownText(
+                markdown = state.description,
+                style = LocalTextStyle.current.copy(color = LocalContentColor.current)
+            )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             if (state.isUrgent) {
@@ -251,22 +257,53 @@ private fun BottomActions(
     name = "Screen",
     widthDp = 393,
     heightDp = 851,
-    showBackground = true
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
 private fun ContentPreview() {
-    VerticallySplitContent(
-        topContent = {
-            TaskContent(
-                State(
-                    typeText = "Type",
-                    title = "Title",
-                    description = "Desc",
-                    isUrgent = true,
-                    isImportant = true
-                )
+    AppTheme {
+        FullscreenContent {
+            VerticallySplitContent(
+                topContent = {
+                    TaskContent(
+                        State(
+                            typeText = "Type",
+                            title = "Title",
+                            description = "Desc",
+                            isUrgent = true,
+                            isImportant = true
+                        )
+                    )
+                },
+                bottomContent = { BottomActions({}, {}) }
             )
-        },
-        bottomContent = { BottomActions({}, {}) }
-    )
+        }
+    }
+}
+
+@Preview(
+    name = "Screen Light",
+    widthDp = 393,
+    heightDp = 851,
+)
+@Composable
+private fun ContentPreviewLight() {
+    AppTheme {
+        FullscreenContent {
+            VerticallySplitContent(
+                topContent = {
+                    TaskContent(
+                        State(
+                            typeText = "Type",
+                            title = "Title",
+                            description = "Desc",
+                            isUrgent = true,
+                            isImportant = true
+                        )
+                    )
+                },
+                bottomContent = { BottomActions({}, {}) }
+            )
+        }
+    }
 }
