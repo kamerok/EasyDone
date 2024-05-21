@@ -33,7 +33,6 @@ dependencies {
     implementation(Android.appCompat)
     implementation(Android.dataStorePrefs)
     implementation(Android.fragment)
-    implementation(Android.savedState)
     implementation(Android.splash)
     implementation(Libraries.koin)
     implementation(Libraries.retrofit)
