@@ -29,7 +29,7 @@ object Versions {
     val gradleVersions = "0.51.0"
     val junit = "4.13.2"
     val koin = "2.2.3"
-    val kotlin = "1.9.24"
+    val kotlin = "2.0.0"
     val kotlinxSerialization = "1.6.3"
     val lifecycle = "2.8.0"
     val markdown = "0.5.0"
@@ -45,6 +45,7 @@ object Versions {
 }
 
 object Plugins {
+    val composeCompiler = "org.jetbrains.kotlin.plugin.compose"
     val crashlytics = "com.google.firebase.crashlytics"
     val googleServices = "com.google.gms.google-services"
     val gradleAndroid = "com.android.application"
