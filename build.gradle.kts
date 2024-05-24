@@ -7,6 +7,7 @@ plugins {
     id(Plugins.kotlin) version(Versions.kotlin) apply false
     id(Plugins.kotlinxSerialization) version(Versions.kotlin) apply false
     id(Plugins.sqlDelight) version(Versions.sqlDelight) apply false
+    id(Plugins.gradleDoctor) version (Versions.gradleDoctor)
 }
 
 task<Delete>("clean") {
