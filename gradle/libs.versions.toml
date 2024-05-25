@@ -13,6 +13,10 @@ sqlDelight = "1.5.5"
 [libraries]
 crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref = "firebase" }
 
+#Dependencies of build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
@@ -23,3 +27,6 @@ gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradleV
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sql-delight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
+
+easydone-android-library = { id = "easydone.android.library", version = "unspecified" }
+easydone-android-library-compose = { id = "easydone.android.library.compose", version = "unspecified" }

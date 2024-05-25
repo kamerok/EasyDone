@@ -1,5 +1,5 @@
 plugins {
-    id("easydone.android.library.compose")
+    alias(libs.plugins.easydone.android.library.compose)
 }
 
 android {
