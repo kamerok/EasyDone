@@ -1,0 +1,25 @@
+[versions]
+androidGradlePlugin = "8.4.1"
+compose = "1.6.7"
+firebase = "19.0.0"
+firebasePlugin = "3.0.1"
+googleServices = "4.4.1"
+gradleDoctor = "0.10.0"
+gradleVersions = "0.51.0"
+kotlin = "2.0.0"
+kotlinxSerialization = "1.6.3"
+sqlDelight = "1.5.5"
+
+[libraries]
+crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref = "firebase" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebasePlugin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+gradle-doctor = { id = "com.osacky.doctor", version.ref = "gradleDoctor" }
+gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradleVersions" }
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+sql-delight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }

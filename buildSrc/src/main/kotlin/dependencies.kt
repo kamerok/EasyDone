@@ -12,22 +12,15 @@ object Versions {
     val assertk = "0.28.1"
     val browser = "1.8.0"
     val compose = "1.6.7"
-    val composeCompiler = "1.5.14"
     val constraintLayout = "2.1.4"
     val core = "1.13.1"
     val coroutines = "1.8.1"
-    val crashlytics = "19.0.0"
-    val crashlyticsPlugin = "3.0.1"
     val dataStore = "1.1.1"
     val desugar = "2.0.4"
     val firebase = "21.1.1"
     val flipper = "0.250.0"
     val fragment = "1.7.1"
     val glance = "1.0.0"
-    val googleServices = "4.4.1"
-    val gradleAndroid = "8.4.1"
-    val gradleDoctor = "0.10.0"
-    val gradleVersions = "0.51.0"
     val junit = "4.13.2"
     val koin = "2.2.3"
     val kotlin = "2.0.0"
@@ -43,18 +36,6 @@ object Versions {
     val sqlDelight = "1.5.5"
     val timber = "5.0.0-SNAPSHOT"
     val viewModel = "2.2.0"
-}
-
-object Plugins {
-    val composeCompiler = "org.jetbrains.kotlin.plugin.compose"
-    val crashlytics = "com.google.firebase.crashlytics"
-    val googleServices = "com.google.gms.google-services"
-    val gradleAndroid = "com.android.application"
-    val gradleDoctor = "com.osacky.doctor"
-    val gradleVersions = "com.github.ben-manes.versions"
-    val kotlin = "org.jetbrains.kotlin.android"
-    val kotlinxSerialization = "org.jetbrains.kotlin.plugin.serialization"
-    val sqlDelight = "com.squareup.sqldelight"
 }
 
 object Android {
@@ -87,7 +68,6 @@ object Kotlin {
 }
 
 object Tools {
-    val crashlytics = "com.google.firebase:firebase-crashlytics-ktx:${Versions.crashlytics}"
     val firebase = "com.google.firebase:firebase-core:${Versions.firebase}"
     val soLoader = "com.facebook.soloader:soloader:${Versions.soLoader}"
     val flipper = "com.facebook.flipper:flipper:${Versions.flipper}"

@@ -1,13 +1,13 @@
 plugins {
-    id(Plugins.googleServices) version(Versions.googleServices) apply false
-    id(Plugins.composeCompiler) version(Versions.kotlin) apply false
-    id(Plugins.crashlytics) version(Versions.crashlyticsPlugin) apply false
-    id(Plugins.gradleAndroid) version(Versions.gradleAndroid) apply false
-    id(Plugins.gradleVersions) version(Versions.gradleVersions)
-    id(Plugins.kotlin) version(Versions.kotlin) apply false
-    id(Plugins.kotlinxSerialization) version(Versions.kotlin) apply false
-    id(Plugins.sqlDelight) version(Versions.sqlDelight) apply false
-    id(Plugins.gradleDoctor) version (Versions.gradleDoctor)
+    alias(libs.plugins.gradle.doctor)
+    alias(libs.plugins.gradle.versions)
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.crashlytics) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin) apply false
+    alias(libs.plugins.kotlinx.serialization) apply false
+    alias(libs.plugins.sql.delight) apply false
 }
 
 task<Delete>("clean") {

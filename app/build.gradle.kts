@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
     id("kotlin-android")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
@@ -72,7 +72,7 @@ dependencies {
     implementation(Android.splash)
     implementation(Libraries.retrofit)
     implementation(Libraries.timberAndroid)
-    implementation(Tools.crashlytics)
+    implementation(libs.crashlytics)
     implementation(Tools.firebase)
     debugImplementation(Tools.flipper)
     debugImplementation(Tools.flipperNetwork)
