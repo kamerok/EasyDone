@@ -11,8 +11,8 @@ dependencies {
     implementation(projects.core.strings)
     implementation(projects.coreUi.design)
 
-    implementation(Android.appCompat)
-    implementation(Android.composeTooling)
-    implementation(Android.core)
-    implementation(Android.lifecycleRuntime)
+    implementation(libs.androidx.app.compat)
+    implementation(libs.androidx.compose.tooling)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 }

@@ -11,5 +11,5 @@ dependencies {
     implementation(projects.core.strings)
     implementation(projects.coreUi.design)
 
-    implementation(Android.composeTooling)
+    implementation(libs.androidx.compose.tooling)
 }

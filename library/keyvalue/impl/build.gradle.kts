@@ -9,6 +9,6 @@ android {
 dependencies {
     implementation(projects.library.keyvalue)
 
-    implementation(Android.core)
-    implementation(Android.dataStorePrefs)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.datastore.prefs)
 }

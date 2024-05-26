@@ -1,6 +1,17 @@
 [versions]
 androidGradlePlugin = "8.4.1"
-compose = "1.6.7"
+androidDesugar = "2.0.4"
+androidxActivity = "1.9.0"
+androidxAppCompat = "1.6.1"
+androidxBrowser = "1.8.0"
+androidxConstraintLayout = "2.1.4"
+androidxCompose = "1.6.7"
+androidxCore = "1.13.1"
+androidxDatastore = "1.1.1"
+androidxFragment = "1.7.1"
+androidxGlance = "1.0.0"
+androidxLifecycle = "2.8.0"
+androidxSplash = "1.0.1"
 firebase = "19.0.0"
 firebasePlugin = "3.0.1"
 googleServices = "4.4.1"
@@ -11,6 +22,21 @@ kotlinxSerialization = "1.6.3"
 sqlDelight = "1.5.5"
 
 [libraries]
+android-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugar" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+androidx-app-compat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "androidxCompose" }
+androidx-compose-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "androidxCompose" }
+androidx-compose-material = { group = "androidx.compose.material", name = "material", version.ref = "androidxCompose" }
+androidx-compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "androidxCompose" }
+androidx-constraint-layout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-datastore-prefs = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastore" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
+androidx-glance = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxSplash" }
 crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref = "firebase" }
 
 #Dependencies of build-logic

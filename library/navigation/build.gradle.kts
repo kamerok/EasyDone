@@ -7,5 +7,5 @@ android {
 }
 
 dependencies {
-    implementation(Android.fragment)
+    implementation(libs.androidx.fragment)
 }

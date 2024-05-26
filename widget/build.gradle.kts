@@ -11,6 +11,6 @@ dependencies {
     implementation(projects.core.strings)
     implementation(projects.coreUi.design)
 
-    implementation(Android.glance)
+    implementation(libs.androidx.glance)
     implementation(Libraries.koin)
 }

@@ -12,9 +12,9 @@ dependencies {
     implementation(projects.coreUi.design)
     implementation(projects.feature.selecttype)
 
-    implementation(Android.activityCompose)
-    implementation(Android.appCompat)
-    implementation(Android.composeTooling)
-    implementation(Android.core)
-    implementation(Android.fragment)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.app.compat)
+    implementation(libs.androidx.compose.tooling)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.fragment)
 }

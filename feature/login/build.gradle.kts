@@ -9,11 +9,11 @@ android {
 dependencies {
     implementation(projects.core.service.trello)
 
-    implementation(Android.appCompat)
-    implementation(Android.browser)
-    implementation(Android.constraintLayout)
-    implementation(Android.core)
-    implementation(Android.lifecycleRuntime)
+    implementation(libs.androidx.app.compat)
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.constraint.layout)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(Kotlin.coroutinesAndorid)
     implementation(Kotlin.coroutinesCore)
 }

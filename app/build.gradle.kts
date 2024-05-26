@@ -63,13 +63,13 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(Android.desugar)
+    coreLibraryDesugaring(libs.android.desugar)
 
     implementation(projects.builder)
     implementation(projects.coreUi.design)
 
-    implementation(Android.appCompat)
-    implementation(Android.splash)
+    implementation(libs.androidx.app.compat)
+    implementation(libs.androidx.splash)
     implementation(Libraries.retrofit)
     implementation(Libraries.timberAndroid)
     implementation(libs.crashlytics)

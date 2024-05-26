@@ -7,9 +7,9 @@ android {
 }
 
 dependencies {
-    api(Android.composeMaterial)
+    api(libs.androidx.compose.material)
 
-    implementation(Android.activityCompose)
-    implementation(Android.composeIcons)
-    implementation(Android.composeTooling)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.icons)
+    implementation(libs.androidx.compose.tooling)
 }

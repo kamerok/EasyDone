@@ -7,57 +7,21 @@ object Config {
 }
 
 object Versions {
-    val activityCompose = "1.9.0"
-    val appCompat = "1.6.1"
     val assertk = "0.28.1"
-    val browser = "1.8.0"
-    val compose = "1.6.7"
-    val constraintLayout = "2.1.4"
-    val core = "1.13.1"
     val coroutines = "1.8.1"
-    val dataStore = "1.1.1"
-    val desugar = "2.0.4"
     val firebase = "21.1.1"
     val flipper = "0.250.0"
-    val fragment = "1.7.1"
-    val glance = "1.0.0"
     val junit = "4.13.2"
     val koin = "2.2.3"
     val kotlin = "2.0.0"
     val kotlinxSerialization = "1.6.3"
-    val lifecycle = "2.8.0"
     val markdown = "0.5.0"
-    val mockitoKotlin = "2.2.0"
     val retrofit = "2.11.0"
     val retrofitKotlinxSerialization = "1.0.0"
     val retrofitLogging = "4.12.0"
     val soLoader = "0.11.0"
-    val splash = "1.0.1"
     val sqlDelight = "1.5.5"
     val timber = "5.0.0-SNAPSHOT"
-    val viewModel = "2.2.0"
-}
-
-object Android {
-    val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
-    val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
-    val browser = "androidx.browser:browser:${Versions.browser}"
-    val compose = "androidx.compose.ui:ui:${Versions.compose}"
-    val composeAnimation = "androidx.compose.animation:animation:${Versions.compose}"
-    val composeFoundation = "androidx.compose.foundation:foundation:${Versions.compose}"
-    val composeIcons = "androidx.compose.material:material-icons-extended:${Versions.compose}"
-    val composeMaterial = "androidx.compose.material:material:${Versions.compose}"
-    val composeMaterialIcons = "androidx.compose.material:material-icons-core:${Versions.compose}"
-    val composeTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
-    val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
-    val core = "androidx.core:core-ktx:${Versions.core}"
-    val dataStorePrefs = "androidx.datastore:datastore-preferences:${Versions.dataStore}"
-    val desugar = "com.android.tools:desugar_jdk_libs:${Versions.desugar}"
-    val fragment = "androidx.fragment:fragment-ktx:${Versions.fragment}"
-    val glance = "androidx.glance:glance-appwidget:${Versions.glance}"
-    val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
-    val splash = "androidx.core:core-splashscreen:${Versions.splash}"
-    val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.viewModel}"
 }
 
 object Kotlin {
@@ -90,5 +54,4 @@ object Libraries {
 object Tests {
     val assertk = "com.willowtreeapps.assertk:assertk-jvm:${Versions.assertk}"
     val junit = "junit:junit:${Versions.junit}"
-    val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoKotlin}"
 }

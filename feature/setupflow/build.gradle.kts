@@ -12,8 +12,8 @@ dependencies {
     implementation(projects.feature.login)
     implementation(projects.feature.selectboard)
 
-    implementation(Android.appCompat)
-    implementation(Android.core)
-    implementation(Android.fragment)
-    implementation(Android.lifecycleRuntime)
+    implementation(libs.androidx.app.compat)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 }
