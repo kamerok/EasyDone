@@ -12,13 +12,16 @@ androidxFragment = "1.7.1"
 androidxGlance = "1.0.0"
 androidxLifecycle = "2.8.0"
 androidxSplash = "1.0.1"
-firebase = "19.0.0"
+firebase = "21.1.1"
 firebasePlugin = "3.0.1"
+flipper = "0.250.0"
 googleServices = "4.4.1"
 gradleDoctor = "0.10.0"
 gradleVersions = "0.51.0"
 kotlin = "2.0.0"
+kotlinxCoroutines = "1.8.1"
 kotlinxSerialization = "1.6.3"
+soLoader = "0.11.0"
 sqlDelight = "1.5.5"
 
 [libraries]
@@ -38,6 +41,14 @@ androidx-glance = { group = "androidx.glance", name = "glance-appwidget", versio
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
 androidx-splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxSplash" }
 crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref = "firebase" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+firebase = { group = "com.google.firebase", name = "firebase-core", version.ref = "firebase" }
+soLoader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soLoader" }
+flipper = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
+flipper-network = { group = "com.facebook.flipper", name = "flipper-network-plugin", version.ref = "flipper" }
 
 #Dependencies of build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }

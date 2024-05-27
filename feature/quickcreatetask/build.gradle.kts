@@ -15,5 +15,5 @@ dependencies {
     implementation(libs.androidx.compose.tooling)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(Kotlin.coroutinesCore)
+    implementation(libs.kotlinx.coroutines)
 }

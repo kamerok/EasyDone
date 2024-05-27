@@ -12,7 +12,7 @@ sqldelight {
 dependencies {
     implementation(projects.core.domain)
 
-    implementation(Kotlin.coroutinesCore)
+    implementation(libs.kotlinx.coroutines)
     implementation(Libraries.sqlDelightCoroutines)
 
     testImplementation(Tests.junit)

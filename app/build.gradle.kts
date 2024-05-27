@@ -73,8 +73,8 @@ dependencies {
     implementation(Libraries.retrofit)
     implementation(Libraries.timberAndroid)
     implementation(libs.crashlytics)
-    implementation(Tools.firebase)
-    debugImplementation(Tools.flipper)
-    debugImplementation(Tools.flipperNetwork)
-    debugImplementation(Tools.soLoader)
+    implementation(libs.firebase)
+    debugImplementation(libs.flipper)
+    debugImplementation(libs.flipper.network)
+    debugImplementation(libs.soLoader)
 }

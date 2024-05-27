@@ -29,7 +29,7 @@ dependencies {
     implementation(projects.library.keyvalue.impl)
     implementation(projects.library.navigation)
 
-    implementation(Kotlin.coroutinesCore)
+    implementation(libs.kotlinx.coroutines)
     implementation(libs.androidx.app.compat)
     implementation(libs.androidx.datastore.prefs)
     implementation(libs.androidx.fragment)

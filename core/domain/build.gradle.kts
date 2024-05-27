@@ -3,10 +3,10 @@ plugins {
 }
 
 dependencies {
-    implementation(Kotlin.coroutinesCore)
+    implementation(libs.kotlinx.coroutines)
     implementation(Libraries.timberJdk)
 
-    testImplementation(Kotlin.coroutinesTest)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(Tests.assertk)
     testImplementation(Tests.junit)
 }

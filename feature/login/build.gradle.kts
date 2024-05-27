@@ -14,6 +14,6 @@ dependencies {
     implementation(libs.androidx.constraint.layout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(Kotlin.coroutinesAndorid)
-    implementation(Kotlin.coroutinesCore)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines)
 }

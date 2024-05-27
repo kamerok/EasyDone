@@ -8,8 +8,8 @@ dependencies {
     api(projects.core.domain)
     implementation(projects.library.keyvalue)
 
-    implementation(Kotlin.coroutinesCore)
-    implementation(Kotlin.serialization)
+    implementation(libs.kotlinx.coroutines)
+    implementation(libs.kotlinx.serialization)
     implementation(Libraries.retrofit)
     implementation(Libraries.retrofitConverterKotlinx)
     implementation(Libraries.retrofitLogging)
