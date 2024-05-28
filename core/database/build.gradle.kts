@@ -13,9 +13,9 @@ dependencies {
     implementation(projects.core.domain)
 
     implementation(libs.kotlinx.coroutines)
-    implementation(Libraries.sqlDelightCoroutines)
+    implementation(libs.sqldelight.coroutines)
 
-    testImplementation(Tests.junit)
-    testImplementation(Tests.assertk)
-    testImplementation(Libraries.sqlDelightMemory)
+    testImplementation(libs.test.assertk)
+    testImplementation(libs.test.junit)
+    testImplementation(libs.sqldelight.memory)
 }

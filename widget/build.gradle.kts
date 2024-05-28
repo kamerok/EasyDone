@@ -12,5 +12,5 @@ dependencies {
     implementation(projects.coreUi.design)
 
     implementation(libs.androidx.glance)
-    implementation(Libraries.koin)
+    implementation(libs.koin)
 }

@@ -4,9 +4,9 @@ plugins {
 
 dependencies {
     implementation(libs.kotlinx.coroutines)
-    implementation(Libraries.timberJdk)
+    implementation(libs.timber.jdk)
 
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(Tests.assertk)
-    testImplementation(Tests.junit)
+    testImplementation(libs.test.assertk)
+    testImplementation(libs.test.junit)
 }

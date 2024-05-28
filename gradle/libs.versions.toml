@@ -12,17 +12,26 @@ androidxFragment = "1.7.1"
 androidxGlance = "1.0.0"
 androidxLifecycle = "2.8.0"
 androidxSplash = "1.0.1"
+composeMarkdown = "0.5.0"
 firebase = "21.1.1"
+firebaseCrashlytics = "19.0.0"
 firebasePlugin = "3.0.1"
 flipper = "0.250.0"
 googleServices = "4.4.1"
 gradleDoctor = "0.10.0"
 gradleVersions = "0.51.0"
+koin = "2.2.3"
 kotlin = "2.0.0"
 kotlinxCoroutines = "1.8.1"
 kotlinxSerialization = "1.6.3"
+retrofit = "2.11.0"
+retrofitKotlinxSerialization = "1.0.0"
+retrofitLogging = "4.12.0"
 soLoader = "0.11.0"
 sqlDelight = "1.5.5"
+testAssertk = "0.28.1"
+testJunit = "4.13.2"
+timber = "5.0.0-SNAPSHOT"
 
 [libraries]
 android-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugar" }
@@ -40,15 +49,27 @@ androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", versio
 androidx-glance = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
 androidx-splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxSplash" }
-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref = "firebase" }
+compose-markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "composeMarkdown" }
+crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref = "firebaseCrashlytics" }
+firebase = { group = "com.google.firebase", name = "firebase-core", version.ref = "firebase" }
+flipper = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
+flipper-network = { group = "com.facebook.flipper", name = "flipper-network-plugin", version.ref = "flipper" }
+koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-firebase = { group = "com.google.firebase", name = "firebase-core", version.ref = "firebase" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-kotlinx = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerialization" }
+retrofit-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "retrofitLogging" }
 soLoader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soLoader" }
-flipper = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
-flipper-network = { group = "com.facebook.flipper", name = "flipper-network-plugin", version.ref = "flipper" }
+sqldelight-android = { group = "com.squareup.sqldelight", name = "android-driver", version.ref = "sqlDelight" }
+sqldelight-coroutines = { group = "com.squareup.sqldelight", name = "coroutines-extensions-jvm", version.ref = "sqlDelight" }
+sqldelight-memory = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
+test-assertk = { group = "com.willowtreeapps.assertk", name = "assertk-jvm", version.ref = "testAssertk" }
+test-junit = { group = "junit", name = "junit", version.ref = "testJunit" }
+timber-android = { group = "com.jakewharton.timber", name = "timber-android", version.ref = "timber" }
+timber-jdk = { group = "com.jakewharton.timber", name = "timber-jdk", version.ref = "timber" }
 
 #Dependencies of build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }

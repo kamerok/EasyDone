@@ -5,5 +5,5 @@ plugins {
 
 dependencies {
     implementation(libs.kotlinx.coroutines)
-    implementation(Libraries.timberJdk)
+    implementation(libs.timber.jdk)
 }

@@ -10,7 +10,7 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.serialization)
-    implementation(Libraries.retrofit)
-    implementation(Libraries.retrofitConverterKotlinx)
-    implementation(Libraries.retrofitLogging)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx)
+    implementation(libs.retrofit.logging)
 }

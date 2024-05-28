@@ -17,5 +17,5 @@ dependencies {
     implementation(libs.androidx.compose.tooling)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.fragment)
-    implementation(Libraries.markdown)
+    implementation(libs.compose.markdown)
 }

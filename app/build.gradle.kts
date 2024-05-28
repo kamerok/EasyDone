@@ -70,8 +70,8 @@ dependencies {
 
     implementation(libs.androidx.app.compat)
     implementation(libs.androidx.splash)
-    implementation(Libraries.retrofit)
-    implementation(Libraries.timberAndroid)
+    implementation(libs.retrofit)
+    implementation(libs.timber.android)
     implementation(libs.crashlytics)
     implementation(libs.firebase)
     debugImplementation(libs.flipper)
