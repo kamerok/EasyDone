@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
-    id("kotlin-android")
+    alias(libs.plugins.easydone.android.application)
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
 }
@@ -8,10 +7,7 @@ plugins {
 android {
     namespace = "com.kamer.easydone"
 
-    compileSdk = Config.compileSdk
     defaultConfig {
-        minSdk = Config.minSdk
-        targetSdk = Config.targetSdk
         applicationId = "com.kamer.easydone"
         versionCode = 1
         versionName = "1.0"
@@ -26,14 +22,6 @@ android {
 
     buildFeatures {
         buildConfig = true
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     signingConfigs {

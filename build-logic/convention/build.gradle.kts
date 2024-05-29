@@ -11,6 +11,10 @@ dependencies {
 
 gradlePlugin {
     plugins {
+        register("androidApplication") {
+            id = "easydone.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
         register("androidLibrary") {
             id = "easydone.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"

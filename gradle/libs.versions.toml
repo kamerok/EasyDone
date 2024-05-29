@@ -86,5 +86,6 @@ kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sql-delight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
 
+easydone-android-application = { id = "easydone.android.application", version = "unspecified" }
 easydone-android-library = { id = "easydone.android.library", version = "unspecified" }
 easydone-android-library-compose = { id = "easydone.android.library.compose", version = "unspecified" }
