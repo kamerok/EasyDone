@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -31,12 +32,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.TaskCard
@@ -59,7 +64,7 @@ internal fun WaitingScreen(viewModel: WaitingViewModel) {
                 val state = viewModel.state.collectAsState().value
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     item {
-                        val significantDays by derivedStateOf { state.tasks.keys }
+                        val significantDays by remember { derivedStateOf { state.tasks.keys } }
                         val months = remember {
                             val currentMonth = YearMonth.now()
                             (0..(12 * 10)).map { currentMonth.plusMonths(it.toLong()) }
@@ -209,34 +214,45 @@ private fun CalendarDay(
                 text = "$number",
                 fontSize = TextUnit(10f, TextUnitType.Sp),
                 fontWeight = FontWeight.Medium,
-                letterSpacing = TextUnit(0f, TextUnitType.Unspecified)
+                style = LocalTextStyle.current.merge(
+                    TextStyle(
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.Both
+                        )
+                    )
+                )
             )
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, device = "spec:width=1080px,height=2340px,dpi=440")
 @Composable
 private fun MonthPreview() {
-    CalendarMonth(
-        month = YearMonth.now(),
-        significantDays = setOf(
-            LocalDate.now().plusDays(5),
-            LocalDate.now().minusDays(2),
-            LocalDate.now()
+    AppTheme {
+        CalendarMonth(
+            month = YearMonth.now(),
+            significantDays = setOf(
+                LocalDate.now().plusDays(5),
+                LocalDate.now().minusDays(2),
+                LocalDate.now()
+            )
         )
-    )
+    }
 }
 
 @Preview
 @Composable
 private fun DayPreview() {
-    Row {
-        CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = false)
-        CalendarDay(number = 10, isEnabled = true, isToday = true, isAction = false)
-        CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = true)
-        CalendarDay(number = 10, isEnabled = false, isToday = false, isAction = false)
-        CalendarDay(number = 10, isEnabled = false, isToday = true, isAction = false)
-        CalendarDay(number = 10, isEnabled = false, isToday = false, isAction = true)
+    AppTheme {
+        Row {
+            CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = false)
+            CalendarDay(number = 10, isEnabled = true, isToday = true, isAction = false)
+            CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = true)
+            CalendarDay(number = 10, isEnabled = false, isToday = false, isAction = false)
+            CalendarDay(number = 10, isEnabled = false, isToday = true, isAction = false)
+            CalendarDay(number = 10, isEnabled = false, isToday = false, isAction = true)
+        }
     }
 }
