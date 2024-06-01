@@ -16,10 +16,6 @@ android {
         buildConfigField("String", "TRELLO_API_KEY", "\"98c9ac26156a960889eb42586aa1bcd7\"")
     }
 
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-    }
-
     buildFeatures {
         buildConfig = true
     }
@@ -51,8 +47,6 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.android.desugar)
-
     implementation(projects.builder)
     implementation(projects.coreUi.design)
 
