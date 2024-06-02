@@ -1,27 +1,98 @@
 package easydone.feature.login
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import easydone.coreui.design.AppTheme
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Composable
-fun LoginScreen(onLoginClick: () -> Unit) {
+internal fun LoginScreen(
+    viewModel: LoginViewModel,
+    onLoginClick: () -> Unit
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel.events) {
+        viewModel.events
+            .onEach { event ->
+                when (event) {
+                    Event.StartTrelloLogin -> onLoginClick()
+                }
+            }
+            .launchIn(this)
+    }
+
+    LoginScreen(state = state)
+}
+
+@Composable
+private fun LoginScreen(state: UiState) {
     AppTheme {
-        Button(
-            onClick = onLoginClick,
-            modifier = Modifier.wrapContentSize()
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text("Login with Trello")
+            when (state) {
+                is UiState.IdleState -> IdleScreen(state.onLoginWithTrello)
+                is UiState.LoadingState -> LoadingScreen()
+                is UiState.ErrorState -> ErrorScreen(state)
+            }
         }
     }
 }
 
-@Preview
 @Composable
-fun ScreenPreview() {
-    LoginScreen(onLoginClick = {})
+private fun IdleScreen(onLoginClick: () -> Unit) {
+    Button(
+        onClick = onLoginClick,
+        modifier = Modifier.wrapContentSize()
+    ) {
+        Text("Login with Trello")
+    }
+}
+
+@Composable
+private fun LoadingScreen() {
+    CircularProgressIndicator()
+}
+
+@Composable
+private fun ErrorScreen(state: UiState.ErrorState) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = state.message)
+        Button(onClick = state.onRetry) {
+            Text(text = "Retry")
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = false)
+@Composable
+fun IdleScreenPreview() {
+    LoginScreen(UiState.IdleState(onLoginWithTrello = {}))
+}
+
+@Preview(showBackground = true, showSystemUi = false)
+@Composable
+fun LoadingScreenPreview() {
+    LoginScreen(UiState.LoadingState)
+}
+
+@Preview(showBackground = true, showSystemUi = false)
+@Composable
+fun ErrorScreenPreview() {
+    LoginScreen(UiState.ErrorState("Error message", {}))
 }

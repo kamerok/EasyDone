@@ -12,7 +12,10 @@ import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.api.model.Board
 import kotlinx.coroutines.flow.launchIn
@@ -27,25 +30,34 @@ class LoginFragment : Fragment() {
     private lateinit var apiKey: String
     private lateinit var tokenProvider: TokenProvider
 
+    private val viewModel: LoginViewModel by viewModels(factoryProducer = {
+        viewModelFactory {
+            initializer {
+                LoginViewModel()
+            }
+        }
+    })
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setContent {
-            LoginScreen(onLoginClick = {
-                val customTabsIntent = CustomTabsIntent.Builder()
-                    .setShowTitle(true)
-                    .build()
-
-                val uri =
-                    Uri.parse("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${apiKey}&callback_method=fragment&return_url=easydone://auth")
-                try {
-                    customTabsIntent.launchUrl(requireContext(), uri)
-                } catch (e: ActivityNotFoundException) {
-                    startActivity(Intent(Intent.ACTION_VIEW, uri))
-                }
-            })
+            LoginScreen(
+                viewModel,
+                onLoginClick = {
+                    val uri =
+                        Uri.parse("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${apiKey}&callback_method=fragment&return_url=easydone://auth")
+                    try {
+                        CustomTabsIntent.Builder()
+                            .setShowTitle(true)
+                            .build()
+                            .launchUrl(requireContext(), uri)
+                    } catch (e: ActivityNotFoundException) {
+                        startActivity(Intent(Intent.ACTION_VIEW, uri))
+                    }
+                })
         }
     }
 
