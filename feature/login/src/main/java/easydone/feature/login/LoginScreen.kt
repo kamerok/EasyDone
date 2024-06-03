@@ -1,5 +1,9 @@
 package easydone.feature.login
 
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,11 +12,14 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.util.Consumer
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import easydone.coreui.design.AppTheme
 import kotlinx.coroutines.flow.launchIn
@@ -21,7 +28,8 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 internal fun LoginScreen(
     viewModel: LoginViewModel,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    onTokenReceived: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -35,7 +43,26 @@ internal fun LoginScreen(
             .launchIn(this)
     }
 
+    val context = LocalContext.current
+    DisposableEffect(context) {
+        val activity = context.getActivity()
+        val listener = Consumer<Intent> { intent ->
+            if (intent.data?.host == "auth") {
+                val token = intent.data?.fragment?.substringAfter('=') ?: ""
+                onTokenReceived(token)
+            }
+        }
+        activity?.addOnNewIntentListener(listener)
+        onDispose { activity?.removeOnNewIntentListener(listener) }
+    }
+
     LoginScreen(state = state)
+}
+
+private fun Context.getActivity(): ComponentActivity? = when (this) {
+    is ComponentActivity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }
 
 @Composable

@@ -117,7 +117,6 @@ object StartFlow {
             single<LocalDataSource> { get<LocalDataSourceDecorator>() }
             single { ActivityNavigator() }
             single<Navigator> { get<ActivityNavigator>() }
-            single { DeepLinkResolver() }
         }
         val fragmentModule = module {
             factory {
@@ -231,7 +230,6 @@ object StartFlow {
                     get(),
                     get(),
                     trelloApiKey,
-                    get<DeepLinkResolver>().observeToken()
                 ) { startMainFlow(get()) }
             }
         }

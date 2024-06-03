@@ -18,8 +18,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.api.model.Board
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 
@@ -28,7 +26,6 @@ class LoginFragment : Fragment() {
     private lateinit var listener: (String, List<Board>) -> Unit
     private lateinit var api: TrelloApi
     private lateinit var apiKey: String
-    private lateinit var tokenProvider: TokenProvider
 
     private val viewModel: LoginViewModel by viewModels(factoryProducer = {
         viewModelFactory {
@@ -46,27 +43,23 @@ class LoginFragment : Fragment() {
         setContent {
             LoginScreen(
                 viewModel,
-                onLoginClick = {
-                    val uri =
-                        Uri.parse("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${apiKey}&callback_method=fragment&return_url=easydone://auth")
-                    try {
-                        CustomTabsIntent.Builder()
-                            .setShowTitle(true)
-                            .build()
-                            .launchUrl(requireContext(), uri)
-                    } catch (e: ActivityNotFoundException) {
-                        startActivity(Intent(Intent.ACTION_VIEW, uri))
-                    }
-                })
+                onLoginClick = ::startBrowserLogin,
+                onTokenReceived = ::processToken
+            )
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        tokenProvider.observeToken()
-            .onEach {
-                processToken(it)
-            }
-            .launchIn(viewLifecycleOwner.lifecycleScope)
+    private fun startBrowserLogin() {
+        val uri =
+            Uri.parse("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${apiKey}&callback_method=fragment&return_url=easydone://auth")
+        try {
+            CustomTabsIntent.Builder()
+                .setShowTitle(true)
+                .build()
+                .launchUrl(requireContext(), uri)
+        } catch (e: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        }
     }
 
     private fun processToken(token: String) {
@@ -88,7 +81,6 @@ class LoginFragment : Fragment() {
         val loginListener: (String, List<Board>) -> Unit,
         val api: TrelloApi,
         val apiKey: String,
-        val tokenProvider: TokenProvider
     )
 
     companion object {
@@ -96,7 +88,6 @@ class LoginFragment : Fragment() {
             listener = dependencies.loginListener
             api = dependencies.api
             apiKey = dependencies.apiKey
-            tokenProvider = dependencies.tokenProvider
         }
     }
 }

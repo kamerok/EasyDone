@@ -17,7 +17,6 @@ import easydone.coreui.design.R as designR
 class MainActivity : AppCompatActivity(R.layout.activity_container) {
 
     private val navigator: ActivityNavigator by inject()
-    private val deepLinkResolver: DeepLinkResolver by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.fragmentFactory = CustomFragmentFactory
@@ -42,7 +41,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
             navigator.clearStack()
             navigator.openScreen(InboxFragment::class.java, true)
         }
-        deepLinkResolver.resolveIntent(intent)
     }
 
     override fun onSupportNavigateUp(): Boolean {
