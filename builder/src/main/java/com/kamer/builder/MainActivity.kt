@@ -3,7 +3,6 @@ package com.kamer.builder
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
@@ -43,9 +42,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
             navigator.clearStack()
             navigator.openScreen(InboxFragment::class.java, true)
         }
-        Handler(mainLooper).postDelayed({
-            deepLinkResolver.resolveIntent(intent)
-        }, 2000)
+        deepLinkResolver.resolveIntent(intent)
     }
 
     override fun onSupportNavigateUp(): Boolean {
