@@ -33,6 +33,8 @@ internal fun LoginScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    ReceiveLoginToken(onTokenReceived)
+
     LaunchedEffect(viewModel.events) {
         viewModel.events
             .onEach { event ->
@@ -43,6 +45,11 @@ internal fun LoginScreen(
             .launchIn(this)
     }
 
+    LoginScreen(state = state)
+}
+
+@Composable
+private fun ReceiveLoginToken(onTokenReceived: (String) -> Unit) {
     val context = LocalContext.current
     DisposableEffect(context) {
         val activity = context.getActivity()
@@ -55,14 +62,6 @@ internal fun LoginScreen(
         activity?.addOnNewIntentListener(listener)
         onDispose { activity?.removeOnNewIntentListener(listener) }
     }
-
-    LoginScreen(state = state)
-}
-
-private fun Context.getActivity(): ComponentActivity? = when (this) {
-    is ComponentActivity -> this
-    is ContextWrapper -> baseContext.getActivity()
-    else -> null
 }
 
 @Composable
@@ -122,4 +121,10 @@ fun LoadingScreenPreview() {
 @Composable
 fun ErrorScreenPreview() {
     LoginScreen(UiState.ErrorState("Error message", {}))
+}
+
+private fun Context.getActivity(): ComponentActivity? = when (this) {
+    is ComponentActivity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }
