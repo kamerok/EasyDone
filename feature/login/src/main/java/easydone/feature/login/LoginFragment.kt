@@ -1,15 +1,11 @@
 package easydone.feature.login
 
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -43,22 +39,9 @@ class LoginFragment : Fragment() {
         setContent {
             LoginScreen(
                 viewModel,
-                onLoginClick = ::startBrowserLogin,
+                apiKey,
                 onTokenReceived = ::processToken
             )
-        }
-    }
-
-    private fun startBrowserLogin() {
-        val uri =
-            Uri.parse("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${apiKey}&callback_method=fragment&return_url=easydone://auth")
-        try {
-            CustomTabsIntent.Builder()
-                .setShowTitle(true)
-                .build()
-                .launchUrl(requireContext(), uri)
-        } catch (e: ActivityNotFoundException) {
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
     }
 

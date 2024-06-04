@@ -1,9 +1,12 @@
 package easydone.feature.login
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.ComponentActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,18 +31,21 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 internal fun LoginScreen(
     viewModel: LoginViewModel,
-    onLoginClick: () -> Unit,
+    apiKey: String,
     onTokenReceived: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ReceiveLoginToken(onTokenReceived)
 
+    val context = LocalContext.current
     LaunchedEffect(viewModel.events) {
         viewModel.events
             .onEach { event ->
                 when (event) {
-                    Event.StartTrelloLogin -> onLoginClick()
+                    Event.StartTrelloLogin -> {
+                        startBrowserLogin(context, apiKey)
+                    }
                 }
             }
             .launchIn(this)
@@ -127,4 +133,17 @@ private fun Context.getActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
     is ContextWrapper -> baseContext.getActivity()
     else -> null
+}
+
+private fun startBrowserLogin(context: Context, apiKey: String) {
+    val uri =
+        Uri.parse("https://trello.com/1/authorize?expiration=never&name=EasyDone&scope=read,write&response_type=token&key=${apiKey}&callback_method=fragment&return_url=easydone://auth")
+    try {
+        CustomTabsIntent.Builder()
+            .setShowTitle(true)
+            .build()
+            .launchUrl(context, uri)
+    } catch (e: ActivityNotFoundException) {
+        context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+    }
 }
