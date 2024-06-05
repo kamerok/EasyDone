@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.util.Consumer
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import easydone.coreui.design.AppTheme
+import easydone.service.trello.api.model.Board
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -32,11 +33,11 @@ import kotlinx.coroutines.flow.onEach
 internal fun LoginScreen(
     viewModel: LoginViewModel,
     apiKey: String,
-    onTokenReceived: (String) -> Unit
+    onSuccessLogin: (String, List<Board>) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    ReceiveLoginToken(onTokenReceived)
+    ReceiveLoginToken(viewModel::onTokenReceived)
 
     val context = LocalContext.current
     LaunchedEffect(viewModel.events) {
@@ -45,6 +46,10 @@ internal fun LoginScreen(
                 when (event) {
                     Event.StartTrelloLogin -> {
                         startBrowserLogin(context, apiKey)
+                    }
+
+                    is Event.LoginSuccess -> {
+                        onSuccessLogin(event.token, event.boards)
                     }
                 }
             }

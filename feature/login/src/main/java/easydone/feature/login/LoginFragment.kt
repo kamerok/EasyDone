@@ -5,16 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.api.model.Board
-import kotlinx.coroutines.launch
 
 
 class LoginFragment : Fragment() {
@@ -26,7 +23,7 @@ class LoginFragment : Fragment() {
     private val viewModel: LoginViewModel by viewModels(factoryProducer = {
         viewModelFactory {
             initializer {
-                LoginViewModel()
+                LoginViewModel(api, apiKey, listener)
             }
         }
     })
@@ -40,24 +37,9 @@ class LoginFragment : Fragment() {
             LoginScreen(
                 viewModel,
                 apiKey,
-                onTokenReceived = ::processToken
+                onSuccessLogin = listener
             )
         }
-    }
-
-    private fun processToken(token: String) {
-        lifecycleScope.launch {
-            try {
-                val nestedBoards = api.boards(apiKey, token)
-                successLogin(token, nestedBoards.boards)
-            } catch (e: Exception) {
-                Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun successLogin(token: String, boards: List<Board>) {
-        listener(token, boards)
     }
 
     data class Dependencies(

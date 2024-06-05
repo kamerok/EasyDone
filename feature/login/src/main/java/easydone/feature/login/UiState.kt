@@ -1,5 +1,7 @@
 package easydone.feature.login
 
+import easydone.service.trello.api.model.Board
+
 internal sealed class UiState {
 
     internal data class IdleState(
@@ -18,5 +20,10 @@ internal sealed class UiState {
 internal sealed class Event {
 
     internal data object StartTrelloLogin : Event()
+
+    internal data class LoginSuccess(
+        val token: String,
+        val boards: List<Board>
+    ) : Event()
 
 }
