@@ -24,17 +24,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.util.Consumer
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import easydone.coreui.design.AppTheme
+import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.api.model.Board
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @Composable
-internal fun LoginScreen(
-    viewModel: LoginViewModel,
+fun LoginRoute(
     apiKey: String,
+    api: TrelloApi,
     onSuccessLogin: (String, List<Board>) -> Unit
 ) {
+    val viewModel: LoginViewModel = viewModel {
+        LoginViewModel(api, apiKey, onSuccessLogin)
+    }
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ReceiveLoginToken(viewModel::onTokenReceived)
@@ -131,7 +136,7 @@ fun LoadingScreenPreview() {
 @Preview(showBackground = true, showSystemUi = false)
 @Composable
 fun ErrorScreenPreview() {
-    LoginScreen(UiState.ErrorState("Error message", {}))
+    LoginScreen(UiState.ErrorState(message = "Error message", onRetry = {}))
 }
 
 private fun Context.getActivity(): ComponentActivity? = when (this) {
