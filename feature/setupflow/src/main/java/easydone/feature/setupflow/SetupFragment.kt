@@ -1,21 +1,13 @@
 package easydone.feature.setupflow
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.kamer.setupflow.R
-import easydone.feature.login.LoginFragment
-import easydone.feature.selectboard.BoardUiModel
-import easydone.feature.selectboard.SelectBoardFragment
-import easydone.library.navigation.FragmentManagerNavigator
-import easydone.library.navigation.Navigator
 import easydone.service.trello.TrelloRemoteDataSource
 import easydone.service.trello.api.TrelloApi
-import easydone.service.trello.api.model.Board
-import kotlinx.coroutines.launch
 
 
 class SetupFragment(
@@ -23,64 +15,21 @@ class SetupFragment(
     private val trelloApi: TrelloApi,
     private val trelloApiKey: String,
     private val onFinishSetup: () -> Unit
-) : Fragment(R.layout.fragment_setup) {
+) : Fragment() {
 
-    private val localNavigator: Navigator by lazy {
-        FragmentManagerNavigator(childFragmentManager, R.id.container)
-    }
-
-    private var isLogin = true
-    private var backCallback: OnBackPressedCallback? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        backCallback = requireActivity().onBackPressedDispatcher.addCallback(this, false) {
-            startLogin()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setContent {
+            SetupRoute(
+                trelloRemoteDataSource = trelloRemoteDataSource,
+                trelloApi = trelloApi,
+                trelloApiKey = trelloApiKey,
+                onFinishSetup = onFinishSetup
+            )
         }
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        startLogin()
-    }
-
-    private fun startLogin() {
-        isLogin = true
-        backCallback?.isEnabled = false
-
-        localNavigator.openScreen(
-            LoginFragment.create(
-                LoginFragment.Dependencies(
-                    loginListener = { token, boards ->
-                        startSelectBoard(token, boards)
-                    },
-                    api = trelloApi,
-                    apiKey = trelloApiKey
-                )
-            )
-        )
-    }
-
-    private fun startSelectBoard(token: String, boards: List<Board>) {
-        isLogin = false
-        backCallback?.isEnabled = true
-        
-        localNavigator.openScreen(
-            SelectBoardFragment.create(
-                SelectBoardFragment.Dependencies(
-                    boards = boards.map { BoardUiModel(it.id, it.name) },
-                    listener = { boardId ->
-                        lifecycleScope.launch {
-                            saveData(token, boardId)
-                            onFinishSetup()
-                        }
-                    }
-                )
-            )
-        )
-    }
-
-    private suspend fun saveData(token: String, boardId: String) =
-        trelloRemoteDataSource.connect(token, boardId)
 
 }
