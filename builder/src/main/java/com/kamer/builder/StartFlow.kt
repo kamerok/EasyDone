@@ -40,7 +40,6 @@ import easydone.service.trello.api.TrelloApi
 import easydone.widget.AppWidgetReceiver
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
@@ -243,10 +242,7 @@ object StartFlow {
     fun startWidgetUpdates() {
         val repo = GlobalContext.get().get<DomainRepository>()
         val context = GlobalContext.get().get<Context>()
-        repo.getTasks(Task.Type.ToDo::class)
-            .combine(repo.getTasks(Task.Type.Inbox::class)) { _, _ ->
-                true
-            }
+        repo.getAllTasks()
             .onEach {
                 val intent = Intent(context, AppWidgetReceiver::class.java).apply {
                     action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
