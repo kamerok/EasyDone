@@ -1,6 +1,5 @@
 package easydone.widget
 
-import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.res.Resources
@@ -13,10 +12,9 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.util.TypedValue
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -57,8 +55,7 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.coreui.design.important
 import easydone.coreui.design.urgent
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.map
 import org.koin.core.context.GlobalContext
 import easydone.core.strings.R as stringsR
 
@@ -75,7 +72,7 @@ private val transparentActivityComponent = ComponentName(
     "com.kamer.builder.TransparentActivity"
 )
 
-class AppWidgetGlance(private val state: State<WidgetState>) : GlanceAppWidget() {
+class AppWidgetGlance(private val repository: DomainRepository) : GlanceAppWidget() {
 
     override val sizeMode: SizeMode = SizeMode.Responsive(
         setOf(SMALL_BOX, ROW, BIG_BOX)
@@ -83,10 +80,21 @@ class AppWidgetGlance(private val state: State<WidgetState>) : GlanceAppWidget()
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
+            val state by repository.getAllTasks().map { tasks ->
+                val todoTasks = tasks.filter { it.type == Task.Type.ToDo }
+                WidgetState(
+                    inboxCount = tasks.count { it.type == Task.Type.Inbox },
+                    urgentImportantCount = todoTasks.count { it.markers.isUrgent && it.markers.isImportant },
+                    urgentCount = todoTasks.count { it.markers.isUrgent && !it.markers.isImportant },
+                    importantCount = todoTasks.count { it.markers.isImportant && !it.markers.isUrgent },
+                    noFlagsCount = todoTasks.count { !it.markers.isImportant && !it.markers.isUrgent }
+                )
+            }.collectAsState(initial = WidgetState.Idle)
+
             when (LocalSize.current) {
-                SMALL_BOX -> SmallWidget(state.value)
-                ROW -> RowWidget(state.value)
-                BIG_BOX -> BigWidget(state.value)
+                SMALL_BOX -> SmallWidget(state)
+                ROW -> RowWidget(state)
+                BIG_BOX -> BigWidget(state)
             }
         }
     }
@@ -162,7 +170,7 @@ private fun BigWidget(state: WidgetState) {
                 .height(topRowHeight)
         )
         Box {
-            val bitmap = remember {
+            val bitmap = remember(state) {
                 Bitmap.createBitmap(
                     BIG_BOX.width.toPx.toInt(),
                     (BIG_BOX.height - topRowHeight).toPx.toInt(),
@@ -411,31 +419,8 @@ private fun TopRow(
 
 class AppWidgetReceiver : GlanceAppWidgetReceiver() {
     private val repository: DomainRepository = GlobalContext.get().get()
-    private val state = mutableStateOf(loadData())
 
-    override val glanceAppWidget: GlanceAppWidget = AppWidgetGlance(state)
-
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
-    ) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds)
-        state.value = loadData()
-    }
-
-    private fun loadData() =
-        runBlocking {
-            val tasks = repository.getTasks(Task.Type.ToDo::class).first()
-            WidgetState(
-                inboxCount = repository.getTasks(Task.Type.Inbox::class).first().size,
-                urgentImportantCount = tasks.count { it.markers.isUrgent && it.markers.isImportant },
-                urgentCount = tasks.count { it.markers.isUrgent && !it.markers.isImportant },
-                importantCount = tasks.count { it.markers.isImportant && !it.markers.isUrgent },
-                noFlagsCount = tasks.count { !it.markers.isImportant && !it.markers.isUrgent }
-            )
-
-        }
+    override val glanceAppWidget: GlanceAppWidget = AppWidgetGlance(repository)
 }
 
 data class WidgetState(
@@ -444,4 +429,8 @@ data class WidgetState(
     val urgentCount: Int,
     val importantCount: Int,
     val noFlagsCount: Int,
-)
+) {
+    companion object {
+        val Idle = WidgetState(0, 0, 0, 0, 0)
+    }
+}
