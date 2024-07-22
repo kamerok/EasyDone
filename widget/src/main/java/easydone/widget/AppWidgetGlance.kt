@@ -38,6 +38,7 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.provideContent
+import androidx.glance.appwidget.updateAll
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -72,7 +73,8 @@ private val transparentActivityComponent = ComponentName(
     "com.kamer.builder.TransparentActivity"
 )
 
-class AppWidgetGlance(private val repository: DomainRepository) : GlanceAppWidget() {
+class AppWidgetGlance : GlanceAppWidget() {
+    private val repository: DomainRepository = GlobalContext.get().get()
 
     override val sizeMode: SizeMode = SizeMode.Responsive(
         setOf(SMALL_BOX, ROW, BIG_BOX)
@@ -418,9 +420,7 @@ private fun TopRow(
 }
 
 class AppWidgetReceiver : GlanceAppWidgetReceiver() {
-    private val repository: DomainRepository = GlobalContext.get().get()
-
-    override val glanceAppWidget: GlanceAppWidget = AppWidgetGlance(repository)
+    override val glanceAppWidget: GlanceAppWidget = AppWidgetGlance()
 }
 
 data class WidgetState(
@@ -433,4 +433,8 @@ data class WidgetState(
     companion object {
         val Idle = WidgetState(0, 0, 0, 0, 0)
     }
+}
+
+suspend fun updateWidget(context: Context) {
+    AppWidgetGlance().updateAll(context)
 }

@@ -1,10 +1,7 @@
 package com.kamer.builder
 
 import android.app.Application
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
@@ -37,7 +34,7 @@ import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.service.trello.TrelloRemoteDataSource
 import easydone.service.trello.api.TrelloApi
-import easydone.widget.AppWidgetReceiver
+import easydone.widget.updateWidget
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
@@ -243,15 +240,7 @@ object StartFlow {
         val repo = GlobalContext.get().get<DomainRepository>()
         val context = GlobalContext.get().get<Context>()
         repo.getAllTasks()
-            .onEach {
-                val intent = Intent(context, AppWidgetReceiver::class.java).apply {
-                    action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                }
-                val ids: IntArray = AppWidgetManager.getInstance(context)
-                    .getAppWidgetIds(ComponentName(context, AppWidgetReceiver::class.java))
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-                context.sendBroadcast(intent)
-            }
+            .onEach { updateWidget(context) }
             .launchIn(GlobalScope)
     }
 
