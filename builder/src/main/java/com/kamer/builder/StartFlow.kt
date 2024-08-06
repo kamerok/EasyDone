@@ -13,6 +13,7 @@ import easydone.core.database.DatabaseLocalDataSource
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.LocalDataSource
 import easydone.core.domain.RemoteDataSource
+import easydone.core.domain.SyncScheduler
 import easydone.core.domain.Synchronizer
 import easydone.core.domain.model.Task
 import easydone.feature.edittask.EditTaskFragment
@@ -69,7 +70,7 @@ object StartFlow {
         GlobalContext.get().get<Navigator>().openScreen(QuickCreateTaskFragment::class.java)
 
         //to start syncing
-        GlobalContext.get().get<Synchronizer>()
+        GlobalContext.get().get<SyncScheduler>()
     }
 
     fun startCreate(sharedText: String) {
@@ -91,6 +92,7 @@ object StartFlow {
         val module = module {
             single { DomainRepository(get()) }
             single { Synchronizer(get(), get()) }
+            single { SyncScheduler(get(), get()) }
             single {
                 TrelloRemoteDataSource(
                     api = get(),

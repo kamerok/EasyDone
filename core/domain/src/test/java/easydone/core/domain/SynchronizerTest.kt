@@ -17,11 +17,11 @@ import org.junit.Test
 import kotlin.reflect.KClass
 
 @ExperimentalCoroutinesApi
-class SynchronizerTest {
+class SyncSchedulerTest {
 
     @Test
     fun `False progress on start`() = runBlockingTest {
-        val synchronizer = Synchronizer(ImmediateRemoteDataSource(), ImmediateLocalDataSource, this)
+        val synchronizer = SyncScheduler(ImmediateRemoteDataSource(), ImmediateLocalDataSource, this)
 
         assertThat(synchronizer.isSyncing().first()).isFalse()
     }
@@ -29,7 +29,7 @@ class SynchronizerTest {
     @Test
     fun `True progress on executing`() = runBlockingTest {
         val remoteDataSource = ImmediateRemoteDataSource(pauseExecution = true)
-        val synchronizer = Synchronizer(remoteDataSource, ImmediateLocalDataSource, this)
+        val synchronizer = SyncScheduler(remoteDataSource, ImmediateLocalDataSource, this)
 
         synchronizer.initiateSync()
 
@@ -39,7 +39,7 @@ class SynchronizerTest {
 
     @Test
     fun `False progress on success`() = runBlockingTest {
-        val synchronizer = Synchronizer(ImmediateRemoteDataSource(), ImmediateLocalDataSource, this)
+        val synchronizer = SyncScheduler(ImmediateRemoteDataSource(), ImmediateLocalDataSource, this)
 
         synchronizer.initiateSync()
 
@@ -48,7 +48,7 @@ class SynchronizerTest {
 
     @Test
     fun `False progress on error`() = runBlockingTest {
-        val synchronizer = Synchronizer(ErrorRemoteDataSource, ImmediateLocalDataSource, this)
+        val synchronizer = SyncScheduler(ErrorRemoteDataSource, ImmediateLocalDataSource, this)
 
         synchronizer.initiateSync()
 
@@ -58,7 +58,7 @@ class SynchronizerTest {
     @Test
     fun `Single invocation on restart`() = runBlockingTest {
         val remoteDataSource = ImmediateRemoteDataSource(pauseExecution = true)
-        val synchronizer = Synchronizer(remoteDataSource, ImmediateLocalDataSource, this)
+        val synchronizer = SyncScheduler(remoteDataSource, ImmediateLocalDataSource, this)
 
         synchronizer.initiateSync()
         synchronizer.initiateSync()

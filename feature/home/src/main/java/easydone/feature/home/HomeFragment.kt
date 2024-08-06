@@ -10,11 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import easydone.core.domain.DomainRepository
-import easydone.core.domain.Synchronizer
+import easydone.core.domain.SyncScheduler
 
 
 class HomeFragment(
-    private val synchronizer: Synchronizer,
+    private val syncScheduler: SyncScheduler,
     private val domainRepository: DomainRepository,
     private val navigator: HomeNavigator
 ) : Fragment() {
@@ -22,7 +22,7 @@ class HomeFragment(
     private val viewModel: HomeViewModel by viewModels(factoryProducer = {
         viewModelFactory {
             initializer {
-                HomeViewModel(synchronizer, domainRepository, navigator)
+                HomeViewModel(syncScheduler, domainRepository, navigator)
             }
         }
     })

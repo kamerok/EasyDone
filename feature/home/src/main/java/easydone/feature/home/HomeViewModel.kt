@@ -3,7 +3,7 @@ package easydone.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import easydone.core.domain.DomainRepository
-import easydone.core.domain.Synchronizer
+import easydone.core.domain.SyncScheduler
 import easydone.core.domain.model.Task
 import easydone.coreui.design.UiTask
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 
 
 internal class HomeViewModel(
-    private val synchronizer: Synchronizer,
+    private val syncScheduler: SyncScheduler,
     repository: DomainRepository,
     private val navigator: HomeNavigator
 ) : ViewModel() {
@@ -21,8 +21,8 @@ internal class HomeViewModel(
     val state: StateFlow<State> =
         combine(
             combine(
-                synchronizer.isSyncing(),
-                synchronizer.observeChanges()
+                syncScheduler.isSyncing(),
+                syncScheduler.observeChanges()
             ) { isSyncing, changes -> isSyncing to changes },
             repository.getAllTasks()
         ) { (isSyncing, changesCount), tasks ->
@@ -73,7 +73,7 @@ internal class HomeViewModel(
         )
 
     init {
-        synchronizer.initiateSync()
+        syncScheduler.initiateSync()
     }
 
     fun onAdd() {
@@ -97,7 +97,7 @@ internal class HomeViewModel(
     }
 
     fun onSync() {
-        synchronizer.initiateSync()
+        syncScheduler.initiateSync()
     }
 
     private fun Task.toUiTask() = UiTask(
