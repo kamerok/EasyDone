@@ -6,6 +6,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.work.Configuration
+import androidx.work.ListenableWorker
+import androidx.work.WorkerFactory
+import androidx.work.WorkerParameters
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import easydone.core.database.Database
 import easydone.core.database.DatabaseFactory
@@ -13,6 +17,7 @@ import easydone.core.database.DatabaseLocalDataSource
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.LocalDataSource
 import easydone.core.domain.RemoteDataSource
+import easydone.core.domain.SyncDelegate
 import easydone.core.domain.SyncScheduler
 import easydone.core.domain.Synchronizer
 import easydone.core.domain.model.Task
@@ -81,7 +86,7 @@ object StartFlow {
         )
 
         //to start syncing
-        GlobalContext.get().get<Synchronizer>()
+        GlobalContext.get().get<SyncScheduler>()
     }
 
     fun initDependencies(
@@ -91,6 +96,7 @@ object StartFlow {
     ) {
         val module = module {
             single { DomainRepository(get()) }
+            single<SyncDelegate> { WorkManagerSyncDelegate(get()) }
             single { Synchronizer(get(), get()) }
             single { SyncScheduler(get(), get()) }
             single {
@@ -245,6 +251,25 @@ object StartFlow {
             .onEach { updateWidget(context) }
             .launchIn(GlobalScope)
     }
+
+    fun workManagerConfiguration(): Configuration = Configuration.Builder()
+        .setWorkerFactory(object : WorkerFactory() {
+            override fun createWorker(
+                appContext: Context,
+                workerClassName: String,
+                workerParameters: WorkerParameters
+            ): ListenableWorker? {
+                if (workerClassName == SyncWorker::class.java.name) {
+                    return SyncWorker(
+                        appContext = appContext,
+                        workerParams = workerParameters,
+                        synchronizer = GlobalContext.get().get()
+                    )
+                }
+                return null
+            }
+        })
+        .build()
 
     private suspend fun startInitialFlow(isInboxDeeplink: Boolean = false) {
         val remoteDataSource: RemoteDataSource = GlobalContext.get().get()

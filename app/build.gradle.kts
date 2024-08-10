@@ -52,6 +52,7 @@ dependencies {
 
     implementation(libs.androidx.app.compat)
     implementation(libs.androidx.splash)
+    implementation(libs.androidx.work)
     implementation(libs.retrofit)
     implementation(libs.timber.android)
     implementation(libs.crashlytics)

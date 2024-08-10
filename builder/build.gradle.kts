@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.androidx.datastore.prefs)
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.splash)
+    implementation(libs.androidx.work)
     implementation(libs.koin)
     implementation(libs.retrofit)
     implementation(libs.sqldelight.android)
