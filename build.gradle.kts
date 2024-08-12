@@ -16,5 +16,5 @@ task<Delete>("clean") {
 
 apply {
     from(rootProject.file("gradle/dependency_graph.gradle"))
-    from(rootProject.file("gradle/dependency_updates_settings.gradle"))
+//    from(rootProject.file("gradle/dependency_updates_settings.gradle"))
 }
