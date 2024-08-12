@@ -7,10 +7,8 @@ on:
     branches : [ master ]
 
 jobs:
-  test-feature:
+  test:
     runs-on: macOS-latest
-
-    needs: build
 
     steps:
       - name: Checkout code
