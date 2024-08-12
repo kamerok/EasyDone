@@ -14,7 +14,7 @@ task<Delete>("clean") {
     delete(layout.buildDirectory)
 }
 
-apply {
-    from(rootProject.file("gradle/dependency_graph.gradle"))
+//apply {
+//    from(rootProject.file("gradle/dependency_graph.gradle"))
 //    from(rootProject.file("gradle/dependency_updates_settings.gradle"))
-}
+//}
