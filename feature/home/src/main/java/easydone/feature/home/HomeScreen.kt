@@ -42,10 +42,12 @@ import easydone.core.domain.SyncScheduler
 import easydone.core.strings.R
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
+import easydone.coreui.design.FoldPreviews
 import easydone.coreui.design.TaskCard
 import easydone.coreui.design.UiTask
 import java.time.LocalDate
 import java.time.Period
+import java.util.UUID
 
 @Composable
 internal fun HomeRoute(
@@ -339,4 +341,35 @@ private fun MoreButton(
             )
         }
     }
+}
+
+@FoldPreviews
+@Composable
+fun HomeScreenPreview() {
+    fun generateTasks(number: Int) = (1..number).map {
+        UiTask(UUID.randomUUID().toString(), "task $it", true, true, true)
+    }
+
+    val state = State(
+        isSyncing = false,
+        hasChanges = true,
+        inboxCount = 5,
+        todoTasks = generateTasks(4),
+        projectTasks = generateTasks(4),
+        nextWaitingTasks = NextWaitingTasks(
+            date = LocalDate.now().plusDays(4),
+            tasks = generateTasks(4)
+        ),
+        waitingCount = 3,
+        maybeTasks = generateTasks(4)
+    )
+    HomeScreen(
+        state = state,
+        onSync = {},
+        onSettings = {},
+        onAdd = {},
+        onSortInbox = {},
+        onTask = {},
+        onWaitingMore = {}
+    )
 }
