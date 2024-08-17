@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
@@ -26,8 +28,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.window.core.layout.WindowWidthSizeClass
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.SyncScheduler
 import easydone.core.strings.R
@@ -108,9 +113,17 @@ internal fun HomeScreen(
                 ) { Icon(Icons.Default.Add, "") }
             }
         ) { padding ->
-            LazyColumn(
+            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val columns by remember(windowSizeClass) {
+                derivedStateOf {
+                    if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) 1 else 2
+                }
+            }
+            LazyVerticalStaggeredGrid(
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalItemSpacing = 16.dp,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                columns = StaggeredGridCells.Fixed(columns),
                 modifier = Modifier.padding(padding)
             ) {
                 inboxSection(
@@ -141,12 +154,12 @@ internal fun HomeScreen(
     }
 }
 
-private fun LazyListScope.inboxSection(
+private fun LazyStaggeredGridScope.inboxSection(
     inboxCount: Int,
     onSort: () -> Unit
 ) {
     if (inboxCount > 0) {
-        item {
+        item(span = StaggeredGridItemSpan.FullLine) {
             InboxMessage(
                 count = inboxCount,
                 onSort = onSort
@@ -155,7 +168,7 @@ private fun LazyListScope.inboxSection(
     }
 }
 
-private fun LazyListScope.todoSection(
+private fun LazyStaggeredGridScope.todoSection(
     tasks: List<UiTask>,
     onTaskClick: (UiTask) -> Unit
 ) {
@@ -169,14 +182,14 @@ private fun LazyListScope.todoSection(
     }
 }
 
-private fun LazyListScope.waitingSection(
+private fun LazyStaggeredGridScope.waitingSection(
     nextWaitingTasks: NextWaitingTasks?,
     waitingCount: Int,
     onTaskClick: (UiTask) -> Unit,
     onMore: () -> Unit
 ) {
     if (nextWaitingTasks != null) {
-        item {
+        item(span = StaggeredGridItemSpan.FullLine) {
             val period = remember(nextWaitingTasks) {
                 //TODO: reuse format logic
                 val period = Period.between(LocalDate.now(), nextWaitingTasks.date)
@@ -202,7 +215,7 @@ private fun LazyListScope.waitingSection(
                     .clickable { onTaskClick(task) }
             )
         }
-        item {
+        item(span = StaggeredGridItemSpan.FullLine) {
             if (waitingCount > nextWaitingTasks.tasks.size) {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     MoreButton(
@@ -218,7 +231,7 @@ private fun LazyListScope.waitingSection(
     }
 }
 
-private fun LazyListScope.maybeSection(
+private fun LazyStaggeredGridScope.maybeSection(
     tasks: List<UiTask>,
     onTaskClick: (UiTask) -> Unit
 ) {
@@ -231,7 +244,7 @@ private fun LazyListScope.maybeSection(
     }
 }
 
-private fun LazyListScope.projectsSection(
+private fun LazyStaggeredGridScope.projectsSection(
     tasks: List<UiTask>,
     onTaskClick: (UiTask) -> Unit
 ) {
@@ -245,11 +258,13 @@ private fun LazyListScope.projectsSection(
     }
 }
 
-private fun LazyListScope.titleItem(text: String) {
-    item { Title(text) }
+private fun LazyStaggeredGridScope.titleItem(text: String) {
+    item(span = StaggeredGridItemSpan.FullLine) {
+        Title(text)
+    }
 }
 
-private fun LazyListScope.taskItems(
+private fun LazyStaggeredGridScope.taskItems(
     tasks: List<UiTask>,
     onClick: (UiTask) -> Unit
 ) {
@@ -263,12 +278,16 @@ private fun LazyListScope.taskItems(
     }
 }
 
-private fun LazyListScope.sectionSpaceItem() {
-    item { Spacer(modifier = Modifier.height(16.dp)) }
+private fun LazyStaggeredGridScope.sectionSpaceItem() {
+    item(span = StaggeredGridItemSpan.FullLine) {
+        Spacer(modifier = Modifier.height(16.dp))
+    }
 }
 
-private fun LazyListScope.fabSpaceItem() {
-    item { Spacer(modifier = Modifier.height(56.dp)) }
+private fun LazyStaggeredGridScope.fabSpaceItem() {
+    item(span = StaggeredGridItemSpan.FullLine) {
+        Spacer(modifier = Modifier.height(56.dp))
+    }
 }
 
 @Composable
