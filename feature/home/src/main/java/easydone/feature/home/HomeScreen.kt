@@ -36,6 +36,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import easydone.core.domain.DomainRepository
+import easydone.core.domain.SyncScheduler
 import easydone.core.strings.R
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
@@ -45,9 +48,37 @@ import java.time.LocalDate
 import java.time.Period
 
 @Composable
-internal fun HomeScreen(viewModel: HomeViewModel) {
+internal fun HomeRoute(
+    syncScheduler: SyncScheduler,
+    domainRepository: DomainRepository,
+    navigator: HomeNavigator
+) {
+    val viewModel: HomeViewModel = viewModel {
+        HomeViewModel(syncScheduler, domainRepository, navigator)
+    }
+    val state by viewModel.state.collectAsState()
+    HomeScreen(
+        state,
+        viewModel::onSync,
+        viewModel::onSettings,
+        viewModel::onAdd,
+        viewModel::onSort,
+        viewModel::onTaskClick,
+        viewModel::onWaitingMore
+    )
+}
+
+@Composable
+internal fun HomeScreen(
+    state: State,
+    onSync: () -> Unit,
+    onSettings: () -> Unit,
+    onAdd: () -> Unit,
+    onSortInbox: () -> Unit,
+    onTask: (UiTask) -> Unit,
+    onWaitingMore: () -> Unit,
+) {
     AppTheme {
-        val state by viewModel.state.collectAsState()
         Scaffold(
             topBar = {
                 EasyDoneAppBar(
@@ -57,11 +88,11 @@ internal fun HomeScreen(viewModel: HomeViewModel) {
                         SyncButton(
                             isInProgress = state.isSyncing,
                             isIndicatorEnabled = state.hasChanges,
-                            onClick = viewModel::onSync
+                            onClick = onSync
                         )
                     },
                     menu = {
-                        DropdownMenuItem(onClick = viewModel::onSettings) {
+                        DropdownMenuItem(onClick = onSettings) {
                             Text(text = "Settings")
                         }
                     },
@@ -71,7 +102,7 @@ internal fun HomeScreen(viewModel: HomeViewModel) {
             floatingActionButton = {
                 FloatingActionButton(
                     backgroundColor = MaterialTheme.colors.primary,
-                    onClick = viewModel::onAdd
+                    onClick = onAdd
                 ) { Icon(Icons.Default.Add, "") }
             }
         ) { padding ->
@@ -82,25 +113,25 @@ internal fun HomeScreen(viewModel: HomeViewModel) {
             ) {
                 inboxSection(
                     inboxCount = state.inboxCount,
-                    onSort = viewModel::onSort
+                    onSort = onSortInbox
                 )
                 todoSection(
                     tasks = state.todoTasks,
-                    onTaskClick = viewModel::onTaskClick
+                    onTaskClick = onTask
                 )
                 projectsSection(
                     tasks = state.projectTasks,
-                    onTaskClick = viewModel::onTaskClick
+                    onTaskClick = onTask
                 )
                 waitingSection(
                     nextWaitingTasks = state.nextWaitingTasks,
                     waitingCount = state.waitingCount,
-                    onTaskClick = viewModel::onTaskClick,
-                    onMore = viewModel::onWaitingMore
+                    onTaskClick = onTask,
+                    onMore = onWaitingMore
                 )
                 maybeSection(
                     tasks = state.maybeTasks,
-                    onTaskClick = viewModel::onTaskClick
+                    onTaskClick = onTask
                 )
                 fabSpaceItem()
             }
