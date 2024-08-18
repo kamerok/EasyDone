@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -81,7 +82,7 @@ internal fun InboxScreen(
                                 .clickable { onTaskClick(task) }
                         )
                     }
-                    item {
+                    item(span = StaggeredGridItemSpan.FullLine) {
                         Spacer(
                             modifier = Modifier
                                 .height(0.dp)

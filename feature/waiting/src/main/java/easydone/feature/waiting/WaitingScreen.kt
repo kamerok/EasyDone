@@ -14,15 +14,19 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -32,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
@@ -41,40 +44,75 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.window.core.layout.WindowWidthSizeClass.Companion.COMPACT
+import easydone.core.domain.DomainRepository
 import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
+import easydone.coreui.design.FoldPreviews
 import easydone.coreui.design.TaskCard
+import easydone.coreui.design.UiTask
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Period
 import java.time.Year
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 
 @Composable
-internal fun WaitingScreen(viewModel: WaitingViewModel) {
+internal fun WaitingRoute(
+    repository: DomainRepository,
+    navigator: WaitingNavigator
+) {
+    val viewModel: WaitingViewModel = viewModel {
+        WaitingViewModel(repository, navigator)
+    }
+    val state by viewModel.state.collectAsState()
+    WaitingScreen(
+        state = state,
+        onTaskClick = viewModel::onTaskClick
+    )
+}
+
+@Composable
+internal fun WaitingScreen(
+    state: State,
+    onTaskClick: (UiTask) -> Unit
+) {
     AppTheme {
         FullscreenContent {
             Column {
                 EasyDoneAppBar(modifier = Modifier.statusBarsPadding()) {
                     Text("Waiting")
                 }
-                val state = viewModel.state.collectAsState().value
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    item {
+                val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+                val columns by remember(windowSizeClass) {
+                    derivedStateOf {
+                        if (windowSizeClass.windowWidthSizeClass == COMPACT) 1 else 2
+                    }
+                }
+                LazyVerticalStaggeredGrid(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalItemSpacing = 16.dp,
+                    contentPadding = PaddingValues(16.dp),
+                    columns = StaggeredGridCells.Fixed(columns)
+                ) {
+                    item(span = StaggeredGridItemSpan.FullLine) {
                         val significantDays by remember { derivedStateOf { state.tasks.keys } }
                         val months = remember {
                             val currentMonth = YearMonth.now()
                             (0..(12 * 10)).map { currentMonth.plusMonths(it.toLong()) }
                         }
                         LazyRow(
-                            contentPadding = PaddingValues(16.dp),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             items(months) { month ->
-                                CalendarMonth(month, significantDays)
+                                CalendarMonth(
+                                    month = month,
+                                    significantDays = significantDays
+                                )
                             }
                         }
                     }
@@ -83,7 +121,7 @@ internal fun WaitingScreen(viewModel: WaitingViewModel) {
                     state.tasks.entries
                         .sortedBy { it.key }
                         .forEach { (date, tasks) ->
-                            item {
+                            item(span = StaggeredGridItemSpan.FullLine) {
                                 val period = Period.between(LocalDate.now(), date)
                                 val dateText = buildString {
                                     append(formatter.format(date))
@@ -102,19 +140,17 @@ internal fun WaitingScreen(viewModel: WaitingViewModel) {
                                 Text(
                                     text = dateText,
                                     style = MaterialTheme.typography.h5,
-                                    modifier = Modifier.padding(horizontal = 16.dp)
                                 )
                             }
                             items(tasks) { task ->
                                 TaskCard(
                                     task = task,
                                     modifier = Modifier
-                                        .padding(horizontal = 16.dp)
                                         .fillMaxWidth()
-                                        .clickable { viewModel.onTaskClick(task) }
+                                        .clickable { onTaskClick(task) }
                                 )
                             }
-                            item {
+                            item(span = StaggeredGridItemSpan.FullLine) {
                                 Spacer(modifier = Modifier.navigationBarsPadding())
                             }
                         }
@@ -139,6 +175,7 @@ private fun FullscreenContent(
 @Composable
 private fun CalendarMonth(
     month: YearMonth,
+    modifier: Modifier = Modifier,
     significantDays: Set<LocalDate> = emptySet()
 ) {
     val formatter = remember {
@@ -146,7 +183,10 @@ private fun CalendarMonth(
             if (Year.now().value == month.year) "MMM" else "MMM y"
         )
     }
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
         Text(
             text = month.format(formatter),
             style = MaterialTheme.typography.body2
@@ -255,4 +295,21 @@ private fun DayPreview() {
             CalendarDay(number = 10, isEnabled = false, isToday = false, isAction = true)
         }
     }
+}
+
+@FoldPreviews
+@Composable
+private fun WaitingPreview() {
+    fun generateTasks(number: Int) = (1..number).map {
+        UiTask(UUID.randomUUID().toString(), "task $it", true, true, true)
+    }
+    WaitingScreen(
+        state = State(
+            mapOf(
+                LocalDate.now().plusDays(1) to generateTasks(5),
+                LocalDate.now().plusDays(2) to generateTasks(5),
+            )
+        ),
+        onTaskClick = {}
+    )
 }
