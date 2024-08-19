@@ -46,7 +46,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.strings.R
 import easydone.coreui.design.AppTheme
@@ -54,23 +56,49 @@ import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.IconImportant
 import easydone.coreui.design.IconUrgent
 import easydone.feature.selecttype.TypeSelector
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+
+@Composable
+internal fun TaskDetailsRoute(
+    id: String,
+    repository: DomainRepository,
+    navigator: TaskDetailsNavigator
+) {
+    val viewModel: TaskDetailsViewModel = viewModel {
+        TaskDetailsViewModel(id, repository, navigator)
+    }
+    val state by viewModel.state.collectAsState()
+    TaskDetailsScreen(
+        state = state,
+        events = viewModel.events,
+        onTypeSelected = viewModel::onTypeSelected,
+        onEdit = viewModel::onEdit,
+        onMove = viewModel::onMove,
+        onArchive = viewModel::onArchive
+    )
+}
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun TaskDetailsScreen(
-    viewModel: TaskDetailsViewModel
+    state: State,
+    events: Flow<Event>,
+    onTypeSelected: (Task.Type) -> Unit,
+    onEdit: () -> Unit,
+    onMove: () -> Unit,
+    onArchive: () -> Unit,
 ) {
     AppTheme {
         val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
         val scope = rememberCoroutineScope()
 
         var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
-        LaunchedEffect(viewModel) {
-            viewModel.events
+        LaunchedEffect(events) {
+            events
                 .onEach {
                     when (it) {
                         is SelectType -> {
@@ -91,17 +119,29 @@ internal fun TaskDetailsScreen(
             sheetContent = {
                 TypeSelector(
                     type = selectorType,
-                    onTypeSelected = viewModel::onTypeSelected,
+                    onTypeSelected = onTypeSelected,
                     modifier = Modifier.navigationBarsPadding()
                 )
             },
-            content = { TaskDetailsContent(viewModel) }
+            content = {
+                TaskDetailsContent(
+                    state = state,
+                    onEdit = onEdit,
+                    onMove = onMove,
+                    onArchive = onArchive
+                )
+            }
         )
     }
 }
 
 @Composable
-private fun TaskDetailsContent(viewModel: TaskDetailsViewModel) {
+private fun TaskDetailsContent(
+    state: State,
+    onEdit: () -> Unit,
+    onMove: () -> Unit,
+    onArchive: () -> Unit,
+) {
     FullscreenContent {
         Column(modifier = Modifier.systemBarsPadding()) {
             EasyDoneAppBar(
@@ -109,20 +149,19 @@ private fun TaskDetailsContent(viewModel: TaskDetailsViewModel) {
                     Text(stringResource(R.string.task_details_screen_title))
                 },
                 actions = {
-                    IconButton(onClick = viewModel::onEdit) {
+                    IconButton(onClick = onEdit) {
                         Icon(Icons.Default.Edit, "")
                     }
                 }
             )
             VerticallySplitContent(
                 topContent = {
-                    val state by viewModel.state.collectAsState()
                     TaskContent(state)
                 },
                 bottomContent = {
                     BottomActions(
-                        onMove = viewModel::onMove,
-                        onArchive = viewModel::onArchive
+                        onMove = onMove,
+                        onArchive = onArchive
                     )
                 },
                 modifier = Modifier.fillMaxSize()

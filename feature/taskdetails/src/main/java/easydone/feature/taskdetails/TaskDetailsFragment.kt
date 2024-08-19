@@ -7,9 +7,6 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import easydone.core.domain.DomainRepository
 
 
@@ -18,22 +15,14 @@ class TaskDetailsFragment(
     private val navigator: TaskDetailsNavigator
 ) : Fragment() {
 
-    private val id: String by lazy { arguments?.getString(TASK_ID) ?: error("ID must be provided") }
-
-    private val viewModel: TaskDetailsViewModel by viewModels(factoryProducer = {
-        viewModelFactory {
-            initializer {
-                TaskDetailsViewModel(id, repository, navigator)
-            }
-        }
-    })
+    private val taskId: String by lazy { arguments?.getString(TASK_ID) ?: error("ID must be provided") }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
-        setContent { TaskDetailsScreen(viewModel) }
+        setContent { TaskDetailsRoute(taskId, repository, navigator) }
     }
 
     companion object {
