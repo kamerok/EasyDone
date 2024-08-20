@@ -20,4 +20,4 @@ internal sealed class Event
 
 internal data class OpenSelectType(val currentType: Task.Type) : Event()
 
-internal object CloseSelectType : Event()
+internal data object CloseSelectType : Event()

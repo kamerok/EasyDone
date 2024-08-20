@@ -47,6 +47,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.strings.R
 import easydone.coreui.design.AppTheme
@@ -54,6 +56,7 @@ import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.IconImportant
 import easydone.coreui.design.IconUrgent
 import easydone.feature.selecttype.TypeSelector
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -62,9 +65,42 @@ import java.time.Period
 import java.time.format.DateTimeFormatter
 
 
+@Composable
+internal fun EditTaskRoute(
+    args: EditTaskViewModel.Args,
+    repository: DomainRepository,
+    navigator: EditTaskNavigator
+) {
+    val viewModel: EditTaskViewModel = viewModel {
+        EditTaskViewModel(args, repository, navigator)
+    }
+    val state by viewModel.state.collectAsState()
+    EditTaskScreen(
+        events = viewModel.events,
+        state = state,
+        onTypeClick = viewModel::onTypeClick,
+        onTypeSelected = viewModel::onTypeSelected,
+        onUrgentClick = viewModel::onUrgentClick,
+        onImportantClick = viewModel::onImportantClick,
+        onSave = viewModel::onSave,
+        onTitleChange = viewModel::onTitleChange,
+        onDescriptionChange = viewModel::onDescriptionChange
+    )
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-internal fun EditTaskScreen(viewModel: EditTaskViewModel) {
+internal fun EditTaskScreen(
+    events: Flow<Event>,
+    state: State,
+    onTypeClick: () -> Unit,
+    onTypeSelected: (Task.Type) -> Unit,
+    onUrgentClick: () -> Unit,
+    onImportantClick: () -> Unit,
+    onSave: () -> Unit,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+) {
     AppTheme {
         FullscreenContent {
             val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -76,15 +112,16 @@ internal fun EditTaskScreen(viewModel: EditTaskViewModel) {
 
             var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
 
-            LaunchedEffect(viewModel) {
-                viewModel.events
+            LaunchedEffect(events) {
+                events
                     .onEach {
                         when (it) {
                             is OpenSelectType -> {
                                 selectorType = it.currentType
-                                sheetState.show()
+                                scope.launch { sheetState.show() }
                             }
-                            is CloseSelectType -> sheetState.hide()
+
+                            is CloseSelectType -> scope.launch { sheetState.hide() }
                         }
                     }
                     .launchIn(this)
@@ -95,18 +132,35 @@ internal fun EditTaskScreen(viewModel: EditTaskViewModel) {
                 sheetContent = {
                     TypeSelector(
                         type = selectorType,
-                        onTypeSelected = viewModel::onTypeSelected
+                        onTypeSelected = onTypeSelected
                     )
                 },
-                content = { EditTaskContent(viewModel) }
+                content = {
+                    EditTaskContent(
+                        state = state,
+                        onTypeClick = onTypeClick,
+                        onUrgentClick = onUrgentClick,
+                        onImportantClick = onImportantClick,
+                        onSave = onSave,
+                        onTitleChange = onTitleChange,
+                        onDescriptionChange = onDescriptionChange
+                    )
+                }
             )
         }
     }
 }
 
 @Composable
-private fun EditTaskContent(viewModel: EditTaskViewModel) {
-    val state = viewModel.state.collectAsState().value
+private fun EditTaskContent(
+    state: State,
+    onTypeClick: () -> Unit,
+    onUrgentClick: () -> Unit,
+    onImportantClick: () -> Unit,
+    onSave: () -> Unit,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+) {
     if (state is ContentState) {
         val focusRequester = remember { FocusRequester() }
         if (state.isCreate) {
@@ -120,28 +174,28 @@ private fun EditTaskContent(viewModel: EditTaskViewModel) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     TaskType(
                         label = state.type.format(),
-                        onClick = viewModel::onTypeClick
+                        onClick = onTypeClick
                     )
                     TaskTitle(
                         text = state.title,
                         error = state.titleError,
-                        onChange = viewModel::onTitleChange,
+                        onChange = onTitleChange,
                         modifier = Modifier.focusRequester(focusRequester)
                     )
                     TaskDescription(
                         text = state.description,
-                        onDescriptionChange = viewModel::onDescriptionChange
+                        onDescriptionChange = onDescriptionChange
                     )
                     TaskMarkers(
                         isUrgent = state.isUrgent,
                         isImportant = state.isImportant,
-                        onUrgentClick = viewModel::onUrgentClick,
-                        onImportantClick = viewModel::onImportantClick
+                        onUrgentClick = onUrgentClick,
+                        onImportantClick = onImportantClick
                     )
                 }
             },
             bottomContent = {
-                SaveButton(viewModel::onSave)
+                SaveButton(onSave)
             }
         )
     }
@@ -166,6 +220,7 @@ private fun Task.Type.format() = when (this) {
         }
         " until ${it.format(DateTimeFormatter.ofPattern("d MMM y"))} ($periodString)"
     })
+
     is Task.Type.Project -> "PROJECT"
     is Task.Type.Maybe -> "MAYBE"
 }

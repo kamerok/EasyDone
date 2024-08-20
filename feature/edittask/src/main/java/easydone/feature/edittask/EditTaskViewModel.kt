@@ -150,13 +150,13 @@ internal class EditTaskViewModel(
     }
 
     private sealed class Action {
-        object TypeClick : Action()
+        data object TypeClick : Action()
         data class TypeSelected(val type: Task.Type) : Action()
         data class TitleChange(val title: String) : Action()
         data class DescriptionChange(val description: String) : Action()
-        object UrgentClick : Action()
-        object ImportantClick : Action()
-        object Save : Action()
+        data object UrgentClick : Action()
+        data object ImportantClick : Action()
+        data object Save : Action()
     }
 
     internal sealed class Args : Serializable {

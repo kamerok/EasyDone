@@ -13,8 +13,8 @@ dependencies {
     implementation(projects.feature.selecttype)
 
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.app.compat)
     implementation(libs.androidx.compose.tooling)
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.fragment)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 }
