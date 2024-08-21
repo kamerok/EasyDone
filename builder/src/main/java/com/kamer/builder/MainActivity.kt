@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
         navigator.init(this, R.id.containerView)
         if (savedInstanceState == null) StartFlow.start(
             intent.action == ACTION_SANDBOX,
-            intent.getBooleanExtra("inbox", false)
+            !intent.isOpenedFromHistory() && intent.getBooleanExtra("inbox", false)
         )
     }
 
@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
         onBackPressedDispatcher.onBackPressed()
         return true
     }
+
+    private fun Intent.isOpenedFromHistory(): Boolean =
+        flags == (Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
 
     private fun setupSplashScreen() {
         installSplashScreen().setOnExitAnimationListener { splashScreenView ->
