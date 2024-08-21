@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.easydone.android.library)
+    alias(libs.plugins.easydone.android.library.compose)
 }
 
 android {
@@ -33,6 +33,7 @@ dependencies {
     implementation(libs.androidx.app.compat)
     implementation(libs.androidx.datastore.prefs)
     implementation(libs.androidx.fragment)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.splash)
     implementation(libs.androidx.work)
     implementation(libs.koin)

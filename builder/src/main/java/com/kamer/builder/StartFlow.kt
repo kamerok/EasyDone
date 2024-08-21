@@ -23,7 +23,6 @@ import easydone.core.domain.Synchronizer
 import easydone.core.domain.model.Task
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
-import easydone.feature.home.HomeFragment
 import easydone.feature.home.HomeNavigator
 import easydone.feature.inbox.InboxFragment
 import easydone.feature.inbox.InboxNavigator
@@ -124,7 +123,7 @@ object StartFlow {
         }
         val fragmentModule = module {
             factory {
-                HomeFragment(
+                MainNavigationFragment(
                     get(),
                     get(),
                     object : HomeNavigator {
@@ -290,9 +289,9 @@ object StartFlow {
         navigator: Navigator,
         isInboxDeeplink: Boolean = false
     ) = if (isInboxDeeplink) {
-        navigator.setupScreenStack(HomeFragment::class.java, InboxFragment::class.java)
+        navigator.setupScreenStack(MainNavigationFragment::class.java, InboxFragment::class.java)
     } else {
-        navigator.openScreen(HomeFragment::class.java)
+        navigator.openScreen(MainNavigationFragment::class.java)
     }
 
     private fun startViewTask(id: String, navigator: Navigator) =

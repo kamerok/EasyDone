@@ -55,7 +55,7 @@ import java.time.Period
 import java.util.UUID
 
 @Composable
-internal fun HomeRoute(
+fun HomeRoute(
     syncScheduler: SyncScheduler,
     domainRepository: DomainRepository,
     navigator: HomeNavigator
