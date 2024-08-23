@@ -33,8 +33,6 @@ import easydone.feature.settings.SettingsNavigator
 import easydone.feature.setupflow.SetupFragment
 import easydone.feature.taskdetails.TaskDetailsFragment
 import easydone.feature.taskdetails.TaskDetailsNavigator
-import easydone.feature.waiting.WaitingFragment
-import easydone.feature.waiting.WaitingNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.service.trello.TrelloRemoteDataSource
@@ -139,13 +137,9 @@ object StartFlow {
                             get<Navigator>().openScreen(InboxFragment::class.java, true)
                         }
 
-                        override fun navigateToWaiting() {
-                            get<Navigator>().openScreen(WaitingFragment::class.java, true)
-                        }
+                        override fun navigateToWaiting() {}
 
-                        override fun navigateToTask(id: String) {
-                            startViewTask(id, get())
-                        }
+                        override fun navigateToTask(id: String) {}
                     },
                     object : TaskDetailsNavigator {
                         private val navigator = get<Navigator>()
@@ -174,16 +168,6 @@ object StartFlow {
 
                         override fun close() {
                             get<Navigator>().popScreen()
-                        }
-                    }
-                )
-            }
-            factory {
-                WaitingFragment(
-                    get(),
-                    object : WaitingNavigator {
-                        override fun openTask(id: String) {
-                            startViewTask(id, get())
                         }
                     }
                 )

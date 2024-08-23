@@ -62,7 +62,7 @@ import java.util.UUID
 
 
 @Composable
-internal fun WaitingRoute(
+fun WaitingRoute(
     repository: DomainRepository,
     navigator: WaitingNavigator
 ) {

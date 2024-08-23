@@ -84,14 +84,6 @@ internal class HomeViewModel(
         navigator.navigateToInbox()
     }
 
-    fun onTaskClick(task: UiTask) {
-        navigator.navigateToTask(task.id)
-    }
-
-    fun onWaitingMore() {
-        navigator.navigateToWaiting()
-    }
-
     fun onSettings() {
         navigator.navigateToSettings()
     }
