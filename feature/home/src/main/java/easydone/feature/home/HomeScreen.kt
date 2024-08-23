@@ -58,7 +58,8 @@ import java.util.UUID
 fun HomeRoute(
     syncScheduler: SyncScheduler,
     domainRepository: DomainRepository,
-    navigator: HomeNavigator
+    navigator: HomeNavigator,
+    taskClick: ((UiTask) -> Unit)? = null
 ) {
     val viewModel: HomeViewModel = viewModel {
         HomeViewModel(syncScheduler, domainRepository, navigator)
@@ -70,7 +71,7 @@ fun HomeRoute(
         viewModel::onSettings,
         viewModel::onAdd,
         viewModel::onSort,
-        viewModel::onTaskClick,
+        taskClick ?: viewModel::onTaskClick,
         viewModel::onWaitingMore
     )
 }

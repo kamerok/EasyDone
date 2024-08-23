@@ -62,7 +62,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun TaskDetailsRoute(
+fun TaskDetailsRoute(
     id: String,
     repository: DomainRepository,
     navigator: TaskDetailsNavigator

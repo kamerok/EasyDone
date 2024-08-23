@@ -146,6 +146,21 @@ object StartFlow {
                         override fun navigateToTask(id: String) {
                             startViewTask(id, get())
                         }
+                    },
+                    object : TaskDetailsNavigator {
+                        private val navigator = get<Navigator>()
+
+                        override fun editTask(id: String) {
+                            navigator.openScreen(
+                                fragmentClass = EditTaskFragment::class.java,
+                                addToBackStack = true,
+                                args = EditTaskFragment.editArgs(id)
+                            )
+                        }
+
+                        override fun close() {
+                            navigator.popScreen()
+                        }
                     }
                 )
             }
