@@ -4,14 +4,12 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import easydone.feature.inbox.InboxFragment
 import org.koin.android.ext.android.inject
-import easydone.coreui.design.R as designR
 
 
 class MainActivity : AppCompatActivity(R.layout.activity_container) {
@@ -22,7 +20,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
         supportFragmentManager.fragmentFactory = CustomFragmentFactory
 
         setupSplashScreen()
-        hideSystemUI()
+        enableEdgeToEdge()
 
         super.onCreate(savedInstanceState)
 
@@ -59,15 +57,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
                     doOnEnd { splashScreenView.remove() }
                 }
                 .start()
-        }
-    }
-
-    private fun hideSystemUI() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, findViewById(android.R.id.content)).let { controller ->
-            val isLightSystemBars = resources.getBoolean(designR.bool.light_system_bars)
-            controller.isAppearanceLightStatusBars = isLightSystemBars
-            controller.isAppearanceLightNavigationBars = isLightSystemBars
         }
     }
 
