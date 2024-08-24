@@ -14,9 +14,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.SyncScheduler
 import easydone.feature.home.HomeNavigator
 import easydone.feature.home.HomeRoute
+import easydone.feature.settings.SettingScreen
+import easydone.feature.settings.SettingsNavigator
 import easydone.feature.taskdetails.TaskDetailsNavigator
 import easydone.feature.taskdetails.TaskDetailsRoute
 import easydone.feature.waiting.WaitingNavigator
@@ -25,8 +28,10 @@ import easydone.feature.waiting.WaitingRoute
 class MainNavigationFragment(
     private val syncScheduler: SyncScheduler,
     private val domainRepository: DomainRepository,
+    private val remoteDataSource: RemoteDataSource,
     private val homeNavigator: HomeNavigator,
     private val taskDetailsNavigator: TaskDetailsNavigator,
+    private val settingsNavigator: SettingsNavigator,
 ) : Fragment() {
 
     override fun onCreateView(
@@ -48,7 +53,9 @@ class MainNavigationFragment(
                     HomeRoute(syncScheduler, domainRepository, object : HomeNavigator {
                         override fun navigateToCreate() = homeNavigator.navigateToCreate()
 
-                        override fun navigateToSettings() = homeNavigator.navigateToSettings()
+                        override fun navigateToSettings() {
+                            navController.navigate("settings")
+                        }
 
                         override fun navigateToInbox() = homeNavigator.navigateToInbox()
 
@@ -68,6 +75,10 @@ class MainNavigationFragment(
                             navController.openViewTask(id)
                         }
                     })
+                }
+
+                composable("settings") {
+                    SettingScreen(remoteDataSource, settingsNavigator)
                 }
 
                 composable(

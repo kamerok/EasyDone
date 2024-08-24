@@ -67,7 +67,7 @@ fun HomeRoute(
     HomeScreen(
         state,
         viewModel::onSync,
-        viewModel::onSettings,
+        navigator::navigateToSettings,
         viewModel::onAdd,
         viewModel::onSort,
         { navigator.navigateToTask(it.id) },

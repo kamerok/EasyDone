@@ -28,7 +28,6 @@ import easydone.feature.inbox.InboxFragment
 import easydone.feature.inbox.InboxNavigator
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
-import easydone.feature.settings.SettingsFragment
 import easydone.feature.settings.SettingsNavigator
 import easydone.feature.setupflow.SetupFragment
 import easydone.feature.taskdetails.TaskDetailsFragment
@@ -124,14 +123,13 @@ object StartFlow {
                 MainNavigationFragment(
                     get(),
                     get(),
+                    get(),
                     object : HomeNavigator {
                         override fun navigateToCreate() {
                             startCreateTask(get())
                         }
 
-                        override fun navigateToSettings() {
-                            startSettings(get())
-                        }
+                        override fun navigateToSettings() {}
 
                         override fun navigateToInbox() {
                             get<Navigator>().openScreen(InboxFragment::class.java, true)
@@ -154,6 +152,11 @@ object StartFlow {
 
                         override fun close() {
                             navigator.popScreen()
+                        }
+                    },
+                    object : SettingsNavigator {
+                        override fun navigateToSetup() {
+                            runBlocking { startInitialFlow() }
                         }
                     }
                 )
@@ -213,16 +216,6 @@ object StartFlow {
                     object : QuickCreateTaskNavigator {
                         override fun closeScreen() {
                             ActivityHolder.getActivity().finishAffinity()
-                        }
-                    }
-                )
-            }
-            factory {
-                SettingsFragment(
-                    get(),
-                    object : SettingsNavigator {
-                        override fun navigateToSetup() {
-                            runBlocking { startInitialFlow() }
                         }
                     }
                 )
@@ -306,8 +299,5 @@ object StartFlow {
             true,
             EditTaskFragment.createArgs(type = Task.Type.ToDo)
         )
-
-    private fun startSettings(navigator: Navigator) =
-        navigator.openScreen(SettingsFragment::class.java, true)
 
 }

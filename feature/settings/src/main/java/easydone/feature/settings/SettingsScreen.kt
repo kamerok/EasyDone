@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-internal fun SettingScreen(
+fun SettingScreen(
     remoteDataSource: RemoteDataSource,
     navigator: SettingsNavigator
 ) {

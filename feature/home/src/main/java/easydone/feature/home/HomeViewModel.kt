@@ -84,10 +84,6 @@ internal class HomeViewModel(
         navigator.navigateToInbox()
     }
 
-    fun onSettings() {
-        navigator.navigateToSettings()
-    }
-
     fun onSync() {
         syncScheduler.initiateSync()
     }

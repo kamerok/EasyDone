@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentFactory
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.inbox.InboxFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
-import easydone.feature.settings.SettingsFragment
 import easydone.feature.setupflow.SetupFragment
 import easydone.feature.taskdetails.TaskDetailsFragment
 import org.koin.core.context.GlobalContext
@@ -24,7 +23,6 @@ object CustomFragmentFactory : FragmentFactory() {
             QuickCreateTaskFragment::class.java.name -> GlobalContext.get()
                 .get<QuickCreateTaskFragment>()
 
-            SettingsFragment::class.java.name -> GlobalContext.get().get<SettingsFragment>()
             SetupFragment::class.java.name -> GlobalContext.get().get<SetupFragment>()
             else -> super.instantiate(classLoader, className)
         }
