@@ -28,8 +28,7 @@ import easydone.library.navigation.Navigator
 import easydone.service.trello.TrelloRemoteDataSource
 import easydone.service.trello.api.TrelloApi
 import easydone.widget.updateWidget
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import okhttp3.Interceptor
@@ -70,6 +69,7 @@ object StartFlow {
 
     fun initDependencies(
         application: Application,
+        applicationScope: CoroutineScope,
         trelloApiKey: String,
         debugInterceptor: Interceptor?
     ) {
@@ -77,7 +77,7 @@ object StartFlow {
             single { DomainRepository(get()) }
             single<SyncDelegate> { WorkManagerSyncDelegate(get()) }
             single { Synchronizer(get(), get()) }
-            single { SyncScheduler(get(), get()) }
+            single { SyncScheduler(get(), get(), applicationScope) }
             single {
                 TrelloRemoteDataSource(
                     api = get(),
@@ -139,13 +139,12 @@ object StartFlow {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    fun startWidgetUpdates() {
+    fun startWidgetUpdates(scope: CoroutineScope) {
         val repo = GlobalContext.get().get<DomainRepository>()
         val context = GlobalContext.get().get<Context>()
         repo.getAllTasks()
             .onEach { updateWidget(context) }
-            .launchIn(GlobalScope)
+            .launchIn(scope)
     }
 
     fun workManagerConfiguration(): Configuration = Configuration.Builder()
@@ -170,10 +169,6 @@ object StartFlow {
     private fun startInitialFlow() {
         val navigator: Navigator = GlobalContext.get().get()
         navigator.clearStack()
-        startMainFlow(navigator)
-    }
-
-    private fun startMainFlow(navigator: Navigator) {
         navigator.openScreen(MainNavigationFragment::class.java)
     }
 

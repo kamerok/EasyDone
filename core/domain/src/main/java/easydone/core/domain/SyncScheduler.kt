@@ -1,7 +1,6 @@
 package easydone.core.domain
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -10,7 +9,7 @@ import kotlinx.coroutines.flow.onEach
 class SyncScheduler(
     private val localDataSource: LocalDataSource,
     private val syncDelegate: SyncDelegate,
-    scope: CoroutineScope = GlobalScope
+    scope: CoroutineScope
 ) {
 
     init {
