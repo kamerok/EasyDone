@@ -72,7 +72,7 @@ fun WaitingRoute(
     val state by viewModel.state.collectAsState()
     WaitingScreen(
         state = state,
-        onTaskClick = viewModel::onTaskClick
+        onTaskClick = { navigator.openTask(it.id) }
     )
 }
 
