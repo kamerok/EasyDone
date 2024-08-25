@@ -27,10 +27,6 @@ internal class InboxViewModel(
                 initialValue = State(emptyList())
             )
 
-    fun onTaskClick(task: UiTask) {
-        navigator.openTask(task.id)
-    }
-
     private fun Task.toUiTask() = UiTask(
         id = id,
         title = title,

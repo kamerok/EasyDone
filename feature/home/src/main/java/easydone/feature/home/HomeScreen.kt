@@ -61,15 +61,15 @@ fun HomeRoute(
     navigator: HomeNavigator
 ) {
     val viewModel: HomeViewModel = viewModel {
-        HomeViewModel(syncScheduler, domainRepository, navigator)
+        HomeViewModel(syncScheduler, domainRepository)
     }
     val state by viewModel.state.collectAsState()
     HomeScreen(
         state,
         viewModel::onSync,
         navigator::navigateToSettings,
-        viewModel::onAdd,
-        viewModel::onSort,
+        navigator::navigateToCreate,
+        navigator::navigateToInbox,
         { navigator.navigateToTask(it.id) },
         navigator::navigateToWaiting
     )

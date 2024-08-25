@@ -37,7 +37,7 @@ import java.util.UUID
 
 
 @Composable
-internal fun InboxRoute(
+fun InboxRoute(
     repository: DomainRepository,
     navigator: InboxNavigator
 ) {
@@ -47,14 +47,14 @@ internal fun InboxRoute(
     val state by viewModel.state.collectAsState()
     InboxScreen(
         state = state,
-        onTaskClick = viewModel::onTaskClick
+        onTaskClick = navigator::openTask
     )
 }
 
 @Composable
 internal fun InboxScreen(
     state: State,
-    onTaskClick: (UiTask) -> Unit
+    onTaskClick: (String) -> Unit
 ) {
     AppTheme {
         FullscreenContent {
@@ -79,7 +79,7 @@ internal fun InboxScreen(
                             task = task,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { onTaskClick(task) }
+                                .clickable { onTaskClick(task.id) }
                         )
                     }
                     item(span = StaggeredGridItemSpan.FullLine) {

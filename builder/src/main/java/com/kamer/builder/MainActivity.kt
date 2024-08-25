@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import easydone.feature.inbox.InboxFragment
 import org.koin.android.ext.android.inject
 
 
@@ -30,15 +29,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
             intent.action == ACTION_SANDBOX,
             !intent.isOpenedFromHistory() && intent.getBooleanExtra("inbox", false)
         )
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        //check inbox deeplink
-        if (intent.getBooleanExtra("inbox", false)) {
-            navigator.clearStack()
-            navigator.openScreen(InboxFragment::class.java, true)
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

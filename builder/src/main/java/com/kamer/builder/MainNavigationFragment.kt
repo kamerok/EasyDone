@@ -1,12 +1,15 @@
 package com.kamer.builder
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.util.Consumer
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -14,11 +17,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.SyncScheduler
 import easydone.feature.home.HomeNavigator
 import easydone.feature.home.HomeRoute
+import easydone.feature.inbox.InboxNavigator
+import easydone.feature.inbox.InboxRoute
 import easydone.feature.settings.SettingScreen
 import easydone.feature.settings.SettingsNavigator
 import easydone.feature.setupflow.SetupRoute
@@ -64,6 +70,21 @@ class MainNavigationFragment(
                 "setup"
             }
 
+            DisposableEffect(Unit) {
+                val listener = Consumer<Intent> { intent ->
+                    //check inbox deeplink
+                    if (intent.getBooleanExtra("inbox", false)) {
+                        with(navController) {
+                            navigate("inbox", navOptions {
+                                popUpTo("home") {}
+                            })
+                        }
+                    }
+                }
+                requireActivity().addOnNewIntentListener(listener)
+                onDispose { requireActivity().removeOnNewIntentListener(listener) }
+            }
+
             NavHost(navController = navController, startDestination = startDestination) {
                 composable("setup") {
                     SetupRoute(
@@ -84,7 +105,9 @@ class MainNavigationFragment(
                             navController.navigate("settings")
                         }
 
-                        override fun navigateToInbox() = homeNavigator.navigateToInbox()
+                        override fun navigateToInbox() {
+                            navController.navigate("inbox")
+                        }
 
                         override fun navigateToWaiting() {
                             navController.navigate("waiting")
@@ -94,6 +117,21 @@ class MainNavigationFragment(
                             navController.openViewTask(id)
                         }
                     })
+                }
+
+                composable("inbox") {
+                    InboxRoute(
+                        domainRepository,
+                        object : InboxNavigator {
+                            override fun openTask(id: String) {
+                                navController.openViewTask(id)
+                            }
+
+                            override fun close() {
+                                navController.popBackStack()
+                            }
+                        }
+                    )
                 }
 
                 composable("waiting") {

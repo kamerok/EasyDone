@@ -24,12 +24,9 @@ import easydone.core.domain.model.Task
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.home.HomeNavigator
-import easydone.feature.inbox.InboxFragment
-import easydone.feature.inbox.InboxNavigator
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
 import easydone.feature.settings.SettingsNavigator
-import easydone.feature.taskdetails.TaskDetailsFragment
 import easydone.feature.taskdetails.TaskDetailsNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
@@ -130,9 +127,7 @@ object StartFlow {
 
                         override fun navigateToSettings() {}
 
-                        override fun navigateToInbox() {
-                            get<Navigator>().openScreen(InboxFragment::class.java, true)
-                        }
+                        override fun navigateToInbox() {}
 
                         override fun navigateToWaiting() {}
 
@@ -161,40 +156,6 @@ object StartFlow {
                     get(),
                     get(),
                     trelloApiKey,
-                )
-            }
-            factory {
-                InboxFragment(
-                    get(),
-                    object : InboxNavigator {
-                        override fun openTask(id: String) {
-                            startViewTask(id, get())
-                        }
-
-                        override fun close() {
-                            get<Navigator>().popScreen()
-                        }
-                    }
-                )
-            }
-            factory {
-                TaskDetailsFragment(
-                    get(),
-                    object : TaskDetailsNavigator {
-                        private val navigator = get<Navigator>()
-
-                        override fun editTask(id: String) {
-                            navigator.openScreen(
-                                fragmentClass = EditTaskFragment::class.java,
-                                addToBackStack = true,
-                                args = EditTaskFragment.editArgs(id)
-                            )
-                        }
-
-                        override fun close() {
-                            navigator.popScreen()
-                        }
-                    }
                 )
             }
             factory {
@@ -272,17 +233,11 @@ object StartFlow {
         navigator: Navigator,
         isInboxDeeplink: Boolean = false
     ) = if (isInboxDeeplink) {
-        navigator.setupScreenStack(MainNavigationFragment::class.java, InboxFragment::class.java)
+        // TODO: start inbox
+        navigator.setupScreenStack(MainNavigationFragment::class.java)
     } else {
         navigator.openScreen(MainNavigationFragment::class.java)
     }
-
-    private fun startViewTask(id: String, navigator: Navigator) =
-        navigator.openScreen(
-            TaskDetailsFragment::class.java,
-            true,
-            TaskDetailsFragment.createArgs(id)
-        )
 
     private fun startCreateTask(navigator: Navigator) =
         navigator.openScreen(

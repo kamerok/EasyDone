@@ -15,7 +15,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.tooling)
     implementation(libs.androidx.compose.material3.adaptive)
-    implementation(libs.androidx.fragment)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.compose.markdown)
 }

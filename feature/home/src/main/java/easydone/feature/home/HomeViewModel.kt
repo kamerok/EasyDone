@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 
 internal class HomeViewModel(
     private val syncScheduler: SyncScheduler,
-    repository: DomainRepository,
-    private val navigator: HomeNavigator
+    repository: DomainRepository
 ) : ViewModel() {
 
     val state: StateFlow<State> =
@@ -74,14 +73,6 @@ internal class HomeViewModel(
 
     init {
         syncScheduler.initiateSync()
-    }
-
-    fun onAdd() {
-        navigator.navigateToCreate()
-    }
-
-    fun onSort() {
-        navigator.navigateToInbox()
     }
 
     fun onSync() {
