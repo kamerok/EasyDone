@@ -17,10 +17,7 @@ class ShareActivity : AppCompatActivity() {
     private val repository: DomainRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        supportFragmentManager.fragmentFactory = CustomFragmentFactory
-
         enableEdgeToEdge()
-
         super.onCreate(savedInstanceState)
 
         setContent {

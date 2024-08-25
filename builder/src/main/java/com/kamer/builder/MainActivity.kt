@@ -3,6 +3,7 @@ package com.kamer.builder
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
@@ -15,18 +16,20 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
     private val navigator: ActivityNavigator by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        supportFragmentManager.fragmentFactory = CustomFragmentFactory
-
         setupSplashScreen()
         enableEdgeToEdge()
-
         super.onCreate(savedInstanceState)
 
         ActivityHolder.setActivity(this)
         navigator.init(this, R.id.containerView)
-        if (savedInstanceState == null) StartFlow.start(
-            intent.action == ACTION_SANDBOX
-        )
+        if (savedInstanceState == null) {
+            if (intent.action == ACTION_SANDBOX) StartFlow.enableSandbox()
+        }
+
+        val mainNavigationScreenHolder = MainNavigationScreenHolder(this)
+        setContent {
+            mainNavigationScreenHolder.MainScreen()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

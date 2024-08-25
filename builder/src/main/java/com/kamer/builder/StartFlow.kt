@@ -20,7 +20,6 @@ import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.SyncDelegate
 import easydone.core.domain.SyncScheduler
 import easydone.core.domain.Synchronizer
-import easydone.feature.settings.SettingsNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.service.trello.TrelloRemoteDataSource
@@ -46,12 +45,9 @@ val Context.mappingsDataStore: DataStore<Preferences> by preferencesDataStore(
 
 object StartFlow {
 
-    fun start(isSandbox: Boolean) {
-        if (isSandbox) {
-            GlobalContext.get().get<LocalDataSourceDecorator>().switchToSandbox()
-            GlobalContext.get().get<RemoteDataSourceDecorator>().switchToSandbox()
-        }
-        startInitialFlow()
+    fun enableSandbox() {
+        GlobalContext.get().get<LocalDataSourceDecorator>().switchToSandbox()
+        GlobalContext.get().get<RemoteDataSourceDecorator>().switchToSandbox()
     }
 
     fun startSyncing() {
@@ -92,26 +88,9 @@ object StartFlow {
             single { ActivityNavigator() }
             single<Navigator> { get<ActivityNavigator>() }
         }
-        val fragmentModule = module {
-            factory {
-                MainNavigationFragment(
-                    get(),
-                    get(),
-                    get(),
-                    object : SettingsNavigator {
-                        override fun navigateToSetup() {
-                            startInitialFlow()
-                        }
-                    },
-                    get(),
-                    get(),
-                    trelloApiKey,
-                )
-            }
-        }
         startKoin {
             androidContext(application)
-            modules(listOf(module, fragmentModule))
+            modules(listOf(module))
         }
     }
 
@@ -141,11 +120,5 @@ object StartFlow {
             }
         })
         .build()
-
-    private fun startInitialFlow() {
-        val navigator: Navigator = GlobalContext.get().get()
-        navigator.clearStack()
-        navigator.openScreen(MainNavigationFragment::class.java)
-    }
 
 }
