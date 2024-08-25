@@ -27,7 +27,6 @@ import easydone.feature.home.HomeNavigator
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
 import easydone.feature.settings.SettingsNavigator
-import easydone.feature.taskdetails.TaskDetailsNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
 import easydone.service.trello.TrelloRemoteDataSource
@@ -132,21 +131,6 @@ object StartFlow {
                         override fun navigateToWaiting() {}
 
                         override fun navigateToTask(id: String) {}
-                    },
-                    object : TaskDetailsNavigator {
-                        private val navigator = get<Navigator>()
-
-                        override fun editTask(id: String) {
-                            navigator.openScreen(
-                                fragmentClass = EditTaskFragment::class.java,
-                                addToBackStack = true,
-                                args = EditTaskFragment.editArgs(id)
-                            )
-                        }
-
-                        override fun close() {
-                            navigator.popScreen()
-                        }
                     },
                     object : SettingsNavigator {
                         override fun navigateToSetup() {

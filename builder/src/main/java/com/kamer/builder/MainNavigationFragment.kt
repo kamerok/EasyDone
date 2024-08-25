@@ -21,6 +21,9 @@ import androidx.navigation.navOptions
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.SyncScheduler
+import easydone.feature.edittask.EditTaskArgs
+import easydone.feature.edittask.EditTaskNavigator
+import easydone.feature.edittask.EditTaskRoute
 import easydone.feature.home.HomeNavigator
 import easydone.feature.home.HomeRoute
 import easydone.feature.inbox.InboxNavigator
@@ -41,7 +44,6 @@ class MainNavigationFragment(
     private val domainRepository: DomainRepository,
     private val remoteDataSource: RemoteDataSource,
     private val homeNavigator: HomeNavigator,
-    private val taskDetailsNavigator: TaskDetailsNavigator,
     private val settingsNavigator: SettingsNavigator,
     private val trelloRemoteDataSource: TrelloRemoteDataSource,
     private val trelloApi: TrelloApi,
@@ -56,6 +58,10 @@ class MainNavigationFragment(
 
         fun NavController.openViewTask(id: String) {
             navigate("task/$id")
+        }
+
+        fun NavController.openEditTask(id: String) {
+            navigate("task/edit/$id")
         }
 
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -155,11 +161,26 @@ class MainNavigationFragment(
                     }
                     TaskDetailsRoute(id, domainRepository, object : TaskDetailsNavigator {
                         override fun editTask(id: String) {
-                            taskDetailsNavigator.editTask(id)
+                            navController.openEditTask(id)
                         }
 
                         override fun close() {
                             navController.popBackStack()
+                        }
+                    })
+                }
+
+                composable(
+                    route = "task/edit/{taskId}",
+                    arguments = listOf(navArgument("taskId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val id = checkNotNull(backStackEntry.arguments?.getString("taskId")) {
+                        "Task id is required"
+                    }
+                    val args = remember { EditTaskArgs.Edit(id) }
+                    EditTaskRoute(args, domainRepository, object : EditTaskNavigator {
+                        override fun close() {
+                            requireActivity().onBackPressedDispatcher.onBackPressed()
                         }
                     })
                 }

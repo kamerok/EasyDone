@@ -17,11 +17,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
-import java.io.Serializable
 
 
 internal class EditTaskViewModel(
-    private val args: Args,
+    private val args: EditTaskArgs,
     private val repository: DomainRepository,
     private val navigator: EditTaskNavigator
 ) : ViewModel() {
@@ -31,7 +30,7 @@ internal class EditTaskViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<State> = flow {
-        if (args is Args.Edit) {
+        if (args is EditTaskArgs.Edit) {
             emit(repository.getTask(args.id))
         } else {
             emit(null)
@@ -43,10 +42,10 @@ internal class EditTaskViewModel(
                 .scan(
                     ContentState(
                         isCreate = originalTask == null,
-                        type = originalTask?.type ?: (args as? Args.Create)?.type ?: Task.Type.Inbox,
+                        type = originalTask?.type ?: (args as? EditTaskArgs.Create)?.type ?: Task.Type.Inbox,
                         title = originalTask?.title ?: "",
                         titleError = null,
-                        description = originalTask?.description ?: (args as? Args.Create)?.title
+                        description = originalTask?.description ?: (args as? EditTaskArgs.Create)?.title
                         ?: "",
                         isUrgent = originalTask?.markers?.isUrgent ?: false,
                         isImportant = originalTask?.markers?.isImportant ?: false
@@ -157,14 +156,5 @@ internal class EditTaskViewModel(
         data object UrgentClick : Action()
         data object ImportantClick : Action()
         data object Save : Action()
-    }
-
-    internal sealed class Args : Serializable {
-        data class Create(
-            val title: String = "",
-            val type: Task.Type = Task.Type.Inbox
-        ) : Args()
-
-        data class Edit(val id: String) : Args()
     }
 }

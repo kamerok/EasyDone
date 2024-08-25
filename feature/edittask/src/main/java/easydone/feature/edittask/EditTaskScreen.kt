@@ -60,14 +60,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
 
 
 @Composable
-internal fun EditTaskRoute(
-    args: EditTaskViewModel.Args,
+fun EditTaskRoute(
+    args: EditTaskArgs,
     repository: DomainRepository,
     navigator: EditTaskNavigator
 ) {
@@ -391,4 +392,13 @@ private fun SaveButton(onClick: () -> Unit) {
     ) {
         Text(stringResource(R.string.edit_task_save).uppercase())
     }
+}
+
+sealed class EditTaskArgs : Serializable {
+    data class Create(
+        val title: String = "",
+        val type: Task.Type = Task.Type.Inbox
+    ) : EditTaskArgs()
+
+    data class Edit(val id: String) : EditTaskArgs()
 }

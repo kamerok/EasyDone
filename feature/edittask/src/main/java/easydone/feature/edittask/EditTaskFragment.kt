@@ -17,10 +17,10 @@ class EditTaskFragment(
     private val navigator: EditTaskNavigator
 ) : Fragment() {
 
-    private val args: EditTaskViewModel.Args by lazy {
+    private val args: EditTaskArgs by lazy {
         arguments?.let {
-            BundleCompat.getSerializable(it, ARGS, EditTaskViewModel.Args::class.java)
-        } ?: EditTaskViewModel.Args.Create()
+            BundleCompat.getSerializable(it, ARGS, EditTaskArgs::class.java)
+        } ?: EditTaskArgs.Create()
     }
 
     override fun onCreateView(
@@ -36,12 +36,12 @@ class EditTaskFragment(
     companion object {
         private const val ARGS = "args"
 
-        fun editArgs(taskId: String): Bundle = bundleOf(ARGS to EditTaskViewModel.Args.Edit(taskId))
+        fun editArgs(taskId: String): Bundle = bundleOf(ARGS to EditTaskArgs.Edit(taskId))
 
         fun createArgs(
             text: String = "",
             type: Task.Type = Task.Type.Inbox
-        ): Bundle = bundleOf(ARGS to EditTaskViewModel.Args.Create(text, type))
+        ): Bundle = bundleOf(ARGS to EditTaskArgs.Create(text, type))
     }
 
 }
