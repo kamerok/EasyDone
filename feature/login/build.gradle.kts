@@ -14,7 +14,6 @@ dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.androidx.compose.tooling)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.fragment)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.coroutines.android)
