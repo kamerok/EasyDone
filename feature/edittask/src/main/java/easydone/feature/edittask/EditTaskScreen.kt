@@ -396,7 +396,7 @@ private fun SaveButton(onClick: () -> Unit) {
 
 sealed class EditTaskArgs : Serializable {
     data class Create(
-        val title: String = "",
+        val text: String = "",
         val type: Task.Type = Task.Type.Inbox
     ) : EditTaskArgs()
 

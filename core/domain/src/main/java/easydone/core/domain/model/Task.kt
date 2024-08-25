@@ -14,11 +14,11 @@ data class Task(
 ) {
 
     sealed class Type: Serializable {
-        object Inbox : Type()
-        object ToDo : Type()
+        data object Inbox : Type()
+        data object ToDo : Type()
         data class Waiting(val date: LocalDate) : Type()
-        object Project : Type()
-        object Maybe : Type()
+        data object Project : Type()
+        data object Maybe : Type()
     }
 
 }

@@ -20,10 +20,8 @@ import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.SyncDelegate
 import easydone.core.domain.SyncScheduler
 import easydone.core.domain.Synchronizer
-import easydone.core.domain.model.Task
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
-import easydone.feature.home.HomeNavigator
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
 import easydone.feature.settings.SettingsNavigator
@@ -119,19 +117,6 @@ object StartFlow {
                     get(),
                     get(),
                     get(),
-                    object : HomeNavigator {
-                        override fun navigateToCreate() {
-                            startCreateTask(get())
-                        }
-
-                        override fun navigateToSettings() {}
-
-                        override fun navigateToInbox() {}
-
-                        override fun navigateToWaiting() {}
-
-                        override fun navigateToTask(id: String) {}
-                    },
                     object : SettingsNavigator {
                         override fun navigateToSetup() {
                             runBlocking { startInitialFlow() }
@@ -222,12 +207,5 @@ object StartFlow {
     } else {
         navigator.openScreen(MainNavigationFragment::class.java)
     }
-
-    private fun startCreateTask(navigator: Navigator) =
-        navigator.openScreen(
-            EditTaskFragment::class.java,
-            true,
-            EditTaskFragment.createArgs(type = Task.Type.ToDo)
-        )
 
 }

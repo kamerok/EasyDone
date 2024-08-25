@@ -45,7 +45,7 @@ internal class EditTaskViewModel(
                         type = originalTask?.type ?: (args as? EditTaskArgs.Create)?.type ?: Task.Type.Inbox,
                         title = originalTask?.title ?: "",
                         titleError = null,
-                        description = originalTask?.description ?: (args as? EditTaskArgs.Create)?.title
+                        description = originalTask?.description ?: (args as? EditTaskArgs.Create)?.text
                         ?: "",
                         isUrgent = originalTask?.markers?.isUrgent ?: false,
                         isImportant = originalTask?.markers?.isImportant ?: false

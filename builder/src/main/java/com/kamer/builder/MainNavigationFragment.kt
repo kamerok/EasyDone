@@ -21,6 +21,7 @@ import androidx.navigation.navOptions
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.SyncScheduler
+import easydone.core.domain.model.Task
 import easydone.feature.edittask.EditTaskArgs
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.edittask.EditTaskRoute
@@ -43,7 +44,6 @@ class MainNavigationFragment(
     private val syncScheduler: SyncScheduler,
     private val domainRepository: DomainRepository,
     private val remoteDataSource: RemoteDataSource,
-    private val homeNavigator: HomeNavigator,
     private val settingsNavigator: SettingsNavigator,
     private val trelloRemoteDataSource: TrelloRemoteDataSource,
     private val trelloApi: TrelloApi,
@@ -62,6 +62,10 @@ class MainNavigationFragment(
 
         fun NavController.openEditTask(id: String) {
             navigate("task/edit/$id")
+        }
+
+        fun NavController.openCreateTask() {
+            navigate("task/create")
         }
 
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -105,7 +109,9 @@ class MainNavigationFragment(
 
                 composable("home") {
                     HomeRoute(syncScheduler, domainRepository, object : HomeNavigator {
-                        override fun navigateToCreate() = homeNavigator.navigateToCreate()
+                        override fun navigateToCreate() {
+                            navController.openCreateTask()
+                        }
 
                         override fun navigateToSettings() {
                             navController.navigate("settings")
@@ -183,6 +189,17 @@ class MainNavigationFragment(
                             requireActivity().onBackPressedDispatcher.onBackPressed()
                         }
                     })
+                }
+
+                composable("task/create") {
+                    EditTaskRoute(
+                        EditTaskArgs.Create(type = Task.Type.ToDo),
+                        domainRepository,
+                        object : EditTaskNavigator {
+                            override fun close() {
+                                requireActivity().onBackPressedDispatcher.onBackPressed()
+                            }
+                        })
                 }
             }
         }

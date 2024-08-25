@@ -36,8 +36,6 @@ class EditTaskFragment(
     companion object {
         private const val ARGS = "args"
 
-        fun editArgs(taskId: String): Bundle = bundleOf(ARGS to EditTaskArgs.Edit(taskId))
-
         fun createArgs(
             text: String = "",
             type: Task.Type = Task.Type.Inbox
