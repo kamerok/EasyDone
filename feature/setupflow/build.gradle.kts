@@ -15,7 +15,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.app.compat)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.fragment)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

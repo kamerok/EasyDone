@@ -29,7 +29,6 @@ import easydone.feature.inbox.InboxNavigator
 import easydone.feature.quickcreatetask.QuickCreateTaskFragment
 import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
 import easydone.feature.settings.SettingsNavigator
-import easydone.feature.setupflow.SetupFragment
 import easydone.feature.taskdetails.TaskDetailsFragment
 import easydone.feature.taskdetails.TaskDetailsNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
@@ -158,7 +157,10 @@ object StartFlow {
                         override fun navigateToSetup() {
                             runBlocking { startInitialFlow() }
                         }
-                    }
+                    },
+                    get(),
+                    get(),
+                    trelloApiKey,
                 )
             }
             factory {
@@ -220,13 +222,6 @@ object StartFlow {
                     }
                 )
             }
-            factory {
-                SetupFragment(
-                    get(),
-                    get(),
-                    trelloApiKey,
-                ) { startMainFlow(get()) }
-            }
         }
         startKoin {
             androidContext(application)
@@ -269,12 +264,8 @@ object StartFlow {
         if (remoteDataSource.isConnected()) {
             startMainFlow(navigator, isInboxDeeplink)
         } else {
-            startSetupFlow(navigator)
+            startMainFlow(navigator)
         }
-    }
-
-    private fun startSetupFlow(navigator: Navigator) {
-        navigator.openScreen(SetupFragment::class.java)
     }
 
     private fun startMainFlow(
