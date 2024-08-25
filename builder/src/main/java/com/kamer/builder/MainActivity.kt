@@ -1,7 +1,6 @@
 package com.kamer.builder
 
 import android.animation.ObjectAnimator
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -26,8 +25,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
         ActivityHolder.setActivity(this)
         navigator.init(this, R.id.containerView)
         if (savedInstanceState == null) StartFlow.start(
-            intent.action == ACTION_SANDBOX,
-            !intent.isOpenedFromHistory() && intent.getBooleanExtra("inbox", false)
+            intent.action == ACTION_SANDBOX
         )
     }
 
@@ -35,9 +33,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
         onBackPressedDispatcher.onBackPressed()
         return true
     }
-
-    private fun Intent.isOpenedFromHistory(): Boolean =
-        flags == (Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
 
     private fun setupSplashScreen() {
         installSplashScreen().setOnExitAnimationListener { splashScreenView ->

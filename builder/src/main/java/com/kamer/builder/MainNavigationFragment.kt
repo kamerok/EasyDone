@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -78,6 +79,15 @@ class MainNavigationFragment(
                 "home"
             } else {
                 "setup"
+            }
+
+            LaunchedEffect(Unit) {
+                val intent = requireActivity().intent
+                val isInboxLaunch = !intent.isOpenedFromHistory() &&
+                        intent.getBooleanExtra("inbox", false)
+                if (isInboxLaunch) {
+                    navController.navigate("inbox")
+                }
             }
 
             DisposableEffect(Unit) {
@@ -204,5 +214,8 @@ class MainNavigationFragment(
             }
         }
     }
+
+    private fun Intent.isOpenedFromHistory(): Boolean =
+        flags == (Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
 
 }

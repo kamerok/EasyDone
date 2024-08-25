@@ -34,7 +34,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
@@ -52,12 +51,12 @@ val Context.mappingsDataStore: DataStore<Preferences> by preferencesDataStore(
 
 object StartFlow {
 
-    fun start(isSandbox: Boolean, isInboxDeeplink: Boolean) {
+    fun start(isSandbox: Boolean) {
         if (isSandbox) {
             GlobalContext.get().get<LocalDataSourceDecorator>().switchToSandbox()
             GlobalContext.get().get<RemoteDataSourceDecorator>().switchToSandbox()
         }
-        runBlocking { startInitialFlow(isInboxDeeplink) }
+        startInitialFlow()
     }
 
     fun startQuickCreate() {
@@ -119,7 +118,7 @@ object StartFlow {
                     get(),
                     object : SettingsNavigator {
                         override fun navigateToSetup() {
-                            runBlocking { startInitialFlow() }
+                            startInitialFlow()
                         }
                     },
                     get(),
@@ -187,24 +186,13 @@ object StartFlow {
         })
         .build()
 
-    private suspend fun startInitialFlow(isInboxDeeplink: Boolean = false) {
-        val remoteDataSource: RemoteDataSource = GlobalContext.get().get()
+    private fun startInitialFlow() {
         val navigator: Navigator = GlobalContext.get().get()
         navigator.clearStack()
-        if (remoteDataSource.isConnected()) {
-            startMainFlow(navigator, isInboxDeeplink)
-        } else {
-            startMainFlow(navigator)
-        }
+        startMainFlow(navigator)
     }
 
-    private fun startMainFlow(
-        navigator: Navigator,
-        isInboxDeeplink: Boolean = false
-    ) = if (isInboxDeeplink) {
-        // TODO: start inbox
-        navigator.setupScreenStack(MainNavigationFragment::class.java)
-    } else {
+    private fun startMainFlow(navigator: Navigator) {
         navigator.openScreen(MainNavigationFragment::class.java)
     }
 
