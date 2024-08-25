@@ -2,7 +2,6 @@ package com.kamer.builder
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import easydone.feature.edittask.EditTaskFragment
 import org.koin.core.context.GlobalContext
 
 
@@ -12,8 +11,6 @@ object CustomFragmentFactory : FragmentFactory() {
         when (className) {
             MainNavigationFragment::class.java.name -> GlobalContext.get()
                 .get<MainNavigationFragment>()
-
-            EditTaskFragment::class.java.name -> GlobalContext.get().get<EditTaskFragment>()
 
             else -> super.instantiate(classLoader, className)
         }

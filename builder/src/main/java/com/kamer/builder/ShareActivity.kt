@@ -2,37 +2,39 @@ package com.kamer.builder
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import easydone.core.domain.DomainRepository
+import easydone.feature.edittask.EditTaskArgs
+import easydone.feature.edittask.EditTaskNavigator
+import easydone.feature.edittask.EditTaskRoute
 import org.koin.android.ext.android.inject
-import easydone.coreui.design.R as designR
 
 
-class ShareActivity : AppCompatActivity(R.layout.activity_container) {
+class ShareActivity : AppCompatActivity() {
 
-    private val navigator: ActivityNavigator by inject()
+    private val repository: DomainRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.fragmentFactory = CustomFragmentFactory
 
-        hideSystemUI()
+        enableEdgeToEdge()
 
         super.onCreate(savedInstanceState)
 
-        ActivityHolder.setActivity(this)
-        navigator.init(this, R.id.containerView)
-        if (savedInstanceState == null) StartFlow.startCreate(
-            sharedText = intent.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
-        )
-    }
-
-    private fun hideSystemUI() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, findViewById(android.R.id.content)).let { controller ->
-            val isLightSystemBars = resources.getBoolean(designR.bool.light_system_bars)
-            controller.isAppearanceLightStatusBars = isLightSystemBars
-            controller.isAppearanceLightNavigationBars = isLightSystemBars
+        setContent {
+            EditTaskRoute(
+                args = EditTaskArgs.Create(
+                    text = intent.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
+                ),
+                repository = repository,
+                navigator = object : EditTaskNavigator {
+                    override fun close() {
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            )
         }
     }
 

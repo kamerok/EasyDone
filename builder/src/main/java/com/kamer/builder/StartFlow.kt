@@ -20,8 +20,6 @@ import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.SyncDelegate
 import easydone.core.domain.SyncScheduler
 import easydone.core.domain.Synchronizer
-import easydone.feature.edittask.EditTaskFragment
-import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.settings.SettingsNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
@@ -56,14 +54,7 @@ object StartFlow {
         startInitialFlow()
     }
 
-    fun startCreate(sharedText: String) {
-        GlobalContext.get().get<Navigator>().openScreen(
-            fragmentClass = EditTaskFragment::class.java,
-            addToBackStack = false,
-            args = EditTaskFragment.createArgs(sharedText)
-        )
-
-        //to start syncing
+    fun startSyncing() {
         GlobalContext.get().get<SyncScheduler>()
     }
 
@@ -115,21 +106,6 @@ object StartFlow {
                     get(),
                     get(),
                     trelloApiKey,
-                )
-            }
-            factory {
-                EditTaskFragment(
-                    get(),
-                    object : EditTaskNavigator {
-                        override fun close() {
-                            val navigator = get<Navigator>()
-                            if (!navigator.isEmpty()) {
-                                navigator.popScreen()
-                            } else {
-                                ActivityHolder.getActivity().onBackPressedDispatcher.onBackPressed()
-                            }
-                        }
-                    }
                 )
             }
         }

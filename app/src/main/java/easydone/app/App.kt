@@ -30,6 +30,7 @@ class App : Application(), Configuration.Provider {
             trelloApiKey = BuildConfig.TRELLO_API_KEY,
             debugInterceptor = debugInterceptor
         )
+        StartFlow.startSyncing()
         StartFlow.startWidgetUpdates(applicationScope)
         WorkScheduler.schedulePeriodicSync(this)
     }
