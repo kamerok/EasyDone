@@ -45,7 +45,7 @@ class MainNavigationScreenHolder(
     private val remoteDataSource: RemoteDataSource by activity.inject()
     private val trelloRemoteDataSource: TrelloRemoteDataSource by activity.inject()
     private val trelloApi: TrelloApi by activity.inject()
-    private val trelloApiKey: String by activity.inject()
+    private val trelloApiKey: String by lazy { trelloRemoteDataSource.apiKey }
 
     fun NavController.openViewTask(id: String) {
         navigate("task/$id")
@@ -157,7 +157,9 @@ class MainNavigationScreenHolder(
             composable("settings") {
                 SettingScreen(remoteDataSource, object : SettingsNavigator {
                     override fun navigateToSetup() {
-                        // TODO reset everything
+                        navController.navigate("setup", navOptions {
+                            popUpTo("home") { inclusive = true }
+                        })
                     }
                 })
             }

@@ -18,7 +18,7 @@ import java.util.UUID
 
 class TrelloRemoteDataSource(
     private val api: TrelloApi,
-    private val apiKey: String,
+    val apiKey: String,
     prefs: KeyValueStorage,
     private val idMappings: KeyValueStorage
 ) : RemoteDataSource {
@@ -57,6 +57,7 @@ class TrelloRemoteDataSource(
                         requireNotNull(card.due)
                             .let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME) }
                     )
+
                     authInfoHolder.getProjectsListId() -> Task.Type.Project
                     authInfoHolder.getMaybeListId() -> Task.Type.Maybe
                     else -> Task.Type.ToDo
