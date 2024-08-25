@@ -22,8 +22,6 @@ import easydone.core.domain.SyncScheduler
 import easydone.core.domain.Synchronizer
 import easydone.feature.edittask.EditTaskFragment
 import easydone.feature.edittask.EditTaskNavigator
-import easydone.feature.quickcreatetask.QuickCreateTaskFragment
-import easydone.feature.quickcreatetask.QuickCreateTaskNavigator
 import easydone.feature.settings.SettingsNavigator
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
 import easydone.library.navigation.Navigator
@@ -57,13 +55,6 @@ object StartFlow {
             GlobalContext.get().get<RemoteDataSourceDecorator>().switchToSandbox()
         }
         startInitialFlow()
-    }
-
-    fun startQuickCreate() {
-        GlobalContext.get().get<Navigator>().openScreen(QuickCreateTaskFragment::class.java)
-
-        //to start syncing
-        GlobalContext.get().get<SyncScheduler>()
     }
 
     fun startCreate(sharedText: String) {
@@ -137,16 +128,6 @@ object StartFlow {
                             } else {
                                 ActivityHolder.getActivity().onBackPressedDispatcher.onBackPressed()
                             }
-                        }
-                    }
-                )
-            }
-            factory {
-                QuickCreateTaskFragment(
-                    get(),
-                    object : QuickCreateTaskNavigator {
-                        override fun closeScreen() {
-                            ActivityHolder.getActivity().finishAffinity()
                         }
                     }
                 )

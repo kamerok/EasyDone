@@ -2,26 +2,33 @@ package com.kamer.builder
 
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import easydone.core.domain.DomainRepository
+import easydone.core.domain.SyncScheduler
+import easydone.feature.quickcreatetask.QuickCreateTaskScreen
 import org.koin.android.ext.android.inject
 
 
-class TransparentActivity : AppCompatActivity(R.layout.activity_container) {
+class TransparentActivity : AppCompatActivity() {
 
-    private val navigator: ActivityNavigator by inject()
+    private val repository: DomainRepository by inject()
+    private val syncScheduler: SyncScheduler by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        supportFragmentManager.fragmentFactory = CustomFragmentFactory
-
         super.onCreate(savedInstanceState)
         window.attributes = window.attributes.apply {
             height = WindowManager.LayoutParams.MATCH_PARENT
         }
 
-        ActivityHolder.setActivity(this)
-        navigator.init(this, R.id.containerView)
-        if (savedInstanceState == null) {
-            StartFlow.startQuickCreate()
+        //to start syncing
+        syncScheduler
+
+        setContent {
+            QuickCreateTaskScreen(
+                repository = repository,
+                closeScreen = { finishAffinity() }
+            )
         }
     }
 
