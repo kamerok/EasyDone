@@ -27,12 +27,10 @@ dependencies {
 
     implementation(projects.library.keyvalue)
     implementation(projects.library.keyvalue.impl)
-    implementation(projects.library.navigation)
 
     implementation(libs.kotlinx.coroutines)
     implementation(libs.androidx.app.compat)
     implementation(libs.androidx.datastore.prefs)
-    implementation(libs.androidx.fragment)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.splash)
     implementation(libs.androidx.work)

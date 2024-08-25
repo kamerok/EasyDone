@@ -21,7 +21,6 @@ import easydone.core.domain.SyncDelegate
 import easydone.core.domain.SyncScheduler
 import easydone.core.domain.Synchronizer
 import easydone.library.keyvalue.sharedprefs.DataStoreKeyValueStorage
-import easydone.library.navigation.Navigator
 import easydone.service.trello.TrelloRemoteDataSource
 import easydone.service.trello.api.TrelloApi
 import easydone.widget.updateWidget
@@ -85,8 +84,6 @@ object StartFlow {
             }
             single { LocalDataSourceDecorator(get<DatabaseLocalDataSource>()) }
             single<LocalDataSource> { get<LocalDataSourceDecorator>() }
-            single { ActivityNavigator() }
-            single<Navigator> { get<ActivityNavigator>() }
         }
         startKoin {
             androidContext(application)

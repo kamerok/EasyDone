@@ -8,20 +8,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import org.koin.android.ext.android.inject
 
 
-class MainActivity : AppCompatActivity(R.layout.activity_container) {
-
-    private val navigator: ActivityNavigator by inject()
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setupSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        ActivityHolder.setActivity(this)
-        navigator.init(this, R.id.containerView)
         if (savedInstanceState == null) {
             if (intent.action == ACTION_SANDBOX) StartFlow.enableSandbox()
         }
@@ -30,11 +25,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_container) {
         setContent {
             mainNavigationScreenHolder.MainScreen()
         }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressedDispatcher.onBackPressed()
-        return true
     }
 
     private fun setupSplashScreen() {

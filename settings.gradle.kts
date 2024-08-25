@@ -46,4 +46,3 @@ include(":feature:waiting")
 
 include(":library:keyvalue")
 include(":library:keyvalue:impl")
-include(":library:navigation")
