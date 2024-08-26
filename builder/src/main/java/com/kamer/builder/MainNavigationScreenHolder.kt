@@ -9,6 +9,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -52,24 +54,43 @@ private enum class ScaleTransitionDirection {
 private fun scaleIntoContainer(
     direction: ScaleTransitionDirection = ScaleTransitionDirection.INWARDS,
     initialScale: Float = if (direction == ScaleTransitionDirection.OUTWARDS) 0.9f else 1.1f
-): EnterTransition {
-    return scaleIn(
-        animationSpec = tween(220, delayMillis = 90),
-        initialScale = initialScale
-    ) + fadeIn(animationSpec = tween(220, delayMillis = 90))
-}
+): EnterTransition = scaleIn(
+    animationSpec = tween(220, delayMillis = 90),
+    initialScale = initialScale
+) + fadeIn(animationSpec = tween(220, delayMillis = 90))
 
 private fun scaleOutOfContainer(
     direction: ScaleTransitionDirection = ScaleTransitionDirection.OUTWARDS,
     targetScale: Float = if (direction == ScaleTransitionDirection.INWARDS) 0.9f else 1.1f
-): ExitTransition {
-    return scaleOut(
+): ExitTransition = scaleOut(
+    animationSpec = tween(
+        durationMillis = 220,
+        delayMillis = 90
+    ), targetScale = targetScale
+) + fadeOut(tween(delayMillis = 90))
+
+private fun taskExitMove(): ExitTransition =
+    slideOutHorizontally(
         animationSpec = tween(
-            durationMillis = 220,
+            220,
             delayMillis = 90
-        ), targetScale = targetScale
-    ) + fadeOut(tween(delayMillis = 90))
+        ),
+    ) { it } + fadeOut(tween(delayMillis = 90))
+
+private fun taskExitArchive(): ExitTransition =
+    slideOutVertically(
+        animationSpec = tween(
+            220,
+            delayMillis = 90
+        ),
+    ) { it } + fadeOut(tween(delayMillis = 90))
+
+private enum class TaskPopAnimation {
+    Move, Archive
 }
+
+private const val TASK_POP_ANIMATION_KEY = "task_close_animation"
+
 
 class MainNavigationScreenHolder(
     private val activity: AppCompatActivity
@@ -207,7 +228,17 @@ class MainNavigationScreenHolder(
 
             composable(
                 route = "task/{taskId}",
-                arguments = listOf(navArgument("taskId") { type = NavType.StringType })
+                arguments = listOf(navArgument("taskId") { type = NavType.StringType }),
+                popExitTransition = {
+                    val animation = initialState.savedStateHandle
+                        .get<TaskPopAnimation>(TASK_POP_ANIMATION_KEY)
+                    println("asdf $animation")
+                    when (animation) {
+                        TaskPopAnimation.Move -> taskExitMove()
+                        TaskPopAnimation.Archive -> taskExitArchive()
+                        else -> scaleOutOfContainer()
+                    }
+                }
             ) { backStackEntry ->
                 val id = checkNotNull(backStackEntry.arguments?.getString("taskId")) {
                     "Task id is required"
@@ -217,7 +248,17 @@ class MainNavigationScreenHolder(
                         navController.openEditTask(id)
                     }
 
-                    override fun close() {
+                    override fun closeMove() {
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(TASK_POP_ANIMATION_KEY, TaskPopAnimation.Move)
+                        navController.popBackStack()
+                    }
+
+                    override fun closeArchive() {
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(TASK_POP_ANIMATION_KEY, TaskPopAnimation.Archive)
                         navController.popBackStack()
                     }
                 })

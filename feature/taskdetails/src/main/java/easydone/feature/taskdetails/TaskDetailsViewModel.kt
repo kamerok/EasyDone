@@ -65,7 +65,7 @@ internal class TaskDetailsViewModel(
         task?.let { task ->
             viewModelScope.launch {
                 repository.saveTask(task.copy(type = type))
-                navigator.close()
+                navigator.closeMove()
             }
         }
     }
@@ -73,7 +73,7 @@ internal class TaskDetailsViewModel(
     fun onArchive() {
         viewModelScope.launch {
             repository.archiveTask(id)
-            navigator.close()
+            navigator.closeArchive()
         }
     }
 
