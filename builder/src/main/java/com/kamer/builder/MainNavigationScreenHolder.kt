@@ -2,6 +2,13 @@ package com.kamer.builder
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +43,33 @@ import easydone.service.trello.TrelloRemoteDataSource
 import easydone.service.trello.api.TrelloApi
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
+
+
+private enum class ScaleTransitionDirection {
+    INWARDS, OUTWARDS
+}
+
+private fun scaleIntoContainer(
+    direction: ScaleTransitionDirection = ScaleTransitionDirection.INWARDS,
+    initialScale: Float = if (direction == ScaleTransitionDirection.OUTWARDS) 0.9f else 1.1f
+): EnterTransition {
+    return scaleIn(
+        animationSpec = tween(220, delayMillis = 90),
+        initialScale = initialScale
+    ) + fadeIn(animationSpec = tween(220, delayMillis = 90))
+}
+
+private fun scaleOutOfContainer(
+    direction: ScaleTransitionDirection = ScaleTransitionDirection.OUTWARDS,
+    targetScale: Float = if (direction == ScaleTransitionDirection.INWARDS) 0.9f else 1.1f
+): ExitTransition {
+    return scaleOut(
+        animationSpec = tween(
+            durationMillis = 220,
+            delayMillis = 90
+        ), targetScale = targetScale
+    ) + fadeOut(tween(delayMillis = 90))
+}
 
 class MainNavigationScreenHolder(
     private val activity: AppCompatActivity
@@ -95,7 +129,14 @@ class MainNavigationScreenHolder(
             onDispose { activity.removeOnNewIntentListener(listener) }
         }
 
-        NavHost(navController = navController, startDestination = startDestination) {
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            enterTransition = { scaleIntoContainer() },
+            exitTransition = { scaleOutOfContainer(direction = ScaleTransitionDirection.INWARDS) },
+            popEnterTransition = { scaleIntoContainer(direction = ScaleTransitionDirection.OUTWARDS) },
+            popExitTransition = { scaleOutOfContainer() }
+        ) {
             composable("setup") {
                 SetupRoute(
                     trelloRemoteDataSource = trelloRemoteDataSource,
