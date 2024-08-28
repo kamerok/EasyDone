@@ -41,7 +41,7 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskTemplate
 import easydone.core.strings.R
-import easydone.coreui.design.AppTheme
+import easydone.coreui.design.AppThemeOld
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -52,7 +52,7 @@ fun QuickCreateTaskScreen(
     repository: DomainRepository,
     closeScreen: () -> Unit
 ) {
-    AppTheme {
+    AppThemeOld {
         val scope = rememberCoroutineScope()
         val keyboardController = LocalSoftwareKeyboardController.current
         val close: () -> Unit = remember {

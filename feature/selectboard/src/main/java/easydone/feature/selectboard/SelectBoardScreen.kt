@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import easydone.coreui.design.AppTheme
+import easydone.coreui.design.AppThemeOld
 
 
 @Composable
@@ -26,7 +26,7 @@ fun SelectBoardScreen(
     boards: List<BoardUiModel>,
     onBoardSelected: (String) -> Unit
 ) {
-    AppTheme {
+    AppThemeOld {
         Surface(
             color = MaterialTheme.colors.background,
             modifier = Modifier.fillMaxSize()
@@ -60,7 +60,7 @@ private fun BoardItem(board: BoardUiModel, onClick: () -> Unit) {
 @Preview(widthDp = 100, heightDp = 100, showBackground = true)
 @Composable
 private fun BoardPreview() {
-    AppTheme {
+    AppThemeOld {
         Column {
             BoardItem(board = BoardUiModel("id", "name")) {
 
@@ -78,7 +78,7 @@ private fun BoardPreview() {
 )
 @Composable
 private fun BoardPreviewDark() {
-    AppTheme {
+    AppThemeOld {
         Column {
             BoardItem(board = BoardUiModel("id", "name")) {
 

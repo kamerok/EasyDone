@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import easydone.core.domain.RemoteDataSource
 import easydone.core.strings.R
-import easydone.coreui.design.AppTheme
-import easydone.coreui.design.EasyDoneAppBar
+import easydone.coreui.design.AppThemeOld
+import easydone.coreui.design.EasyDoneAppBarOld
 import kotlinx.coroutines.launch
 
 
@@ -25,14 +25,14 @@ fun SettingScreen(
     remoteDataSource: RemoteDataSource,
     navigator: SettingsNavigator
 ) {
-    AppTheme {
+    AppThemeOld {
         FullscreenContent {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .systemBarsPadding()
             ) {
-                EasyDoneAppBar { Text(stringResource(R.string.settings_title)) }
+                EasyDoneAppBarOld { Text(stringResource(R.string.settings_title)) }
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()

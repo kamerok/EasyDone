@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import easydone.coreui.design.AppTheme
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +24,9 @@ class MainActivity : AppCompatActivity() {
 
         val mainNavigationScreenHolder = MainNavigationScreenHolder(this)
         setContent {
-            mainNavigationScreenHolder.MainScreen()
+            AppTheme {
+                mainNavigationScreenHolder.MainScreen()
+            }
         }
     }
 

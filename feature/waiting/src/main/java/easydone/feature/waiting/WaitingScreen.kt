@@ -47,10 +47,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.window.core.layout.WindowWidthSizeClass.Companion.COMPACT
 import easydone.core.domain.DomainRepository
-import easydone.coreui.design.AppTheme
-import easydone.coreui.design.EasyDoneAppBar
+import easydone.coreui.design.AppThemeOld
+import easydone.coreui.design.EasyDoneAppBarOld
 import easydone.coreui.design.FoldPreviews
-import easydone.coreui.design.TaskCard
+import easydone.coreui.design.TaskCardOld
 import easydone.coreui.design.UiTask
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -81,10 +81,10 @@ internal fun WaitingScreen(
     state: State,
     onTaskClick: (UiTask) -> Unit
 ) {
-    AppTheme {
+    AppThemeOld {
         FullscreenContent {
             Column {
-                EasyDoneAppBar(modifier = Modifier.statusBarsPadding()) {
+                EasyDoneAppBarOld(modifier = Modifier.statusBarsPadding()) {
                     Text("Waiting")
                 }
                 val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -143,7 +143,7 @@ internal fun WaitingScreen(
                                 )
                             }
                             items(tasks) { task ->
-                                TaskCard(
+                                TaskCardOld(
                                     task = task,
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -270,7 +270,7 @@ private fun CalendarDay(
 @Preview(showBackground = true, device = "spec:width=1080px,height=2340px,dpi=440")
 @Composable
 private fun MonthPreview() {
-    AppTheme {
+    AppThemeOld {
         CalendarMonth(
             month = YearMonth.now(),
             significantDays = setOf(
@@ -285,7 +285,7 @@ private fun MonthPreview() {
 @Preview
 @Composable
 private fun DayPreview() {
-    AppTheme {
+    AppThemeOld {
         Row {
             CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = false)
             CalendarDay(number = 10, isEnabled = true, isToday = true, isAction = false)

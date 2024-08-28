@@ -51,10 +51,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.strings.R
-import easydone.coreui.design.AppTheme
-import easydone.coreui.design.EasyDoneAppBar
-import easydone.coreui.design.IconImportant
-import easydone.coreui.design.IconUrgent
+import easydone.coreui.design.AppThemeOld
+import easydone.coreui.design.EasyDoneAppBarOld
+import easydone.coreui.design.IconImportantOld
+import easydone.coreui.design.IconUrgentOld
 import easydone.feature.selecttype.TypeSelector
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
@@ -102,7 +102,7 @@ internal fun EditTaskScreen(
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
 ) {
-    AppTheme {
+    AppThemeOld {
         FullscreenContent {
             val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
             val scope = rememberCoroutineScope()
@@ -250,7 +250,7 @@ private fun ScreenContent(
     bottomContent: @Composable () -> Unit,
 ) {
     Column {
-        EasyDoneAppBar {
+        EasyDoneAppBarOld {
             Text(
                 stringResource(
                     if (isCreate) {
@@ -343,13 +343,13 @@ private fun TaskMarkers(
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         Chip(
             isSelected = isUrgent,
-            icon = { IconUrgent() },
+            icon = { IconUrgentOld() },
             label = { Text(stringResource(R.string.urgent)) },
             onClick = onUrgentClick
         )
         Chip(
             isSelected = isImportant,
-            icon = { IconImportant() },
+            icon = { IconImportantOld() },
             label = { Text(stringResource(R.string.important)) },
             onClick = onImportantClick
         )

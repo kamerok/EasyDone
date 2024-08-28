@@ -1,6 +1,5 @@
 package easydone.feature.inbox
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,9 +13,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.window.core.layout.WindowWidthSizeClass.Companion.COMPACT
 import easydone.core.domain.DomainRepository
-import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.FoldPreviews
 import easydone.coreui.design.TaskCard
@@ -56,54 +53,39 @@ internal fun InboxScreen(
     state: State,
     onTaskClick: (String) -> Unit
 ) {
-    AppTheme {
-        FullscreenContent {
-            Column {
-                val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-                val columns by remember(windowSizeClass) {
-                    derivedStateOf {
-                        if (windowSizeClass.windowWidthSizeClass == COMPACT) 1 else 2
-                    }
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Column {
+            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val columns by remember(windowSizeClass) {
+                derivedStateOf {
+                    if (windowSizeClass.windowWidthSizeClass == COMPACT) 1 else 2
                 }
-                EasyDoneAppBar(modifier = Modifier.statusBarsPadding()) {
-                    Text("Inbox")
+            }
+            EasyDoneAppBar(modifier = Modifier.statusBarsPadding()) {
+                Text("Inbox")
+            }
+            LazyVerticalStaggeredGrid(
+                contentPadding = PaddingValues(16.dp),
+                verticalItemSpacing = 16.dp,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                columns = StaggeredGridCells.Fixed(columns),
+            ) {
+                items(state.tasks) { task ->
+                    TaskCard(
+                        task = task,
+                        onClick = { onTaskClick(task.id) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-                LazyVerticalStaggeredGrid(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalItemSpacing = 16.dp,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    columns = StaggeredGridCells.Fixed(columns),
-                ) {
-                    items(state.tasks) { task ->
-                        TaskCard(
-                            task = task,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onTaskClick(task.id) }
-                        )
-                    }
-                    item(span = StaggeredGridItemSpan.FullLine) {
-                        Spacer(
-                            modifier = Modifier
-                                .height(0.dp)
-                                .navigationBarsPadding()
-                        )
-                    }
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    Spacer(
+                        modifier = Modifier
+                            .height(0.dp)
+                            .navigationBarsPadding()
+                    )
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun FullscreenContent(
-    content: @Composable () -> Unit
-) {
-    Surface(
-        color = MaterialTheme.colors.background,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        content()
     }
 }
 

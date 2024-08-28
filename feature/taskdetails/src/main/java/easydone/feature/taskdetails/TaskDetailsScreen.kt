@@ -51,10 +51,10 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.strings.R
-import easydone.coreui.design.AppTheme
-import easydone.coreui.design.EasyDoneAppBar
-import easydone.coreui.design.IconImportant
-import easydone.coreui.design.IconUrgent
+import easydone.coreui.design.AppThemeOld
+import easydone.coreui.design.EasyDoneAppBarOld
+import easydone.coreui.design.IconImportantOld
+import easydone.coreui.design.IconUrgentOld
 import easydone.feature.selecttype.TypeSelector
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
@@ -92,7 +92,7 @@ internal fun TaskDetailsScreen(
     onMove: () -> Unit,
     onArchive: () -> Unit,
 ) {
-    AppTheme {
+    AppThemeOld {
         val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
         val scope = rememberCoroutineScope()
 
@@ -144,7 +144,7 @@ private fun TaskDetailsContent(
 ) {
     FullscreenContent {
         Column(modifier = Modifier.systemBarsPadding()) {
-            EasyDoneAppBar(
+            EasyDoneAppBarOld(
                 title = {
                     Text(stringResource(R.string.task_details_screen_title))
                 },
@@ -232,13 +232,13 @@ private fun TaskContent(state: State) {
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             if (state.isUrgent) {
                 Chip(
-                    icon = { IconUrgent() },
+                    icon = { IconUrgentOld() },
                     label = { Text(stringResource(R.string.urgent)) }
                 )
             }
             if (state.isImportant) {
                 Chip(
-                    icon = { IconImportant() },
+                    icon = { IconImportantOld() },
                     label = { Text(stringResource(R.string.important)) }
                 )
             }
@@ -300,7 +300,7 @@ private fun BottomActions(
 )
 @Composable
 private fun ContentPreview() {
-    AppTheme {
+    AppThemeOld {
         FullscreenContent {
             VerticallySplitContent(
                 topContent = {
@@ -327,7 +327,7 @@ private fun ContentPreview() {
 )
 @Composable
 private fun ContentPreviewLight() {
-    AppTheme {
+    AppThemeOld {
         FullscreenContent {
             VerticallySplitContent(
                 topContent = {

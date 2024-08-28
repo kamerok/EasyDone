@@ -45,10 +45,10 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.SyncScheduler
 import easydone.core.strings.R
-import easydone.coreui.design.AppTheme
-import easydone.coreui.design.EasyDoneAppBar
+import easydone.coreui.design.AppThemeOld
+import easydone.coreui.design.EasyDoneAppBarOld
 import easydone.coreui.design.FoldPreviews
-import easydone.coreui.design.TaskCard
+import easydone.coreui.design.TaskCardOld
 import easydone.coreui.design.UiTask
 import java.time.LocalDate
 import java.time.Period
@@ -85,10 +85,10 @@ internal fun HomeScreen(
     onTask: (UiTask) -> Unit,
     onWaitingMore: () -> Unit,
 ) {
-    AppTheme {
+    AppThemeOld {
         Scaffold(
             topBar = {
-                EasyDoneAppBar(
+                EasyDoneAppBarOld(
                     navigationIcon = null,
                     title = { Text(stringResource(R.string.app_name)) },
                     actions = {
@@ -208,7 +208,7 @@ private fun LazyStaggeredGridScope.waitingSection(
             Title("Up Next in $period")
         }
         items(nextWaitingTasks.tasks, key = { it.id }) { task ->
-            TaskCard(
+            TaskCardOld(
                 task = task,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -269,7 +269,7 @@ private fun LazyStaggeredGridScope.taskItems(
     onClick: (UiTask) -> Unit
 ) {
     items(tasks, key = { it.id }) { task ->
-        TaskCard(
+        TaskCardOld(
             task = task,
             modifier = Modifier
                 .fillMaxWidth()

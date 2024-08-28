@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.util.Consumer
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import easydone.coreui.design.AppTheme
+import easydone.coreui.design.AppThemeOld
 import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.api.model.Board
 import kotlinx.coroutines.flow.launchIn
@@ -82,7 +82,7 @@ private fun ReceiveLoginToken(onTokenReceived: (String) -> Unit) {
 
 @Composable
 private fun LoginScreen(state: UiState) {
-    AppTheme {
+    AppThemeOld {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
