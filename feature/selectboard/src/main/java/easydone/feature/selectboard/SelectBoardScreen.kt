@@ -11,14 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import easydone.coreui.design.AppThemeOld
+import easydone.coreui.design.AppTheme
 
 
 @Composable
@@ -26,21 +25,16 @@ fun SelectBoardScreen(
     boards: List<BoardUiModel>,
     onBoardSelected: (String) -> Unit
 ) {
-    AppThemeOld {
-        Surface(
-            color = MaterialTheme.colors.background,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            LazyColumn(modifier = Modifier.systemBarsPadding()) {
-                items(boards) { board ->
-                    BoardItem(
-                        board = board,
-                        onClick = { onBoardSelected(board.id) }
-                    )
-                }
-                item {
-                    Spacer(modifier = Modifier.navigationBarsPadding())
-                }
+    Surface(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.systemBarsPadding()) {
+            items(boards) { board ->
+                BoardItem(
+                    board = board,
+                    onClick = { onBoardSelected(board.id) }
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.navigationBarsPadding())
             }
         }
     }
@@ -60,7 +54,7 @@ private fun BoardItem(board: BoardUiModel, onClick: () -> Unit) {
 @Preview(widthDp = 100, heightDp = 100, showBackground = true)
 @Composable
 private fun BoardPreview() {
-    AppThemeOld {
+    AppTheme {
         Column {
             BoardItem(board = BoardUiModel("id", "name")) {
 
@@ -78,7 +72,7 @@ private fun BoardPreview() {
 )
 @Composable
 private fun BoardPreviewDark() {
-    AppThemeOld {
+    AppTheme {
         Column {
             BoardItem(board = BoardUiModel("id", "name")) {
 

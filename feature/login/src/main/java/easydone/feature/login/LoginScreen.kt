@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.util.Consumer
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import easydone.coreui.design.AppThemeOld
 import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.api.model.Board
 import kotlinx.coroutines.flow.launchIn
@@ -82,16 +81,14 @@ private fun ReceiveLoginToken(onTokenReceived: (String) -> Unit) {
 
 @Composable
 private fun LoginScreen(state: UiState) {
-    AppThemeOld {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            when (state) {
-                is UiState.IdleState -> IdleScreen(state.onLoginWithTrello)
-                is UiState.LoadingState -> LoadingScreen()
-                is UiState.ErrorState -> ErrorScreen(state)
-            }
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        when (state) {
+            is UiState.IdleState -> IdleScreen(state.onLoginWithTrello)
+            is UiState.LoadingState -> LoadingScreen()
+            is UiState.ErrorState -> ErrorScreen(state)
         }
     }
 }
