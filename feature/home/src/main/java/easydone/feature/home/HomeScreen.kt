@@ -17,17 +17,16 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -45,10 +44,10 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.SyncScheduler
 import easydone.core.strings.R
-import easydone.coreui.design.AppThemeOld
-import easydone.coreui.design.EasyDoneAppBarOld
+import easydone.coreui.design.AppTheme
+import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.FoldPreviews
-import easydone.coreui.design.TaskCardOld
+import easydone.coreui.design.TaskCard
 import easydone.coreui.design.UiTask
 import java.time.LocalDate
 import java.time.Period
@@ -85,71 +84,72 @@ internal fun HomeScreen(
     onTask: (UiTask) -> Unit,
     onWaitingMore: () -> Unit,
 ) {
-    AppThemeOld {
-        Scaffold(
-            topBar = {
-                EasyDoneAppBarOld(
-                    navigationIcon = null,
-                    title = { Text(stringResource(R.string.app_name)) },
-                    actions = {
-                        SyncButton(
-                            isInProgress = state.isSyncing,
-                            isIndicatorEnabled = state.hasChanges,
-                            onClick = onSync
-                        )
-                    },
-                    menu = {
-                        DropdownMenuItem(onClick = onSettings) {
+    Scaffold(
+        topBar = {
+            EasyDoneAppBar(
+                navigationIcon = {},
+                title = { Text(stringResource(R.string.app_name)) },
+                actions = {
+                    SyncButton(
+                        isInProgress = state.isSyncing,
+                        isIndicatorEnabled = state.hasChanges,
+                        onClick = onSync
+                    )
+                },
+                menu = {
+                    DropdownMenuItem(
+                        onClick = onSettings,
+                        text = {
                             Text(text = "Settings")
                         }
-                    },
-                    modifier = Modifier.statusBarsPadding()
-                )
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    backgroundColor = MaterialTheme.colors.primary,
-                    onClick = onAdd
-                ) { Icon(Icons.Default.Add, "") }
+                    )
+                },
+                modifier = Modifier.statusBarsPadding()
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                containerColor = MaterialTheme.colorScheme.primary,
+                onClick = onAdd,
+            ) { Icon(Icons.Default.Add, "") }
+        }
+    ) { padding ->
+        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+        val columns by remember(windowSizeClass) {
+            derivedStateOf {
+                if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) 1 else 2
             }
-        ) { padding ->
-            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-            val columns by remember(windowSizeClass) {
-                derivedStateOf {
-                    if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) 1 else 2
-                }
-            }
-            LazyVerticalStaggeredGrid(
-                contentPadding = PaddingValues(16.dp),
-                verticalItemSpacing = 16.dp,
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                columns = StaggeredGridCells.Fixed(columns),
-                modifier = Modifier.padding(padding)
-            ) {
-                inboxSection(
-                    inboxCount = state.inboxCount,
-                    onSort = onSortInbox
-                )
-                todoSection(
-                    tasks = state.todoTasks,
-                    onTaskClick = onTask
-                )
-                projectsSection(
-                    tasks = state.projectTasks,
-                    onTaskClick = onTask
-                )
-                waitingSection(
-                    nextWaitingTasks = state.nextWaitingTasks,
-                    waitingCount = state.waitingCount,
-                    onTaskClick = onTask,
-                    onMore = onWaitingMore
-                )
-                maybeSection(
-                    tasks = state.maybeTasks,
-                    onTaskClick = onTask
-                )
-                fabSpaceItem()
-            }
+        }
+        LazyVerticalStaggeredGrid(
+            contentPadding = PaddingValues(16.dp),
+            verticalItemSpacing = 16.dp,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            columns = StaggeredGridCells.Fixed(columns),
+            modifier = Modifier.padding(padding)
+        ) {
+            inboxSection(
+                inboxCount = state.inboxCount,
+                onSort = onSortInbox
+            )
+            todoSection(
+                tasks = state.todoTasks,
+                onTaskClick = onTask
+            )
+            projectsSection(
+                tasks = state.projectTasks,
+                onTaskClick = onTask
+            )
+            waitingSection(
+                nextWaitingTasks = state.nextWaitingTasks,
+                waitingCount = state.waitingCount,
+                onTaskClick = onTask,
+                onMore = onWaitingMore
+            )
+            maybeSection(
+                tasks = state.maybeTasks,
+                onTaskClick = onTask
+            )
+            fabSpaceItem()
         }
     }
 }
@@ -208,11 +208,10 @@ private fun LazyStaggeredGridScope.waitingSection(
             Title("Up Next in $period")
         }
         items(nextWaitingTasks.tasks, key = { it.id }) { task ->
-            TaskCardOld(
+            TaskCard(
                 task = task,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onTaskClick(task) }
+                onClick = { onTaskClick(task) },
+                modifier = Modifier.fillMaxWidth()
             )
         }
         item(span = StaggeredGridItemSpan.FullLine) {
@@ -269,11 +268,10 @@ private fun LazyStaggeredGridScope.taskItems(
     onClick: (UiTask) -> Unit
 ) {
     items(tasks, key = { it.id }) { task ->
-        TaskCardOld(
+        TaskCard(
             task = task,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onClick(task) }
+            onClick = { onClick(task) },
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -305,13 +303,13 @@ private fun InboxMessage(
         //TODO: extract res
         Text(
             text = "Inbox is not empty: $count",
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.headlineSmall
         )
         Text(
             text = "SORT",
-            style = MaterialTheme.typography.h5,
+            style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colors.primary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable(onClick = onSort)
         )
     }
@@ -321,11 +319,10 @@ private fun InboxMessage(
 private fun Title(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.h5
+        style = MaterialTheme.typography.headlineSmall
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MoreButton(
     count: Int,
@@ -334,7 +331,7 @@ private fun MoreButton(
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
         color = Color.Transparent,
         onClick = onClick,
         modifier = modifier
@@ -350,13 +347,13 @@ private fun MoreButton(
         ) {
             Text(
                 text = "VIEW $count MORE",
-                style = MaterialTheme.typography.button,
-                color = MaterialTheme.colors.primary
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
             )
             Icon(
                 Icons.Default.ChevronRight,
                 "",
-                tint = MaterialTheme.colors.primary
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -382,13 +379,15 @@ fun HomeScreenPreview() {
         waitingCount = 3,
         maybeTasks = generateTasks(4)
     )
-    HomeScreen(
-        state = state,
-        onSync = {},
-        onSettings = {},
-        onAdd = {},
-        onSortInbox = {},
-        onTask = {},
-        onWaitingMore = {}
-    )
+    AppTheme {
+        HomeScreen(
+            state = state,
+            onSync = {},
+            onSettings = {},
+            onAdd = {},
+            onSortInbox = {},
+            onTask = {},
+            onWaitingMore = {}
+        )
+    }
 }

@@ -21,14 +21,14 @@ fun AppTheme(content: @Composable () -> Unit) {
             onError = Color.White,
             surface = Color(0xFF1C1C1C),
             surfaceVariant = Color(0xFF252525),
-            onSurfaceVariant = Color.White
+            onSurfaceVariant = Color.White,
         )
     } else {
         lightColorScheme(
             background = Color(0xFFF3F3F3),
             primary = primary,
             surface = Color(0xFFF3F3F3),
-            surfaceVariant = Color.White
+            surfaceVariant = Color.White,
         )
     }
     MaterialTheme(
