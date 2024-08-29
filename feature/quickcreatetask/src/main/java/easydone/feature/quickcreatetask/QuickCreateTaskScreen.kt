@@ -11,21 +11,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +41,7 @@ import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.domain.model.TaskTemplate
 import easydone.core.strings.R
-import easydone.coreui.design.AppThemeOld
+import easydone.coreui.design.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -52,7 +52,7 @@ fun QuickCreateTaskScreen(
     repository: DomainRepository,
     closeScreen: () -> Unit
 ) {
-    AppThemeOld {
+    AppTheme {
         val scope = rememberCoroutineScope()
         val keyboardController = LocalSoftwareKeyboardController.current
         val close: () -> Unit = remember {
@@ -84,7 +84,7 @@ fun QuickCreateTaskScreen(
                     ) {}
             ) {
                 Box {
-                    var text by remember { mutableStateOf("") }
+                    var text by rememberSaveable { mutableStateOf("") }
                     val focusRequester = remember { FocusRequester() }
                     val save: (String) -> Unit = remember {
                         { text ->
@@ -105,22 +105,26 @@ fun QuickCreateTaskScreen(
                     LaunchedEffect(Unit) {
                         focusRequester.requestFocus()
                     }
-                    Box(modifier = Modifier.padding(16.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxSize()
+                    ) {
                         if (text.isEmpty()) {
                             Text(
                                 text = stringResource(R.string.quick_create_hint),
-                                style = MaterialTheme.typography.body1,
-                                color = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium)
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         BasicTextField(
                             value = text,
                             onValueChange = { text = it },
-                            textStyle = MaterialTheme.typography.body1.copy(
+                            textStyle = MaterialTheme.typography.bodyLarge.copy(
                                 color = LocalContentColor.current
                             ),
                             modifier = Modifier.focusRequester(focusRequester),
-                            cursorBrush = SolidColor(MaterialTheme.colors.primary),
+                            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                             keyboardOptions = KeyboardOptions(
                                 capitalization = KeyboardCapitalization.Sentences,
                                 imeAction = ImeAction.Done
@@ -130,7 +134,7 @@ fun QuickCreateTaskScreen(
                             )
                         )
                     }
-                    AnimatedVisibility(
+                    this@Card.AnimatedVisibility(
                         visible = text.isNotEmpty(),
                         modifier = Modifier.align(Alignment.BottomEnd)
                     ) {
@@ -142,5 +146,4 @@ fun QuickCreateTaskScreen(
             }
         }
     }
-
 }
