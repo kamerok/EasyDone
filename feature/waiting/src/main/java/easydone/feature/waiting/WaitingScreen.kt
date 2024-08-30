@@ -1,7 +1,6 @@
 package easydone.feature.waiting
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,11 +20,10 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,17 +38,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.window.core.layout.WindowWidthSizeClass.Companion.COMPACT
 import easydone.core.domain.DomainRepository
-import easydone.coreui.design.AppThemeOld
-import easydone.coreui.design.EasyDoneAppBarOld
+import easydone.coreui.design.AppTheme
+import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.FoldPreviews
-import easydone.coreui.design.TaskCardOld
+import easydone.coreui.design.TaskCard
 import easydone.coreui.design.UiTask
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -81,94 +78,79 @@ internal fun WaitingScreen(
     state: State,
     onTaskClick: (UiTask) -> Unit
 ) {
-    AppThemeOld {
-        FullscreenContent {
-            Column {
-                EasyDoneAppBarOld(modifier = Modifier.statusBarsPadding()) {
-                    Text("Waiting")
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Column {
+            EasyDoneAppBar(modifier = Modifier.statusBarsPadding()) {
+                Text("Waiting")
+            }
+            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val columns by remember(windowSizeClass) {
+                derivedStateOf {
+                    if (windowSizeClass.windowWidthSizeClass == COMPACT) 1 else 2
                 }
-                val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-                val columns by remember(windowSizeClass) {
-                    derivedStateOf {
-                        if (windowSizeClass.windowWidthSizeClass == COMPACT) 1 else 2
+            }
+            LazyVerticalStaggeredGrid(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalItemSpacing = 16.dp,
+                contentPadding = PaddingValues(16.dp),
+                columns = StaggeredGridCells.Fixed(columns)
+            ) {
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    val significantDays by remember(state.tasks) { derivedStateOf { state.tasks.keys } }
+                    val months = remember {
+                        val currentMonth = YearMonth.now()
+                        (0..(12 * 10)).map { currentMonth.plusMonths(it.toLong()) }
                     }
-                }
-                LazyVerticalStaggeredGrid(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalItemSpacing = 16.dp,
-                    contentPadding = PaddingValues(16.dp),
-                    columns = StaggeredGridCells.Fixed(columns)
-                ) {
-                    item(span = StaggeredGridItemSpan.FullLine) {
-                        val significantDays by remember { derivedStateOf { state.tasks.keys } }
-                        val months = remember {
-                            val currentMonth = YearMonth.now()
-                            (0..(12 * 10)).map { currentMonth.plusMonths(it.toLong()) }
-                        }
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            items(months) { month ->
-                                CalendarMonth(
-                                    month = month,
-                                    significantDays = significantDays
-                                )
-                            }
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(months) { month ->
+                            CalendarMonth(
+                                month = month,
+                                significantDays = significantDays
+                            )
                         }
                     }
-                    //TODO: reuse format logic
-                    val formatter = DateTimeFormatter.ofPattern("d MMM y")
-                    state.tasks.entries
-                        .sortedBy { it.key }
-                        .forEach { (date, tasks) ->
-                            item(span = StaggeredGridItemSpan.FullLine) {
-                                val period = Period.between(LocalDate.now(), date)
-                                val dateText = buildString {
-                                    append(formatter.format(date))
-                                    append(" (")
-                                    if (period.years > 0) {
-                                        append("${period.years}y ")
-                                    }
-                                    if (period.months > 0) {
-                                        append("${period.months}m ")
-                                    }
-                                    if (period.days > 0) {
-                                        append("${period.days}d")
-                                    }
-                                    append(")")
+                }
+                //TODO: reuse format logic
+                val formatter = DateTimeFormatter.ofPattern("d MMM y")
+                state.tasks.entries
+                    .sortedBy { it.key }
+                    .forEach { (date, tasks) ->
+                        item(span = StaggeredGridItemSpan.FullLine) {
+                            val period = Period.between(LocalDate.now(), date)
+                            val dateText = buildString {
+                                append(formatter.format(date))
+                                append(" (")
+                                if (period.years > 0) {
+                                    append("${period.years}y ")
                                 }
-                                Text(
-                                    text = dateText,
-                                    style = MaterialTheme.typography.h5,
-                                )
+                                if (period.months > 0) {
+                                    append("${period.months}m ")
+                                }
+                                if (period.days > 0) {
+                                    append("${period.days}d")
+                                }
+                                append(")")
                             }
-                            items(tasks) { task ->
-                                TaskCardOld(
-                                    task = task,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { onTaskClick(task) }
-                                )
-                            }
-                            item(span = StaggeredGridItemSpan.FullLine) {
-                                Spacer(modifier = Modifier.navigationBarsPadding())
-                            }
+                            Text(
+                                text = dateText,
+                                style = MaterialTheme.typography.headlineSmall,
+                            )
                         }
+                        items(tasks) { task ->
+                            TaskCard(
+                                task = task,
+                                onClick = { onTaskClick(task) },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    Spacer(modifier = Modifier.navigationBarsPadding())
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun FullscreenContent(
-    content: @Composable () -> Unit
-) {
-    Surface(
-        color = MaterialTheme.colors.background,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        content()
     }
 }
 
@@ -189,7 +171,7 @@ private fun CalendarMonth(
     ) {
         Text(
             text = month.format(formatter),
-            style = MaterialTheme.typography.body2
+            style = MaterialTheme.typography.bodyMedium
         )
         Column(
             verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -226,7 +208,6 @@ private fun CalendarMonth(
     }
 }
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
 private fun CalendarDay(
     number: Int,
@@ -235,16 +216,16 @@ private fun CalendarDay(
     isAction: Boolean
 ) {
     Surface(
-        color = if (isAction) MaterialTheme.colors.primary else Color.Transparent,
+        color = if (isAction) MaterialTheme.colorScheme.primary else Color.Transparent,
         shape = CircleShape,
         border = if (isToday) {
-            BorderStroke(1.dp, MaterialTheme.colors.onSurface)
+            BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
         } else {
             null
         },
         modifier = Modifier
             .size(16.dp)
-            .alpha(if (isEnabled) 1f else ContentAlpha.disabled)
+            .alpha(if (isEnabled) 1f else 0.38f) //https://developer.android.com/develop/ui/compose/designsystems/material2-material3#emphasis-and
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -270,7 +251,7 @@ private fun CalendarDay(
 @Preview(showBackground = true, device = "spec:width=1080px,height=2340px,dpi=440")
 @Composable
 private fun MonthPreview() {
-    AppThemeOld {
+    AppTheme {
         CalendarMonth(
             month = YearMonth.now(),
             significantDays = setOf(
@@ -285,7 +266,7 @@ private fun MonthPreview() {
 @Preview
 @Composable
 private fun DayPreview() {
-    AppThemeOld {
+    AppTheme {
         Row {
             CalendarDay(number = 10, isEnabled = true, isToday = false, isAction = false)
             CalendarDay(number = 10, isEnabled = true, isToday = true, isAction = false)
@@ -301,15 +282,23 @@ private fun DayPreview() {
 @Composable
 private fun WaitingPreview() {
     fun generateTasks(number: Int) = (1..number).map {
-        UiTask(UUID.randomUUID().toString(), "task $it", true, true, true)
+        UiTask(
+            id = UUID.randomUUID().toString(),
+            title = "task $it",
+            hasDescription = true,
+            isUrgent = true,
+            isImportant = true
+        )
     }
-    WaitingScreen(
-        state = State(
-            mapOf(
-                LocalDate.now().plusDays(1) to generateTasks(5),
-                LocalDate.now().plusDays(2) to generateTasks(5),
-            )
-        ),
-        onTaskClick = {}
-    )
+    AppTheme {
+        WaitingScreen(
+            state = State(
+                mapOf(
+                    LocalDate.now().plusDays(1) to generateTasks(5),
+                    LocalDate.now().plusDays(2) to generateTasks(5),
+                )
+            ),
+            onTaskClick = {}
+        )
+    }
 }

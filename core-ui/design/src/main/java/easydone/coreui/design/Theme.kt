@@ -12,8 +12,11 @@ val urgent = Color(0xFFF3BE00)
 val important = Color(0xFFE14B4B)
 
 @Composable
-fun AppTheme(content: @Composable () -> Unit) {
-    val appColorScheme = if (isSystemInDarkTheme()) {
+fun AppTheme(
+    isDark: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val appColorScheme = if (isDark) {
         darkColorScheme(
             background = Color(0xFF1C1C1C),
             primary = primary,
