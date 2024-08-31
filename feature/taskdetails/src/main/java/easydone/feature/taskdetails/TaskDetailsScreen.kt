@@ -16,25 +16,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -51,10 +49,11 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.strings.R
-import easydone.coreui.design.AppThemeOld
-import easydone.coreui.design.EasyDoneAppBarOld
-import easydone.coreui.design.IconImportantOld
-import easydone.coreui.design.IconUrgentOld
+import easydone.coreui.design.AppTheme
+import easydone.coreui.design.EasyDoneAppBar
+import easydone.coreui.design.IconImportant
+import easydone.coreui.design.IconUrgent
+import easydone.coreui.design.important
 import easydone.feature.selecttype.TypeSelector
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
@@ -92,47 +91,45 @@ internal fun TaskDetailsScreen(
     onMove: () -> Unit,
     onArchive: () -> Unit,
 ) {
-    AppThemeOld {
-        val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-        val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
 
-        var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
-        LaunchedEffect(events) {
-            events
-                .onEach {
-                    when (it) {
-                        is SelectType -> {
-                            selectorType = it.currentType
-                            sheetState.show()
-                        }
+    var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
+    LaunchedEffect(events) {
+        events
+            .onEach {
+                when (it) {
+                    is SelectType -> {
+                        selectorType = it.currentType
+                        sheetState.show()
                     }
                 }
-                .launchIn(this)
-        }
-
-        BackHandler(enabled = sheetState.isVisible) {
-            scope.launch { sheetState.hide() }
-        }
-
-        ModalBottomSheetLayout(
-            sheetState = sheetState,
-            sheetContent = {
-                TypeSelector(
-                    type = selectorType,
-                    onTypeSelected = onTypeSelected,
-                    modifier = Modifier.navigationBarsPadding()
-                )
-            },
-            content = {
-                TaskDetailsContent(
-                    state = state,
-                    onEdit = onEdit,
-                    onMove = onMove,
-                    onArchive = onArchive
-                )
             }
-        )
+            .launchIn(this)
     }
+
+    BackHandler(enabled = sheetState.isVisible) {
+        scope.launch { sheetState.hide() }
+    }
+
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetContent = {
+            TypeSelector(
+                type = selectorType,
+                onTypeSelected = onTypeSelected,
+                modifier = Modifier.navigationBarsPadding()
+            )
+        },
+        content = {
+            TaskDetailsContent(
+                state = state,
+                onEdit = onEdit,
+                onMove = onMove,
+                onArchive = onArchive
+            )
+        }
+    )
 }
 
 @Composable
@@ -144,7 +141,7 @@ private fun TaskDetailsContent(
 ) {
     FullscreenContent {
         Column(modifier = Modifier.systemBarsPadding()) {
-            EasyDoneAppBarOld(
+            EasyDoneAppBar(
                 title = {
                     Text(stringResource(R.string.task_details_screen_title))
                 },
@@ -174,10 +171,7 @@ private fun TaskDetailsContent(
 private fun FullscreenContent(
     content: @Composable () -> Unit
 ) {
-    Surface(
-        color = MaterialTheme.colors.background,
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Surface(modifier = Modifier.fillMaxSize()) {
         content()
     }
 }
@@ -212,15 +206,13 @@ private fun TaskContent(state: State) {
         modifier = Modifier.fillMaxSize()
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(
-                    text = state.typeText,
-                    style = MaterialTheme.typography.caption,
-                )
-            }
+            Text(
+                text = state.typeText,
+                fontWeight = FontWeight.Normal,
+            )
             Text(
                 text = state.title,
-                style = MaterialTheme.typography.h5
+                style = MaterialTheme.typography.headlineSmall
             )
         }
         if (state.description.isNotEmpty()) {
@@ -232,13 +224,13 @@ private fun TaskContent(state: State) {
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             if (state.isUrgent) {
                 Chip(
-                    icon = { IconUrgentOld() },
+                    icon = { IconUrgent() },
                     label = { Text(stringResource(R.string.urgent)) }
                 )
             }
             if (state.isImportant) {
                 Chip(
-                    icon = { IconImportantOld() },
+                    icon = { IconImportant() },
                     label = { Text(stringResource(R.string.important)) }
                 )
             }
@@ -254,6 +246,7 @@ private fun Chip(
 ) {
     Surface(
         shape = RoundedCornerShape(CornerSize(100)),
+        color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier
     ) {
         Row(
@@ -283,7 +276,7 @@ private fun BottomActions(
         Button(
             onClick = onArchive,
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = MaterialTheme.colors.error
+                containerColor = important
             ),
             modifier = Modifier.weight(1f, true)
         ) {
@@ -300,7 +293,7 @@ private fun BottomActions(
 )
 @Composable
 private fun ContentPreview() {
-    AppThemeOld {
+    AppTheme {
         FullscreenContent {
             VerticallySplitContent(
                 topContent = {
@@ -327,7 +320,7 @@ private fun ContentPreview() {
 )
 @Composable
 private fun ContentPreviewLight() {
-    AppThemeOld {
+    AppTheme {
         FullscreenContent {
             VerticallySplitContent(
                 topContent = {
