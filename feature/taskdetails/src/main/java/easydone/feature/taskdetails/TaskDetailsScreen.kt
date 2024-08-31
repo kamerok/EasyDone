@@ -16,21 +16,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -81,7 +81,7 @@ fun TaskDetailsRoute(
 }
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun TaskDetailsScreen(
     state: State,
@@ -91,7 +91,8 @@ internal fun TaskDetailsScreen(
     onMove: () -> Unit,
     onArchive: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
     var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
@@ -101,7 +102,7 @@ internal fun TaskDetailsScreen(
                 when (it) {
                     is SelectType -> {
                         selectorType = it.currentType
-                        sheetState.show()
+                        openBottomSheet = true
                     }
                 }
             }
@@ -109,27 +110,30 @@ internal fun TaskDetailsScreen(
     }
 
     BackHandler(enabled = sheetState.isVisible) {
-        scope.launch { sheetState.hide() }
+        scope.launch { openBottomSheet = false }
     }
 
-    ModalBottomSheetLayout(
-        sheetState = sheetState,
-        sheetContent = {
-            TypeSelector(
-                type = selectorType,
-                onTypeSelected = onTypeSelected,
-                modifier = Modifier.navigationBarsPadding()
-            )
-        },
-        content = {
-            TaskDetailsContent(
-                state = state,
-                onEdit = onEdit,
-                onMove = onMove,
-                onArchive = onArchive
-            )
-        }
+    TaskDetailsContent(
+        state = state,
+        onEdit = onEdit,
+        onMove = onMove,
+        onArchive = onArchive
     )
+
+    if (openBottomSheet) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = { openBottomSheet = false },
+            tonalElevation = 0.dp,
+            content = {
+                TypeSelector(
+                    type = selectorType,
+                    onTypeSelected = onTypeSelected,
+                    modifier = Modifier.navigationBarsPadding()
+                )
+            }
+        )
+    }
 }
 
 @Composable
