@@ -19,19 +19,16 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -51,10 +49,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.strings.R
-import easydone.coreui.design.AppThemeOld
-import easydone.coreui.design.EasyDoneAppBarOld
-import easydone.coreui.design.IconImportantOld
-import easydone.coreui.design.IconUrgentOld
+import easydone.coreui.design.EasyDoneAppBar
+import easydone.coreui.design.IconImportant
+import easydone.coreui.design.IconUrgent
 import easydone.feature.selecttype.TypeSelector
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
@@ -89,7 +86,7 @@ fun EditTaskRoute(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun EditTaskScreen(
     events: Flow<Event>,
@@ -102,49 +99,49 @@ internal fun EditTaskScreen(
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
 ) {
-    AppThemeOld {
-        FullscreenContent {
-            val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-            val scope = rememberCoroutineScope()
+    FullscreenContent {
+        var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+        val scope = rememberCoroutineScope()
 
-            BackHandler(enabled = sheetState.isVisible) {
-                scope.launch { sheetState.hide() }
-            }
+        BackHandler(enabled = openBottomSheet) {
+            scope.launch { openBottomSheet = false }
+        }
 
-            var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
+        var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
 
-            LaunchedEffect(events) {
-                events
-                    .onEach {
-                        when (it) {
-                            is OpenSelectType -> {
-                                selectorType = it.currentType
-                                scope.launch { sheetState.show() }
-                            }
-
-                            is CloseSelectType -> scope.launch { sheetState.hide() }
+        LaunchedEffect(events) {
+            events
+                .onEach {
+                    when (it) {
+                        is OpenSelectType -> {
+                            selectorType = it.currentType
+                            scope.launch { openBottomSheet = true }
                         }
-                    }
-                    .launchIn(this)
-            }
 
-            ModalBottomSheetLayout(
-                sheetState = sheetState,
-                sheetContent = {
+                        is CloseSelectType -> scope.launch { openBottomSheet = false }
+                    }
+                }
+                .launchIn(this)
+        }
+
+        EditTaskContent(
+            state = state,
+            onTypeClick = onTypeClick,
+            onUrgentClick = onUrgentClick,
+            onImportantClick = onImportantClick,
+            onSave = onSave,
+            onTitleChange = onTitleChange,
+            onDescriptionChange = onDescriptionChange
+        )
+
+        if (openBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { openBottomSheet = false },
+                tonalElevation = 0.dp,
+                content = {
                     TypeSelector(
                         type = selectorType,
                         onTypeSelected = onTypeSelected
-                    )
-                },
-                content = {
-                    EditTaskContent(
-                        state = state,
-                        onTypeClick = onTypeClick,
-                        onUrgentClick = onUrgentClick,
-                        onImportantClick = onImportantClick,
-                        onSave = onSave,
-                        onTitleChange = onTitleChange,
-                        onDescriptionChange = onDescriptionChange
                     )
                 }
             )
@@ -231,11 +228,10 @@ private fun FullscreenContent(
     content: @Composable () -> Unit
 ) {
     Surface(
-        color = MaterialTheme.colors.background,
         modifier = Modifier
             .fillMaxSize()
             //to draw under paddings
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .imePadding()
     ) {
@@ -250,7 +246,7 @@ private fun ScreenContent(
     bottomContent: @Composable () -> Unit,
 ) {
     Column {
-        EasyDoneAppBarOld {
+        EasyDoneAppBar {
             Text(
                 stringResource(
                     if (isCreate) {
@@ -309,8 +305,8 @@ private fun TaskTitle(
         if (isError) {
             Text(
                 text = checkNotNull(error),
-                color = MaterialTheme.colors.error,
-                style = MaterialTheme.typography.caption,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(start = 16.dp)
             )
         }
@@ -343,13 +339,13 @@ private fun TaskMarkers(
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         Chip(
             isSelected = isUrgent,
-            icon = { IconUrgentOld() },
+            icon = { IconUrgent() },
             label = { Text(stringResource(R.string.urgent)) },
             onClick = onUrgentClick
         )
         Chip(
             isSelected = isImportant,
-            icon = { IconImportantOld() },
+            icon = { IconImportant() },
             label = { Text(stringResource(R.string.important)) },
             onClick = onImportantClick
         )
@@ -365,11 +361,11 @@ private fun Chip(
     onClick: () -> Unit
 ) {
     Surface(
-        color = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.background,
+        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background,
         shape = RoundedCornerShape(CornerSize(100)),
         border = if (isSelected) null else BorderStroke(
             1.dp,
-            MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+            MaterialTheme.colorScheme.onSurfaceVariant
         ),
         modifier = modifier
     ) {

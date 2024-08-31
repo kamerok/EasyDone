@@ -29,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -92,7 +91,6 @@ internal fun TaskDetailsScreen(
     onArchive: () -> Unit,
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
     var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
@@ -109,7 +107,7 @@ internal fun TaskDetailsScreen(
             .launchIn(this)
     }
 
-    BackHandler(enabled = sheetState.isVisible) {
+    BackHandler(enabled = openBottomSheet) {
         scope.launch { openBottomSheet = false }
     }
 
@@ -122,7 +120,6 @@ internal fun TaskDetailsScreen(
 
     if (openBottomSheet) {
         ModalBottomSheet(
-            sheetState = sheetState,
             onDismissRequest = { openBottomSheet = false },
             tonalElevation = 0.dp,
             content = {
