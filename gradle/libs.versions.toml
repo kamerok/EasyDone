@@ -42,7 +42,6 @@ androidx-app-compat = { group = "androidx.appcompat", name = "appcompat", versio
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
 androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "androidxCompose" }
 androidx-compose-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "androidxCompose" }
-androidx-compose-material = { group = "androidx.compose.material", name = "material", version.ref = "androidxCompose" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
 androidx-compose-material3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive-android", version.ref = "androidxComposeMaterial3Adaptive" }
 androidx-compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "androidxCompose" }
