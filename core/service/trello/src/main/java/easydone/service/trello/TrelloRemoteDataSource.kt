@@ -68,42 +68,54 @@ class TrelloRemoteDataSource(
             }
     }
 
-    override suspend fun syncTaskDelta(delta: TaskDelta) {
+    override suspend fun isTaskKnownOnRemote(id: String): Boolean = idMappings.contains(id)
+
+    override suspend fun updateTask(delta: TaskDelta) {
         withContext(Dispatchers.IO) {
             syncMutex.withLock {
-                val labels = delta.markers?.let { markers ->
-                    mutableListOf<String>().apply {
-                        if (markers.isUrgent) add(authInfoHolder.getUrgentLabelId()!!)
-                        if (markers.isImportant) add(authInfoHolder.getImportantLabelId()!!)
-                    }.joinToString(separator = ",")
-                }
-                if (idMappings.contains(delta.taskId)) {
-                    val serverId: String = idMappings.getString(delta.taskId)!!
-                    api.editCard(
-                        serverId,
-                        apiKey,
-                        authInfoHolder.getToken()!!,
-                        name = delta.title,
-                        desc = delta.description,
-                        closed = delta.isDone,
-                        due = delta.getDueDate(),
-                        listId = delta.type?.let { getListId(it) },
-                        idLabels = labels
-                    )
-                } else {
-                    val card = api.postCard(
-                        listId = getListId(delta.type!!),
-                        name = delta.title!!,
-                        desc = delta.description,
-                        due = delta.getDueDate(),
-                        apiKey = apiKey,
-                        token = authInfoHolder.getToken()!!,
-                        idLabels = labels
-                    )
-                    idMappings.putString(delta.taskId, card.id)
-                    idMappings.putString(card.id, delta.taskId)
-                }
+                val serverId: String = requireNotNull(
+                    idMappings.getString(delta.taskId)
+                ) { "Try to update task with $delta but server id was not found" }
+                api.editCard(
+                    serverId,
+                    apiKey,
+                    authInfoHolder.getToken()!!,
+                    name = delta.title,
+                    desc = delta.description,
+                    closed = delta.isDone,
+                    due = delta.getDueDate(),
+                    listId = delta.type?.let { getListId(it) },
+                    idLabels = delta.convertMarkersToLabels()
+                )
+
             }
+        }
+    }
+
+    override suspend fun createTask(delta: TaskDelta) {
+        withContext(Dispatchers.IO) {
+            syncMutex.withLock {
+                val card = api.postCard(
+                    listId = getListId(delta.type!!),
+                    name = delta.title!!,
+                    desc = delta.description,
+                    due = delta.getDueDate(),
+                    apiKey = apiKey,
+                    token = authInfoHolder.getToken()!!,
+                    idLabels = delta.convertMarkersToLabels()
+                )
+                idMappings.putString(delta.taskId, card.id)
+                idMappings.putString(card.id, delta.taskId)
+            }
+        }
+    }
+
+    private suspend fun TaskDelta.convertMarkersToLabels(): String? {
+        return markers?.let { markers ->
+            mutableListOf<String>().apply {
+                if (markers.isUrgent) add(authInfoHolder.getUrgentLabelId()!!)
+                if (markers.isImportant) add(authInfoHolder.getImportantLabelId()!!)
+            }.joinToString(separator = ",")
         }
     }
 

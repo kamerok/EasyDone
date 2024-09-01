@@ -16,7 +16,11 @@ class Synchronizer(
 
     private suspend fun uploadChanges() {
         localDataSource.getChanges().forEach { change ->
-            remoteDataSource.syncTaskDelta(change)
+            if (remoteDataSource.isTaskKnownOnRemote(change.taskId)) {
+                remoteDataSource.updateTask(change)
+            } else {
+                remoteDataSource.createTask(change)
+            }
             localDataSource.deleteChange(change.id)
         }
     }
