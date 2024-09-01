@@ -9,8 +9,6 @@ import easydone.service.trello.api.TrelloApi
 import easydone.service.trello.api.model.Card
 import easydone.service.trello.api.model.NestedBoard
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -24,8 +22,6 @@ class TrelloRemoteDataSource(
 ) : RemoteDataSource {
 
     private val authInfoHolder: AuthInfoHolder = AuthInfoHolder(prefs)
-
-    private val syncMutex = Mutex(false)
 
     override suspend fun isConnected(): Boolean =
         authInfoHolder.getToken() != null && authInfoHolder.getBoardId() != null
@@ -53,7 +49,7 @@ class TrelloRemoteDataSource(
                 val type = when (card.idList) {
                     authInfoHolder.getInboxListId() -> Task.Type.Inbox
                     authInfoHolder.getWaitingListId() -> Task.Type.Waiting(
-                        //todo: handle waiting items with no data
+                        //todo: handle waiting items with no date
                         requireNotNull(card.due)
                             .let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME) }
                     )
@@ -72,41 +68,36 @@ class TrelloRemoteDataSource(
 
     override suspend fun updateTask(delta: TaskDelta) {
         withContext(Dispatchers.IO) {
-            syncMutex.withLock {
-                val serverId: String = requireNotNull(
-                    idMappings.getString(delta.taskId)
-                ) { "Try to update task with $delta but server id was not found" }
-                api.editCard(
-                    serverId,
-                    apiKey,
-                    authInfoHolder.getToken()!!,
-                    name = delta.title,
-                    desc = delta.description,
-                    closed = delta.isDone,
-                    due = delta.getDueDate(),
-                    listId = delta.type?.let { getListId(it) },
-                    idLabels = delta.convertMarkersToLabels()
-                )
-
-            }
+            val serverId: String = requireNotNull(
+                idMappings.getString(delta.taskId)
+            ) { "Try to update task with $delta but server id was not found" }
+            api.editCard(
+                serverId,
+                apiKey,
+                authInfoHolder.getToken()!!,
+                name = delta.title,
+                desc = delta.description,
+                closed = delta.isDone,
+                due = delta.getDueDate(),
+                listId = delta.type?.let { getListId(it) },
+                idLabels = delta.convertMarkersToLabels()
+            )
         }
     }
 
     override suspend fun createTask(delta: TaskDelta) {
         withContext(Dispatchers.IO) {
-            syncMutex.withLock {
-                val card = api.postCard(
-                    listId = getListId(delta.type!!),
-                    name = delta.title!!,
-                    desc = delta.description,
-                    due = delta.getDueDate(),
-                    apiKey = apiKey,
-                    token = authInfoHolder.getToken()!!,
-                    idLabels = delta.convertMarkersToLabels()
-                )
-                idMappings.putString(delta.taskId, card.id)
-                idMappings.putString(card.id, delta.taskId)
-            }
+            val card = api.postCard(
+                listId = getListId(delta.type!!),
+                name = delta.title!!,
+                desc = delta.description,
+                due = delta.getDueDate(),
+                apiKey = apiKey,
+                token = authInfoHolder.getToken()!!,
+                idLabels = delta.convertMarkersToLabels()
+            )
+            idMappings.putString(delta.taskId, card.id)
+            idMappings.putString(card.id, delta.taskId)
         }
     }
 
