@@ -1,5 +1,6 @@
 package easydone.feature.edittask
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -44,16 +45,19 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import easydone.core.domain.DomainRepository
 import easydone.core.domain.model.Task
 import easydone.core.strings.R
+import easydone.coreui.design.AppTheme
 import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.IconImportant
 import easydone.coreui.design.IconUrgent
 import easydone.feature.selecttype.TypeSelector
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -365,7 +369,7 @@ private fun Chip(
         shape = RoundedCornerShape(CornerSize(100)),
         border = if (isSelected) null else BorderStroke(
             1.dp,
-            MaterialTheme.colorScheme.onSurfaceVariant
+            MaterialTheme.colorScheme.outline
         ),
         modifier = modifier
     ) {
@@ -397,4 +401,31 @@ sealed class EditTaskArgs : Serializable {
     ) : EditTaskArgs()
 
     data class Edit(val id: String) : EditTaskArgs()
+}
+
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Composable
+private fun EditTaskPreview() {
+    AppTheme {
+        EditTaskScreen(
+            events = flowOf(),
+            state = ContentState(
+                isCreate = false,
+                type = Task.Type.ToDo,
+                title = "Task title",
+                titleError = null,
+                description = "Task description",
+                isUrgent = true,
+                isImportant = false
+            ),
+            onTypeClick = {},
+            onTypeSelected = {},
+            onUrgentClick = {},
+            onImportantClick = {},
+            onSave = {},
+            onTitleChange = {},
+            onDescriptionChange = {}
+        )
+    }
 }
