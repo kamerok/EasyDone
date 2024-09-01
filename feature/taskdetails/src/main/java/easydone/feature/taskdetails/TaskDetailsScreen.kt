@@ -54,11 +54,11 @@ import easydone.coreui.design.IconImportant
 import easydone.coreui.design.IconUrgent
 import easydone.coreui.design.important
 import easydone.feature.selecttype.TypeSelector
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailsRoute(
     id: String,
@@ -69,39 +69,21 @@ fun TaskDetailsRoute(
         TaskDetailsViewModel(id, repository, navigator)
     }
     val state by viewModel.state.collectAsState()
-    TaskDetailsScreen(
-        state = state,
-        events = viewModel.events,
-        onTypeSelected = viewModel::onTypeSelected,
-        onEdit = viewModel::onEdit,
-        onMove = viewModel::onMove,
-        onArchive = viewModel::onArchive
-    )
-}
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun TaskDetailsScreen(
-    state: State,
-    events: Flow<Event>,
-    onTypeSelected: (Task.Type) -> Unit,
-    onEdit: () -> Unit,
-    onMove: () -> Unit,
-    onArchive: () -> Unit,
-) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     var selectorType: Task.Type by remember { mutableStateOf(Task.Type.Inbox) }
-    LaunchedEffect(events) {
-        events
+    LaunchedEffect(viewModel.events) {
+        viewModel.events
             .onEach {
                 when (it) {
                     is SelectType -> {
                         selectorType = it.currentType
                         openBottomSheet = true
                     }
+                    is OpenEdit -> navigator.editTask(it.id)
                 }
             }
             .launchIn(this)
@@ -111,11 +93,11 @@ internal fun TaskDetailsScreen(
         scope.launch { openBottomSheet = false }
     }
 
-    TaskDetailsContent(
+    TaskDetailsScreen(
         state = state,
-        onEdit = onEdit,
-        onMove = onMove,
-        onArchive = onArchive
+        onEdit = viewModel::onEdit,
+        onMove = viewModel::onMove,
+        onArchive = viewModel::onArchive
     )
 
     if (openBottomSheet) {
@@ -125,7 +107,7 @@ internal fun TaskDetailsScreen(
             content = {
                 TypeSelector(
                     type = selectorType,
-                    onTypeSelected = onTypeSelected,
+                    onTypeSelected = viewModel::onTypeSelected,
                     modifier = Modifier.navigationBarsPadding()
                 )
             }
@@ -133,8 +115,9 @@ internal fun TaskDetailsScreen(
     }
 }
 
+
 @Composable
-private fun TaskDetailsContent(
+internal fun TaskDetailsScreen(
     state: State,
     onEdit: () -> Unit,
     onMove: () -> Unit,
@@ -154,7 +137,7 @@ private fun TaskDetailsContent(
             )
             VerticallySplitContent(
                 topContent = {
-                    TaskContent(state)
+                    TaskContent(state = state)
                 },
                 bottomContent = {
                     BottomActions(

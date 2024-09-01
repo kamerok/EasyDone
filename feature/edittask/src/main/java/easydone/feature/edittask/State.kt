@@ -4,7 +4,7 @@ import easydone.core.domain.model.Task
 
 internal sealed class State
 
-internal object IdleState : State()
+internal data object IdleState : State()
 
 internal data class ContentState(
     val isCreate: Boolean,

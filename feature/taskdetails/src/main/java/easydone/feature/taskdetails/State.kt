@@ -14,3 +14,4 @@ internal data class State(
 internal sealed class Event
 
 internal data class SelectType(val currentType: Task.Type) : Event()
+internal data class OpenEdit(val id: String) : Event()

@@ -52,7 +52,7 @@ internal class TaskDetailsViewModel(
     val events: Flow<Event> get() = eventChannel.receiveAsFlow()
 
     fun onEdit() {
-        navigator.editTask(id)
+        eventChannel.trySend(OpenEdit(id))
     }
 
     fun onMove() {
