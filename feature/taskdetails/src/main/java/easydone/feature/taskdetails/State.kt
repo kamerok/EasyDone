@@ -15,3 +15,5 @@ internal sealed class Event
 
 internal data class SelectType(val currentType: Task.Type) : Event()
 internal data class OpenEdit(val id: String) : Event()
+internal data object CloseMove : Event()
+internal data object CloseArchive : Event()

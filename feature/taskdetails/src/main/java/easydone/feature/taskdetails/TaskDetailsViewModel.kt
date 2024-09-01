@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter
 internal class TaskDetailsViewModel(
     private val id: String,
     private val repository: DomainRepository,
-    private val navigator: TaskDetailsNavigator
 ) : ViewModel() {
 
     private var task: Task? = null
@@ -65,7 +64,7 @@ internal class TaskDetailsViewModel(
         task?.let { task ->
             viewModelScope.launch {
                 repository.saveTask(task.copy(type = type))
-                navigator.closeMove()
+                eventChannel.trySend(CloseMove)
             }
         }
     }
@@ -73,7 +72,7 @@ internal class TaskDetailsViewModel(
     fun onArchive() {
         viewModelScope.launch {
             repository.archiveTask(id)
-            navigator.closeArchive()
+            eventChannel.trySend(CloseArchive)
         }
     }
 

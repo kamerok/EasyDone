@@ -66,7 +66,7 @@ fun TaskDetailsRoute(
     navigator: TaskDetailsNavigator
 ) {
     val viewModel: TaskDetailsViewModel = viewModel {
-        TaskDetailsViewModel(id, repository, navigator)
+        TaskDetailsViewModel(id, repository)
     }
     val state by viewModel.state.collectAsState()
 
@@ -84,6 +84,8 @@ fun TaskDetailsRoute(
                         openBottomSheet = true
                     }
                     is OpenEdit -> navigator.editTask(it.id)
+                    CloseMove -> navigator.closeMove()
+                    CloseArchive -> navigator.closeArchive()
                 }
             }
             .launchIn(this)
