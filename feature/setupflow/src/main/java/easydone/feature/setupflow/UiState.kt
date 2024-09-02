@@ -15,3 +15,7 @@ internal sealed class UiState {
         val onBack: () -> Unit
     ) : UiState()
 }
+
+internal sealed class Event {
+    data object FinishSetup : Event()
+}
