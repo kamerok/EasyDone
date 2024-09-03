@@ -122,6 +122,12 @@ class DatabaseLocalDataSource(private val database: Database) : LocalDataSource 
         changesQueries.deleteChange(id)
     }
 
+    override suspend fun removeAllData() {
+        taskQueries.clear()
+        changesQueries.clearChange()
+        changesQueries.clearDelta()
+    }
+
     private suspend fun transaction(body: LocalDataSource.() -> Unit) =
         withContext(Dispatchers.IO) {
             database.transaction { body() }

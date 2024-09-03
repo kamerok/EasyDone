@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import easydone.core.domain.DomainRepository
+import easydone.core.domain.LocalDataSource
 import easydone.core.domain.RemoteDataSource
 import easydone.core.domain.SyncScheduler
 import easydone.core.domain.model.Task
@@ -98,6 +99,7 @@ class MainNavigationScreenHolder(
     private val syncScheduler: SyncScheduler by activity.inject()
     private val domainRepository: DomainRepository by activity.inject()
     private val remoteDataSource: RemoteDataSource by activity.inject()
+    private val localDataSource: LocalDataSource by activity.inject()
     private val trelloRemoteDataSource: TrelloRemoteDataSource by activity.inject()
     private val trelloApi: TrelloApi by activity.inject()
     private val trelloApiKey: String by lazy { trelloRemoteDataSource.apiKey }
@@ -217,7 +219,7 @@ class MainNavigationScreenHolder(
             }
 
             composable("settings") {
-                SettingScreen(remoteDataSource, object : SettingsNavigator {
+                SettingScreen(remoteDataSource, localDataSource, object : SettingsNavigator {
                     override fun navigateToSetup() {
                         navController.navigate("setup", navOptions {
                             popUpTo("home") { inclusive = true }

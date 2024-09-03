@@ -121,6 +121,7 @@ class TrelloRemoteDataSource(
 
     override suspend fun disconnect() {
         authInfoHolder.clear()
+        idMappings.clear()
     }
 
     suspend fun connect(token: String, boardId: String) = withContext(Dispatchers.IO) {

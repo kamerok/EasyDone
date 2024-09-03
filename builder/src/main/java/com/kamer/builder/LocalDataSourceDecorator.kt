@@ -34,6 +34,8 @@ internal class LocalDataSourceDecorator(defaultSource: LocalDataSource) : LocalD
 
     override suspend fun deleteChange(id: Long) = source.deleteChange(id)
 
+    override suspend fun removeAllData() = source.removeAllData()
+
     fun switchToSandbox() {
         source = SandboxLocalDataSource()
     }

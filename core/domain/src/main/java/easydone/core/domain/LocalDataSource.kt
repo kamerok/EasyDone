@@ -32,4 +32,6 @@ interface LocalDataSource {
 
     suspend fun deleteChange(id: Long)
 
+    suspend fun removeAllData()
+
 }

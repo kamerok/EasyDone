@@ -12,6 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import easydone.core.domain.LocalDataSource
 import easydone.core.domain.RemoteDataSource
 import easydone.core.strings.R
 import easydone.coreui.design.EasyDoneAppBar
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingScreen(
     remoteDataSource: RemoteDataSource,
+    localDataSource: LocalDataSource,
     navigator: SettingsNavigator
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -39,6 +41,7 @@ fun SettingScreen(
                     onClick = {
                         scope.launch {
                             remoteDataSource.disconnect()
+                            localDataSource.removeAllData()
                             navigator.navigateToSetup()
                         }
                     }

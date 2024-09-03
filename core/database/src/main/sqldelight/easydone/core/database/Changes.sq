@@ -17,6 +17,12 @@ CREATE TABLE delta (
   FOREIGN KEY (change_id) REFERENCES change(id) ON DELETE CASCADE
 );
 
+clearDelta:
+DELETE FROM delta;
+
+clearChange:
+DELETE FROM change;
+
 lastInsertedRow:
 SELECT last_insert_rowid();
 

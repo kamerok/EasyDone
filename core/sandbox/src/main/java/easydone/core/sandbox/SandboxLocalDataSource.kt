@@ -168,4 +168,6 @@ class SandboxLocalDataSource : LocalDataSource {
     override suspend fun refreshData(tasks: List<Task>, updatedTasks: List<Task>) {}
 
     override suspend fun deleteChange(id: Long) {}
+
+    override suspend fun removeAllData() {}
 }
