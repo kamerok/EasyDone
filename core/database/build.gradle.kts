@@ -1,11 +1,13 @@
 plugins {
     id("kotlin")
-    id("com.squareup.sqldelight")
+    id("app.cash.sqldelight")
 }
 
 sqldelight {
-    database("Database") {
-        packageName = "easydone.core.database"
+    databases {
+        create("Database") {
+            packageName.set("easydone.core.database")
+        }
     }
 }
 

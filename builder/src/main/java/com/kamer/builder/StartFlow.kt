@@ -10,7 +10,7 @@ import androidx.work.Configuration
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import com.squareup.sqldelight.android.AndroidSqliteDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import easydone.core.database.Database
 import easydone.core.database.DatabaseFactory
 import easydone.core.database.DatabaseLocalDataSource

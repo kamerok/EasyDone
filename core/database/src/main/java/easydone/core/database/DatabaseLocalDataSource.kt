@@ -1,6 +1,6 @@
 package easydone.core.database
 
-import com.squareup.sqldelight.runtime.coroutines.asFlow
+import app.cash.sqldelight.coroutines.asFlow
 import easydone.core.database.model.ChangeEntry
 import easydone.core.database.model.DbTaskType
 import easydone.core.database.model.EntityField

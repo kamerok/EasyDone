@@ -30,7 +30,7 @@ retrofit = "2.11.0"
 retrofitKotlinxSerialization = "1.0.0"
 retrofitLogging = "4.12.0"
 soLoader = "0.11.0"
-sqlDelight = "1.5.5"
+sqlDelight = "2.0.2"
 testAssertk = "0.28.1"
 testJunit = "4.13.2"
 timber = "5.0.0-SNAPSHOT"
@@ -68,9 +68,9 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 retrofit-converter-kotlinx = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerialization" }
 retrofit-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "retrofitLogging" }
 soLoader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soLoader" }
-sqldelight-android = { group = "com.squareup.sqldelight", name = "android-driver", version.ref = "sqlDelight" }
-sqldelight-coroutines = { group = "com.squareup.sqldelight", name = "coroutines-extensions-jvm", version.ref = "sqlDelight" }
-sqldelight-memory = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
+sqldelight-android = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqlDelight" }
+sqldelight-coroutines = { group = "app.cash.sqldelight", name = "coroutines-extensions-jvm", version.ref = "sqlDelight" }
+sqldelight-memory = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
 test-assertk = { group = "com.willowtreeapps.assertk", name = "assertk-jvm", version.ref = "testAssertk" }
 test-junit = { group = "junit", name = "junit", version.ref = "testJunit" }
 timber-android = { group = "com.jakewharton.timber", name = "timber-android", version.ref = "timber" }
@@ -89,7 +89,7 @@ gradle-doctor = { id = "com.osacky.doctor", version.ref = "gradleDoctor" }
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradleVersions" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-sql-delight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
+sql-delight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 
 easydone-android-application = { id = "easydone.android.application", version = "unspecified" }
 easydone-android-library = { id = "easydone.android.library", version = "unspecified" }

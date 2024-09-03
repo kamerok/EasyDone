@@ -1,7 +1,8 @@
 package easydone.core.database
 
-import com.squareup.sqldelight.EnumColumnAdapter
-import com.squareup.sqldelight.db.SqlDriver
+import app.cash.sqldelight.EnumColumnAdapter
+import app.cash.sqldelight.db.SqlDriver
+
 
 object DatabaseFactory {
 

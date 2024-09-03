@@ -1,5 +1,6 @@
 import easydone.core.database.model.DbTaskType;
 import java.time.LocalDate;
+import kotlin.Boolean;
 
 
 CREATE TABLE task (

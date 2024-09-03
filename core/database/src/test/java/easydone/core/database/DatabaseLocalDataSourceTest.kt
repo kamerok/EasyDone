@@ -1,9 +1,9 @@
 package easydone.core.database
 
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEqualTo
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import easydone.core.database.model.DbTaskType
 import easydone.core.database.model.EntityField
 import easydone.core.database.model.EntityName
