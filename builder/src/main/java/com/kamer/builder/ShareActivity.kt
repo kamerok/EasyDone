@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import easydone.core.domain.DomainRepository
+import easydone.coreui.design.AppTheme
 import easydone.feature.edittask.EditTaskArgs
 import easydone.feature.edittask.EditTaskNavigator
 import easydone.feature.edittask.EditTaskRoute
@@ -21,17 +22,19 @@ class ShareActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            EditTaskRoute(
-                args = EditTaskArgs.Create(
-                    text = intent.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
-                ),
-                repository = repository,
-                navigator = object : EditTaskNavigator {
-                    override fun close() {
-                        onBackPressedDispatcher.onBackPressed()
+            AppTheme {
+                EditTaskRoute(
+                    args = EditTaskArgs.Create(
+                        text = intent.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
+                    ),
+                    repository = repository,
+                    navigator = object : EditTaskNavigator {
+                        override fun close() {
+                            onBackPressedDispatcher.onBackPressed()
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 

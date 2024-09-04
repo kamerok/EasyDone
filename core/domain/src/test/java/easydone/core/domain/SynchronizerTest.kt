@@ -96,5 +96,7 @@ class SynchronizerTest {
 
             override suspend fun deleteChange(id: Long) {
             }
+
+            override suspend fun removeAllData() {}
         }
 }
