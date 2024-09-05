@@ -4,7 +4,6 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import easydone.service.trello.api.model.Card
 import easydone.service.trello.api.model.NestedBoard
 import easydone.service.trello.api.model.NestedBoards
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -60,7 +59,6 @@ interface TrelloApi {
             ignoreUnknownKeys = true
         }
 
-        @OptIn(ExperimentalSerializationApi::class)
         fun build(debugInterceptor: Interceptor?): TrelloApi = Retrofit.Builder()
             .baseUrl("https://trello.com/1/")
             .client(

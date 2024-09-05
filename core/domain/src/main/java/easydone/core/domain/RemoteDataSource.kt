@@ -7,7 +7,7 @@ interface RemoteDataSource {
     suspend fun isConnected(): Boolean
     suspend fun getAllTasks(): List<Task>
     suspend fun isTaskKnownOnRemote(id: String): Boolean
-    suspend fun updateTask(delta: TaskDelta)
-    suspend fun createTask(delta: TaskDelta)
+    suspend fun updateTask(delta: TaskDelta): Task
+    suspend fun createTask(delta: TaskDelta): Task
     suspend fun disconnect()
 }

@@ -10,6 +10,10 @@ class Synchronizer(
 ) {
 
     suspend fun sync() {
+        // get remote data
+        // sync change and apply it to the remote data
+        // also sync waiting if needed (this renders flushing new delta unneeded)
+        // flush remote data to local
         uploadChanges()
         refreshLocalData()
     }

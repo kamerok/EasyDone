@@ -31,7 +31,7 @@ class TrelloRemoteDataSource(
         val token = authInfoHolder.getToken()!!
         val board = api.boardData(boardId, apiKey, token)
         rememberDataAnchors(board)
-        return@withContext board.cards
+        board.cards
             .filter {
                 it.idList == authInfoHolder.getTodoListId() ||
                         it.idList == authInfoHolder.getInboxListId() ||
@@ -39,39 +39,17 @@ class TrelloRemoteDataSource(
                         it.idList == authInfoHolder.getProjectsListId() ||
                         it.idList == authInfoHolder.getMaybeListId()
             }
-            .map { card ->
-                val localId = idMappings.getString(card.id, UUID.randomUUID().toString())
-                if (!idMappings.contains(card.id)) {
-                    idMappings.putString(localId, card.id)
-                    idMappings.putString(card.id, localId)
-                }
-
-                val type = when (card.idList) {
-                    authInfoHolder.getInboxListId() -> Task.Type.Inbox
-                    authInfoHolder.getWaitingListId() -> Task.Type.Waiting(
-                        //todo: handle waiting items with no date
-                        requireNotNull(card.due)
-                            .let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME) }
-                    )
-
-                    authInfoHolder.getProjectsListId() -> Task.Type.Project
-                    authInfoHolder.getMaybeListId() -> Task.Type.Maybe
-                    else -> Task.Type.ToDo
-                }
-                val isUrgent = card.idLabels.contains(authInfoHolder.getUrgentLabelId()!!)
-                val isImportant = card.idLabels.contains(authInfoHolder.getImportantLabelId()!!)
-                card.toTask(localId, type, isUrgent, isImportant)
-            }
+            .map { card -> card.toTask() }
     }
 
     override suspend fun isTaskKnownOnRemote(id: String): Boolean = idMappings.contains(id)
 
-    override suspend fun updateTask(delta: TaskDelta) {
-        withContext(Dispatchers.IO) {
+    override suspend fun updateTask(delta: TaskDelta): Task {
+        return withContext(Dispatchers.IO) {
             val serverId: String = requireNotNull(
                 idMappings.getString(delta.taskId)
             ) { "Try to update task with $delta but server id was not found" }
-            api.editCard(
+            val card = api.editCard(
                 serverId,
                 apiKey,
                 authInfoHolder.getToken()!!,
@@ -82,11 +60,12 @@ class TrelloRemoteDataSource(
                 listId = delta.type?.let { getListId(it) },
                 idLabels = delta.convertMarkersToLabels()
             )
+            card.toTask()
         }
     }
 
-    override suspend fun createTask(delta: TaskDelta) {
-        withContext(Dispatchers.IO) {
+    override suspend fun createTask(delta: TaskDelta): Task {
+        return withContext(Dispatchers.IO) {
             val card = api.postCard(
                 listId = getListId(delta.type!!),
                 name = delta.title!!,
@@ -98,7 +77,42 @@ class TrelloRemoteDataSource(
             )
             idMappings.putString(delta.taskId, card.id)
             idMappings.putString(card.id, delta.taskId)
+            card.toTask()
         }
+    }
+
+    private suspend fun Card.toTask(): Task {
+        val localId = idMappings.getString(id, UUID.randomUUID().toString())
+        if (!idMappings.contains(id)) {
+            idMappings.putString(localId, id)
+            idMappings.putString(id, localId)
+        }
+
+        val type = when (idList) {
+            authInfoHolder.getInboxListId() -> Task.Type.Inbox
+            authInfoHolder.getWaitingListId() -> Task.Type.Waiting(
+                //todo: handle waiting items with no date
+                requireNotNull(due)
+                    .let { LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME) }
+            )
+
+            authInfoHolder.getProjectsListId() -> Task.Type.Project
+            authInfoHolder.getMaybeListId() -> Task.Type.Maybe
+            else -> Task.Type.ToDo
+        }
+        val isUrgent = idLabels.contains(authInfoHolder.getUrgentLabelId()!!)
+        val isImportant = idLabels.contains(authInfoHolder.getImportantLabelId()!!)
+        return Task(
+            id = localId,
+            type = type,
+            title = name,
+            description = desc,
+            markers = Markers(
+                isUrgent = isUrgent,
+                isImportant = isImportant
+            ),
+            isDone = false
+        )
     }
 
     private suspend fun TaskDelta.convertMarkersToLabels(): String? {
@@ -161,25 +175,6 @@ class TrelloRemoteDataSource(
             is Task.Type.Project -> authInfoHolder.getProjectsListId()!!
             is Task.Type.Maybe -> authInfoHolder.getMaybeListId()!!
         }
-    }
-
-    private fun Card.toTask(
-        id: String,
-        type: Task.Type,
-        isUrgent: Boolean,
-        isImportant: Boolean
-    ): Task {
-        return Task(
-            id = id,
-            type = type,
-            title = name,
-            description = desc,
-            markers = Markers(
-                isUrgent = isUrgent,
-                isImportant = isImportant
-            ),
-            isDone = false
-        )
     }
 
 }

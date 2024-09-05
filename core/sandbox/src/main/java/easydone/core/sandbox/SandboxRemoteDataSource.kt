@@ -13,9 +13,13 @@ class SandboxRemoteDataSource : RemoteDataSource {
 
     override suspend fun isTaskKnownOnRemote(id: String): Boolean = false
 
-    override suspend fun updateTask(delta: TaskDelta) {}
+    override suspend fun updateTask(delta: TaskDelta): Task {
+        throw NotImplementedError()
+    }
 
-    override suspend fun createTask(delta: TaskDelta) {}
+    override suspend fun createTask(delta: TaskDelta): Task {
+        throw NotImplementedError()
+    }
 
     override suspend fun disconnect() {}
 }
