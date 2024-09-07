@@ -53,9 +53,6 @@ import easydone.coreui.design.EasyDoneAppBar
 import easydone.coreui.design.IconImportant
 import easydone.coreui.design.IconUrgent
 import easydone.coreui.design.important
-import easydone.coreui.design.shareTaskBounds
-import easydone.coreui.design.shareTaskTitle
-import easydone.coreui.design.skipToLookaheadSize
 import easydone.feature.selecttype.TypeSelector
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -99,7 +96,6 @@ fun TaskDetailsRoute(
     }
 
     TaskDetailsScreen(
-        id = id,
         state = state,
         onEdit = viewModel::onEdit,
         onMove = viewModel::onMove,
@@ -124,13 +120,12 @@ fun TaskDetailsRoute(
 
 @Composable
 internal fun TaskDetailsScreen(
-    id: String,
     state: State,
     onEdit: () -> Unit,
     onMove: () -> Unit,
     onArchive: () -> Unit,
 ) {
-    FullscreenContent(modifier = Modifier.shareTaskBounds(id)) {
+    FullscreenContent {
         Column(modifier = Modifier.systemBarsPadding()) {
             EasyDoneAppBar(
                 title = {
@@ -144,7 +139,7 @@ internal fun TaskDetailsScreen(
             )
             VerticallySplitContent(
                 topContent = {
-                    TaskContent(id = id, state = state)
+                    TaskContent(state = state)
                 },
                 bottomContent = {
                     BottomActions(
@@ -160,10 +155,9 @@ internal fun TaskDetailsScreen(
 
 @Composable
 private fun FullscreenContent(
-    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Surface(modifier = modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.fillMaxSize()) {
         content()
     }
 }
@@ -192,7 +186,7 @@ private fun VerticallySplitContent(
 }
 
 @Composable
-private fun TaskContent(id: String, state: State) {
+private fun TaskContent(state: State) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxSize()
@@ -204,15 +198,13 @@ private fun TaskContent(id: String, state: State) {
             )
             Text(
                 text = state.title,
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.shareTaskTitle(id)
+                style = MaterialTheme.typography.headlineSmall
             )
         }
         if (state.description.isNotEmpty()) {
             MarkdownText(
                 markdown = state.description,
-                style = LocalTextStyle.current.copy(color = LocalContentColor.current),
-                modifier = Modifier.skipToLookaheadSize()
+                style = LocalTextStyle.current.copy(color = LocalContentColor.current)
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -292,7 +284,6 @@ private fun ContentPreview() {
             VerticallySplitContent(
                 topContent = {
                     TaskContent(
-                        "",
                         State(
                             typeText = "Type",
                             title = "Title",
@@ -320,7 +311,6 @@ private fun ContentPreviewLight() {
             VerticallySplitContent(
                 topContent = {
                     TaskContent(
-                        "",
                         State(
                             typeText = "Type",
                             title = "Title",
