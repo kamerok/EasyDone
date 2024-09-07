@@ -24,6 +24,7 @@ fun AppTheme(
             onError = Color.White,
             surface = Color(0xFF1C1C1C),
             surfaceVariant = Color(0xFF252525),
+            surfaceContainerHighest = Color(0xFF252525),
             onSurfaceVariant = Color.White,
         )
     } else {
@@ -32,6 +33,7 @@ fun AppTheme(
             primary = primary,
             surface = Color(0xFFF3F3F3),
             surfaceVariant = Color.White,
+            surfaceContainerHighest = Color.White,
         )
     }
     MaterialTheme(
