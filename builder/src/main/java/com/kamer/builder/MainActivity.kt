@@ -6,6 +6,8 @@ import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import easydone.coreui.design.AppTheme
@@ -25,6 +27,10 @@ class MainActivity : AppCompatActivity() {
         val mainNavigationScreenHolder = MainNavigationScreenHolder(this)
         setContent {
             AppTheme {
+                // this is needed to update system colors when compose handles configuration changes without activity recreation
+                LaunchedEffect(LocalConfiguration.current) {
+                    enableEdgeToEdge()
+                }
                 mainNavigationScreenHolder.MainScreen()
             }
         }
